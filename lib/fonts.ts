@@ -1,6 +1,5 @@
-import { Ubuntu_Mono as FontMono } from "next/font/google"
+import { Inter as FontSans } from "next/font/google"
 
-export const fontMono = FontMono({
-	weight: ["400", "700"],
-	variable: "--font-mono"
+export const fontSans = FontSans({
+	variable: "--font-sans"
 })
