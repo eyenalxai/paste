@@ -71,7 +71,7 @@ type EncryptDataToBase64Props = {
 	secretData: string
 }
 
-export const encryptDataToBase64 = async ({ secretData }: EncryptDataToBase64Props) => {
+export const encryptPasteContentToBase64 = async ({ secretData }: EncryptDataToBase64Props) => {
 	const key = await generateKey()
 	const { encryptedData, iv } = await encryptData(secretData, key)
 
