@@ -1,0 +1,45 @@
+{
+  "id": "f52c22a3-0f96-4c9e-b8ab-dba2b48ef7b2",
+  "prevId": "00fc5bfa-5777-453b-ac97-e17523e3f698",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.pastes": {
+      "name": "pastes",
+      "schema": "",
+      "columns": {
+        "uuid": {
+          "name": "uuid",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "one_time": {
+          "name": "one_time",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
