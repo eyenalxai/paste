@@ -57,12 +57,11 @@ export const PasteForm = () => {
 					render={({ field }) => (
 						<FormItem>
 							<FormControl>
-								<Textarea placeholder="Tell us a little bit about yourself" className={"h-[80vh]"} {...field} />
+								<Textarea className={"h-[80vh]"} {...field} />
 							</FormControl>
 						</FormItem>
 					)}
 				/>
-
 				<Button type="submit">Submit</Button>
 			</form>
 		</Form>
