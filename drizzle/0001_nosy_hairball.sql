@@ -1,1 +1,0 @@
-ALTER TABLE "pastes" ADD COLUMN "one_time" boolean;
