@@ -98,17 +98,31 @@ export const pasteContentToBase64 = async (pasteContent: string) => {
 	}
 }
 
-type DecryptDataFromBase64Props = {
-	secretDataBase64: string
-	key: CryptoKey
+export const pasteContentFromBase64 = (contentBase64: string) => {
+	return {
+		pasteContent: window.atob(contentBase64)
+	}
 }
 
-export const decryptDataFromBase64 = async ({ secretDataBase64, key }: DecryptDataFromBase64Props): Promise<string> => {
-	const jsonEncryptedPayload = new TextDecoder().decode(base64ToArrayBuffer(secretDataBase64))
-	const encryptedPayload = JSON.parse(jsonEncryptedPayload)
+type DecryptPasteContentFromBase64Props = {
+	encryptedContentBase64: string
+	encryptedPayloadBase64: string
+}
 
-	const encryptedData = base64ToArrayBuffer(encryptedPayload.encryptedData)
+export const decryptPasteContentFromBase64 = async ({
+	encryptedContentBase64,
+	encryptedPayloadBase64
+}: DecryptPasteContentFromBase64Props) => {
+	const encryptedPayload = JSON.parse(new TextDecoder().decode(base64ToArrayBuffer(encryptedPayloadBase64)))
+
+	const keyBuffer = base64ToArrayBuffer(encryptedPayload.keyBase64)
 	const iv = base64ToArrayBuffer(encryptedPayload.iv)
 
-	return decryptData(encryptedData, new Uint8Array(iv), key)
+	const key = await window.crypto.subtle.importKey("raw", keyBuffer, { name: "AES-GCM", length: 256 }, true, [
+		"decrypt"
+	])
+
+	const encryptedContentArrayBuffer = base64ToArrayBuffer(encryptedContentBase64)
+
+	return await decryptData(encryptedContentArrayBuffer, new Uint8Array(iv), key)
 }
