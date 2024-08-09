@@ -1,6 +1,6 @@
 "use client"
 
-export const generateKey = async () =>
+const generateKey = async () =>
 	window.crypto.subtle.generateKey(
 		{
 			name: "AES-GCM",
@@ -10,7 +10,7 @@ export const generateKey = async () =>
 		["encrypt", "decrypt"]
 	)
 
-export const encryptData = async (secretData: string, key: CryptoKey) => {
+const encryptData = async (secretData: string, key: CryptoKey) => {
 	const iv = window.crypto.getRandomValues(new Uint8Array(12))
 	const encodedData = new TextEncoder().encode(secretData)
 
