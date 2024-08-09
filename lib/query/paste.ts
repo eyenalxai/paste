@@ -33,7 +33,5 @@ export const usePaste = ({ uuid }: UsePasteProps) => {
 		}
 	})
 
-	if (error) throw new Error(error.message)
-
-	return { pasteContent, isLoading }
+	return { pasteContent, isLoading, error }
 }

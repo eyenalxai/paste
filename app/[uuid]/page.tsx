@@ -1,6 +1,7 @@
 "use client"
 
 import { usePaste } from "@/lib/query/paste"
+import { toast } from "sonner"
 
 type PageProps = {
 	params: {
@@ -9,7 +10,12 @@ type PageProps = {
 }
 
 export default function Page({ params: { uuid } }: PageProps) {
-	const { pasteContent, isLoading } = usePaste({ uuid })
+	const { pasteContent, isLoading, error } = usePaste({ uuid })
+
+	if (error) {
+		toast.error(error.message)
+		return
+	}
 
 	if (isLoading || !pasteContent) return "Loading..."
 
