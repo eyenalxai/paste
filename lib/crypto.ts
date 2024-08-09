@@ -67,15 +67,15 @@ const keyToBase64 = async (key: CryptoKey): Promise<string> => {
 	return arrayBufferToBase64(exportedKey)
 }
 
-type EncryptDataToBase64Props = {
-	secretData: string
+type EncryptPasteContentToBase64Props = {
+	pasteContent: string
 }
 
-export const encryptPasteContentToBase64 = async ({ secretData }: EncryptDataToBase64Props) => {
+export const encryptPasteContentToBase64 = async ({ pasteContent }: EncryptPasteContentToBase64Props) => {
 	const key = await generateKey()
-	const { encryptedData, iv } = await encryptData(secretData, key)
+	const { encryptedData, iv } = await encryptData(pasteContent, key)
 
-	const encryptedDataBase64 = arrayBufferToBase64(encryptedData)
+	const encryptedContentBase64 = arrayBufferToBase64(encryptedData)
 	const keyBase64 = keyToBase64(key)
 	const ivBase64 = arrayBufferToBase64(iv)
 
@@ -88,7 +88,13 @@ export const encryptPasteContentToBase64 = async ({ secretData }: EncryptDataToB
 
 	return {
 		encryptedPayloadBase64: arrayBufferToBase64(new TextEncoder().encode(jsonEncryptedPayload)),
-		encryptedDataBase64: encryptedDataBase64
+		encryptedContentBase64: encryptedContentBase64
+	}
+}
+
+export const pasteContentToBase64 = async (pasteContent: string) => {
+	return {
+		contentBase64: window.btoa(pasteContent)
 	}
 }
 
