@@ -1,5 +1,7 @@
 "use client"
 
+export const KEY_USAGES = ["encrypt", "decrypt"] as const
+
 export const generateKey = async () =>
 	window.crypto.subtle.generateKey(
 		{
@@ -7,7 +9,7 @@ export const generateKey = async () =>
 			length: 256
 		},
 		true,
-		["encrypt", "decrypt"]
+		KEY_USAGES
 	)
 
 export const encryptData = async (secretData: string, key: CryptoKey) => {

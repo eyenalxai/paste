@@ -1,5 +1,10 @@
-import { decryptData, encryptData, generateKey } from "@/lib/crypto"
+import { KEY_USAGES, decryptData, encryptData, generateKey } from "@/lib/crypto"
 import { arrayBufferToBase64, base64ToArrayBuffer, keyToBase64 } from "@/lib/encode-decode"
+
+export type EncryptedPayload = {
+	keyBase64: string
+	ivBase64: string
+}
 
 type EncryptPasteContentToBase64Props = {
 	pasteContent: string
@@ -10,13 +15,13 @@ export const encryptPasteContentToBase64 = async ({ pasteContent }: EncryptPaste
 	const { encryptedData, iv } = await encryptData(pasteContent, key)
 
 	const encryptedContentBase64 = arrayBufferToBase64(encryptedData)
-	const keyBase64 = keyToBase64(key)
+	const keyBase64 = await keyToBase64(key)
 	const ivBase64 = arrayBufferToBase64(iv)
 
 	const encryptedPayload = {
 		keyBase64: keyBase64,
-		iv: ivBase64
-	}
+		ivBase64: ivBase64
+	} satisfies EncryptedPayload
 
 	const jsonEncryptedPayload = JSON.stringify(encryptedPayload)
 
@@ -35,14 +40,14 @@ export const decryptPasteContentFromBase64 = async ({
 	encryptedContentBase64,
 	encryptedPayloadBase64
 }: DecryptPasteContentFromBase64Props) => {
-	const encryptedPayload = JSON.parse(new TextDecoder().decode(base64ToArrayBuffer(encryptedPayloadBase64)))
+	const { keyBase64, ivBase64 } = JSON.parse(
+		new TextDecoder().decode(base64ToArrayBuffer(encryptedPayloadBase64))
+	) as EncryptedPayload
 
-	const keyBuffer = base64ToArrayBuffer(encryptedPayload.keyBase64)
-	const iv = base64ToArrayBuffer(encryptedPayload.iv)
+	const keyBuffer = base64ToArrayBuffer(keyBase64)
+	const iv = base64ToArrayBuffer(ivBase64)
 
-	const key = await window.crypto.subtle.importKey("raw", keyBuffer, { name: "AES-GCM", length: 256 }, true, [
-		"decrypt"
-	])
+	const key = await window.crypto.subtle.importKey("raw", keyBuffer, { name: "AES-GCM", length: 256 }, true, KEY_USAGES)
 
 	const encryptedContentArrayBuffer = base64ToArrayBuffer(encryptedContentBase64)
 
