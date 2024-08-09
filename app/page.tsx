@@ -24,11 +24,14 @@ export default function Page() {
 	})
 
 	const onSubmit = async (formData: z.infer<typeof PasteFormSchema>) => {
-		const pasteUrl = await savePaste(formData)
-		form.reset({
-			content: "",
-			encrypted: formData.encrypted
-		})
+		savePaste(formData)
+			.then((pasteUrl) => navigator.clipboard.writeText(pasteUrl).then(() => toast.info("URL copied to clipboard")))
+			.then(() =>
+				form.reset({
+					content: "",
+					encrypted: formData.encrypted
+				})
+			)
 	}
 
 	useEffect(() => {
