@@ -34,7 +34,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 		<html lang="en" suppressHydrationWarning>
 			<body className={cn("font-sans", "antialiased", fontSans.className)}>
 				<Providers attribute="class" defaultTheme="system" enableSystem>
-					{children}
+					<main className={cn("container", "mx-auto", "p-4")}>{children}</main>
 				</Providers>
 			</body>
 		</html>
