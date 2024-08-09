@@ -1,10 +1,10 @@
-import type { PasteContent } from "@/lib/types"
-import { jsonb, pgTable, timestamp, uuid } from "drizzle-orm/pg-core"
+import { sql } from "drizzle-orm"
+import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core"
 
 export const pastes = pgTable("pastes", {
-	uuid: uuid("uuid").notNull().defaultRandom(),
-	pasteContent: jsonb("content").$type<PasteContent>().notNull(),
-	createdAt: timestamp("created_at").notNull().defaultNow()
+	uuid: uuid("uuid").primaryKey().defaultRandom(),
+	content: text("content").notNull(),
+	createdAt: timestamp("created_at").default(sql`now()`)
 })
 
-export type PasteInsert = typeof pastes.$inferSelect
+export type PasteInsert = Omit<typeof pastes.$inferSelect, "createdAt" | "uuid">

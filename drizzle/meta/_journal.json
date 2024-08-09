@@ -8,6 +8,13 @@
       "when": 1723213520484,
       "tag": "0000_regular_cable",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1723216905890,
+      "tag": "0001_tan_mac_gargan",
+      "breakpoints": true
     }
   ]
 }
