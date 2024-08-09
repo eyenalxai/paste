@@ -1,7 +1,8 @@
-import { encryptPasteContentToBase64, pasteContentToBase64 } from "@/lib/crypto"
 import { clientEnv } from "@/lib/env/client"
 import { insertPaste } from "@/lib/fetch/paste"
 import type { PasteFormSchema } from "@/lib/form"
+import { pasteContentToBase64 } from "@/lib/paste/encode-decode"
+import { encryptPasteContentToBase64 } from "@/lib/paste/encrypt-decrypt"
 import type { z } from "zod"
 
 export const savePaste = async (data: z.infer<typeof PasteFormSchema>) => {
