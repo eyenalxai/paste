@@ -1,6 +1,6 @@
 import "./globals.css"
 import { Providers } from "@/components/providers"
-import { fontSans } from "@/lib/fonts"
+import { fontMono } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import type { Metadata, Viewport } from "next"
 import type { ReactNode } from "react"
@@ -32,7 +32,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: ReactNode }) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<body className={cn("font-sans", "antialiased", fontSans.className)}>
+			<body className={cn("font-sans", "antialiased", fontMono.className)}>
 				<Providers attribute="class" defaultTheme="system" enableSystem>
 					<main className={cn("container", "mx-auto", "p-4")}>{children}</main>
 				</Providers>

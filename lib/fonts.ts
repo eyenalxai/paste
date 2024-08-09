@@ -1,7 +1,6 @@
-import { Roboto_Condensed as FontSans } from "next/font/google"
+import { Ubuntu_Mono as FontMono } from "next/font/google"
 
-export const fontSans = FontSans({
+export const fontMono = FontMono({
 	weight: ["400", "700"],
-	subsets: ["latin"],
-	variable: "--font-sans"
+	variable: "--font-mono"
 })
