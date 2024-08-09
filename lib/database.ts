@@ -1,9 +1,8 @@
 import "server-only"
-
-import { env } from "@/lib/env"
+import { serverEnv } from "@/lib/env/server"
 import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
 
-const pool = postgres(env.DATABASE_URL, { max: 1 })
+const pool = postgres(serverEnv.databaseUrl, { max: 1 })
 
 export const db = drizzle(pool)
