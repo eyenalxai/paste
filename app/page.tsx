@@ -18,20 +18,40 @@ export default function Page() {
 	const form = useForm<z.infer<typeof PasteFormSchema>>({
 		resolver: zodResolver(PasteFormSchema),
 		defaultValues: {
+			content: "",
 			encrypted: true,
-			content: ""
+			onetime: false
 		}
 	})
 
 	const onSubmit = async (formData: z.infer<typeof PasteFormSchema>) => {
-		savePaste(formData)
-			.then((pasteUrl) => navigator.clipboard.writeText(pasteUrl).then(() => toast.info("URL copied to clipboard")))
-			.then(() =>
+		savePaste({
+			paste: {
+				content: formData.content,
+				oneTime: formData.onetime
+			},
+			encrypted: formData.encrypted
+		})
+			.catch((error: Error) => {
+				toast.error(error.message)
+				return undefined
+			})
+			.then((pasteUrl) => {
+				if (!pasteUrl) return
+
+				return navigator.clipboard.writeText(pasteUrl).then(() => {
+					toast.info("URL copied to clipboard")
+					return pasteUrl
+				})
+			})
+			.then((pasteUrl) => {
+				if (!pasteUrl) return
+
 				form.reset({
 					content: "",
 					encrypted: formData.encrypted
 				})
-			)
+			})
 	}
 
 	useEffect(() => {
@@ -43,18 +63,32 @@ export default function Page() {
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className={cn("space-y-4")}>
-				<FormField
-					control={form.control}
-					name="encrypted"
-					render={({ field }) => (
-						<div className={cn("flex", "flex-row", "gap-x-2")}>
-							<FormControl>
-								<Switch checked={field.value} onCheckedChange={field.onChange} />
-							</FormControl>
-							<div className={cn("flex", "justify-center", "items-center", "text-center")}>Encrypt</div>
-						</div>
-					)}
-				/>
+				<div className={cn("flex", "flex-row", "gap-x-4", "justify-start", "items-center")}>
+					<FormField
+						control={form.control}
+						name="encrypted"
+						render={({ field }) => (
+							<div className={cn("flex", "flex-row", "gap-x-2")}>
+								<FormControl>
+									<Switch checked={field.value} onCheckedChange={field.onChange} />
+								</FormControl>
+								<div className={cn("flex", "justify-center", "items-center", "text-center")}>Encrypt</div>
+							</div>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="onetime"
+						render={({ field }) => (
+							<div className={cn("flex", "flex-row", "gap-x-2")}>
+								<FormControl>
+									<Switch checked={field.value} onCheckedChange={field.onChange} />
+								</FormControl>
+								<div className={cn("flex", "justify-center", "items-center", "text-center")}>Burn after reading</div>
+							</div>
+						)}
+					/>
+				</div>
 				<FormField
 					control={form.control}
 					name="content"

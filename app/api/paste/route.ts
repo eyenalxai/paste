@@ -20,5 +20,9 @@ export const GET = async (request: Request) => {
 	const [paste] = await db.select().from(pastes).where(eq(pastes.uuid, uuid))
 	if (!paste) return new NextResponse("paste not found", { status: 404 })
 
+	if (paste.oneTime) {
+		await db.delete(pastes).where(eq(pastes.uuid, uuid))
+	}
+
 	return NextResponse.json(paste)
 }
