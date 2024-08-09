@@ -2,35 +2,28 @@
 
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
+import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { savePaste } from "@/lib/fetch/paste"
+import { PasteFormSchema } from "@/lib/form"
+import { savePaste } from "@/lib/save-paste"
+import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { z } from "zod"
-
-const FormSchema = z.object({
-	content: z.string().min(16, {
-		message: "Paste must be at least 16 characters long"
-	})
-})
+import type { z } from "zod"
 
 export default function Page() {
-	const form = useForm<z.infer<typeof FormSchema>>({
-		resolver: zodResolver(FormSchema)
+	const form = useForm<z.infer<typeof PasteFormSchema>>({
+		resolver: zodResolver(PasteFormSchema),
+		defaultValues: {
+			encrypted: true
+		}
 	})
 
-	const onSubmit = (formData: z.infer<typeof FormSchema>) => {
-		savePaste({
-			content: formData.content
-		})
-			.then(() => {
-				toast.success("Paste saved successfully")
-			})
-			.catch((reason: Error) => {
-				toast.error(reason.message)
-			})
+	const onSubmit = async (formData: z.infer<typeof PasteFormSchema>) => {
+		const pasteUrl = await savePaste(formData)
+		console.log(pasteUrl)
 	}
 
 	useEffect(() => {
@@ -47,6 +40,18 @@ export default function Page() {
 			<form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
 				<FormField
 					control={form.control}
+					name="encrypted"
+					render={({ field }) => (
+						<div className={cn("flex", "flex-row", "gap-x-2")}>
+							<FormControl>
+								<Switch checked={field.value} onCheckedChange={field.onChange} />
+							</FormControl>
+							<div className={cn("flex", "justify-center", "items-center", "text-center")}>Encrypt</div>
+						</div>
+					)}
+				/>
+				<FormField
+					control={form.control}
 					name="content"
 					render={({ field }) => (
 						<FormItem>
@@ -56,6 +61,7 @@ export default function Page() {
 						</FormItem>
 					)}
 				/>
+
 				<Button type="submit">Submit</Button>
 			</form>
 		</Form>

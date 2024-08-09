@@ -6,9 +6,9 @@ import { NextResponse } from "next/server"
 export const POST = async (request: Request) => {
 	const pasteContent: PasteInsert = await request.json()
 
-	await db.insert(pastes).values(pasteContent)
+	const [paste] = await db.insert(pastes).values(pasteContent).returning()
 
-	return NextResponse.json({ success: true })
+	return NextResponse.json(paste)
 }
 
 export const GET = async (request: Request) => {

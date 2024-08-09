@@ -10,7 +10,7 @@ export const generateKey = async () =>
 		["encrypt", "decrypt"]
 	)
 
-const encryptData = async (secretData: string, key: CryptoKey) => {
+export const encryptData = async (secretData: string, key: CryptoKey) => {
 	const iv = window.crypto.getRandomValues(new Uint8Array(12))
 	const encodedData = new TextEncoder().encode(secretData)
 
@@ -62,25 +62,34 @@ const base64ToArrayBuffer = (base64: string): ArrayBuffer => {
 	return bytes.buffer
 }
 
-type EncryptDataToBase64Props = {
-	secretData: string
-	key: CryptoKey
+const keyToBase64 = async (key: CryptoKey): Promise<string> => {
+	const exportedKey = await window.crypto.subtle.exportKey("raw", key)
+	return arrayBufferToBase64(exportedKey)
 }
 
-export const encryptDataToBase64 = async ({ secretData, key }: EncryptDataToBase64Props): Promise<string> => {
+type EncryptDataToBase64Props = {
+	secretData: string
+}
+
+export const encryptDataToBase64 = async ({ secretData }: EncryptDataToBase64Props) => {
+	const key = await generateKey()
 	const { encryptedData, iv } = await encryptData(secretData, key)
 
 	const encryptedDataBase64 = arrayBufferToBase64(encryptedData)
+	const keyBase64 = keyToBase64(key)
 	const ivBase64 = arrayBufferToBase64(iv)
 
 	const encryptedPayload = {
-		encryptedData: encryptedDataBase64,
+		keyBase64: keyBase64,
 		iv: ivBase64
 	}
 
 	const jsonEncryptedPayload = JSON.stringify(encryptedPayload)
 
-	return arrayBufferToBase64(new TextEncoder().encode(jsonEncryptedPayload))
+	return {
+		encryptedPayloadBase64: arrayBufferToBase64(new TextEncoder().encode(jsonEncryptedPayload)),
+		encryptedDataBase64: encryptedDataBase64
+	}
 }
 
 type DecryptDataFromBase64Props = {
@@ -96,15 +105,4 @@ export const decryptDataFromBase64 = async ({ secretDataBase64, key }: DecryptDa
 	const iv = base64ToArrayBuffer(encryptedPayload.iv)
 
 	return decryptData(encryptedData, new Uint8Array(iv), key)
-}
-
-type SaveEncryptedPasteProps = {
-	content: string
-	encryptionKey?: CryptoKey
-}
-
-export const getPasteContentBase64 = async ({ content, encryptionKey }: SaveEncryptedPasteProps) => {
-	return encryptionKey !== undefined
-		? await encryptDataToBase64({ secretData: content, key: encryptionKey })
-		: window.btoa(content)
 }

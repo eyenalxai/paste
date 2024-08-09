@@ -3,10 +3,12 @@
 import type { Paste, PasteInsert } from "@/lib/schema"
 import ky from "ky"
 
-export const savePaste = (paste: PasteInsert) =>
-	ky.post("/api/paste", {
-		json: paste
-	})
+export const insertPaste = (paste: PasteInsert) =>
+	ky
+		.post("/api/paste", {
+			json: paste
+		})
+		.json<Paste>()
 
 export const getPaste = (uuid: string) =>
 	ky
