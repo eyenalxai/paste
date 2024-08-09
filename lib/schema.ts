@@ -8,3 +8,4 @@ export const pastes = pgTable("pastes", {
 })
 
 export type PasteInsert = Omit<typeof pastes.$inferSelect, "createdAt" | "uuid">
+export type Paste = typeof pastes.$inferSelect
