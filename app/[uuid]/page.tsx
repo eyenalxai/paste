@@ -20,5 +20,5 @@ export default function Page({ params: { uuid } }: PageProps) {
 
 	if (isLoading || !pasteContent) return "Loading..."
 
-	return <p className={cn("border", "p-4", "rounded")}>{pasteContent}</p>
+	return <p className={cn("border", "p-4", "rounded", "font-mono")}>{pasteContent}</p>
 }

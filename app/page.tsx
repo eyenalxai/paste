@@ -118,7 +118,7 @@ export default function Page() {
 					render={({ field }) => (
 						<FormItem>
 							<FormControl>
-								<Textarea className={"h-[80vh]"} {...field} />
+								<Textarea className={cn("h-[80vh]", "font-mono")} {...field} />
 							</FormControl>
 						</FormItem>
 					)}
