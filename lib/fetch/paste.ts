@@ -5,7 +5,7 @@ import type { Paste } from "@/lib/schema"
 import ky from "ky"
 import type { z } from "zod"
 
-export const insertPaste = (paste: Omit<z.infer<typeof PasteFormSchema>, "encrypted">) =>
+export const insertPaste = (paste: z.infer<typeof PasteFormSchema>) =>
 	ky
 		.post("/api/paste", {
 			json: paste

@@ -16,8 +16,9 @@ export const POST = async (request: Request) => {
 	const [insertedPaste] = await db
 		.insert(pastes)
 		.values({
-			content: Buffer.from(pasteContent).toString("base64"),
+			content: pasteContent,
 			oneTime: false,
+			encrypted: false,
 			expiresAt: getExpiresAt("1-day").toISOString()
 		})
 		.returning()

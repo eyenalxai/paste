@@ -1,7 +1,6 @@
 "use client"
 
 import { getPaste } from "@/lib/fetch/paste"
-import { pasteContentFromBase64 } from "@/lib/paste/encode-decode"
 import { decryptPasteContentFromBase64 } from "@/lib/paste/encrypt-decrypt"
 import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
@@ -24,7 +23,9 @@ export const usePaste = ({ uuid }: UsePasteProps) => {
 		queryFn: async () => {
 			const paste = await getPaste(uuid)
 
-			if (!encryptedPayloadBase64) return pasteContentFromBase64(paste.content)
+			if (!paste.encrypted) return paste.content
+
+			if (!encryptedPayloadBase64) throw new Error("Missing encrypted payload")
 
 			return await decryptPasteContentFromBase64({
 				encryptedPayloadBase64,

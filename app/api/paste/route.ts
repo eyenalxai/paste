@@ -9,12 +9,13 @@ import type { z } from "zod"
 export const POST = async (request: Request) => {
 	const receivedPaste: z.infer<typeof PasteFormSchema> = await request.json()
 
-	const pasteValidated = PasteFormSchema.omit({ encrypted: true }).parse(receivedPaste)
+	const pasteValidated = PasteFormSchema.parse(receivedPaste)
 
 	const [paste] = await db
 		.insert(pastes)
 		.values({
 			content: pasteValidated.content,
+			encrypted: pasteValidated.encrypted,
 			oneTime: pasteValidated.oneTime,
 			expiresAt: getExpiresAt(pasteValidated.expiresAfter).toISOString()
 		})
