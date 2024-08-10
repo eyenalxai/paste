@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { PasteFormSchema } from "@/lib/form"
@@ -20,18 +21,13 @@ export default function Page() {
 		defaultValues: {
 			content: "",
 			encrypted: true,
-			onetime: false
+			oneTime: false,
+			expiresAfter: "1-hour"
 		}
 	})
 
 	const onSubmit = async (formData: z.infer<typeof PasteFormSchema>) => {
-		savePaste({
-			paste: {
-				content: formData.content,
-				oneTime: formData.onetime
-			},
-			encrypted: formData.encrypted
-		})
+		savePaste(formData)
 			.catch((error: Error) => {
 				toast.error(error.message)
 				return undefined
@@ -69,23 +65,49 @@ export default function Page() {
 						name="encrypted"
 						render={({ field }) => (
 							<div className={cn("flex", "flex-row", "gap-x-2")}>
+								<div className={cn("flex", "justify-center", "items-center", "text-center")}>Encrypt</div>
 								<FormControl>
 									<Switch checked={field.value} onCheckedChange={field.onChange} />
 								</FormControl>
-								<div className={cn("flex", "justify-center", "items-center", "text-center")}>Encrypt</div>
 							</div>
 						)}
 					/>
 					<FormField
 						control={form.control}
-						name="onetime"
+						name="oneTime"
 						render={({ field }) => (
 							<div className={cn("flex", "flex-row", "gap-x-2")}>
+								<div className={cn("flex", "justify-center", "items-center", "text-center")}>Burn after reading</div>
 								<FormControl>
 									<Switch checked={field.value} onCheckedChange={field.onChange} />
 								</FormControl>
-								<div className={cn("flex", "justify-center", "items-center", "text-center")}>Burn after reading</div>
 							</div>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="expiresAfter"
+						render={({ field }) => (
+							<FormItem>
+								<div className={cn("flex", "flex-row", "gap-x-2")}>
+									<div className={cn("flex", "justify-center", "items-center", "text-center", "whitespace-nowrap")}>
+										Expires after
+									</div>
+									<Select onValueChange={field.onChange} defaultValue={field.value}>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue placeholder="Select a verified email to display" />
+											</SelectTrigger>
+										</FormControl>
+										<SelectContent>
+											<SelectItem value="5-minutes">5 minutes</SelectItem>
+											<SelectItem value="10-minutes">10 minutes</SelectItem>
+											<SelectItem value="1-hour">1 hour</SelectItem>
+											<SelectItem value="1-day">1 day</SelectItem>
+										</SelectContent>
+									</Select>
+								</div>
+							</FormItem>
 						)}
 					/>
 				</div>

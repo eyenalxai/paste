@@ -1,12 +1,24 @@
 import { db } from "@/lib/database"
-import { type PasteInsert, pastes } from "@/lib/schema"
+import { getExpiresAt } from "@/lib/date"
+import { PasteFormSchema } from "@/lib/form"
+import { pastes } from "@/lib/schema"
 import { eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
+import type { z } from "zod"
 
 export const POST = async (request: Request) => {
-	const pasteContent: PasteInsert = await request.json()
+	const receivedPaste: z.infer<typeof PasteFormSchema> = await request.json()
 
-	const [paste] = await db.insert(pastes).values(pasteContent).returning()
+	const pasteValidated = PasteFormSchema.omit({ encrypted: true }).parse(receivedPaste)
+
+	const [paste] = await db
+		.insert(pastes)
+		.values({
+			content: pasteValidated.content,
+			oneTime: pasteValidated.oneTime,
+			expiresAt: getExpiresAt(pasteValidated.expiresAfter)
+		})
+		.returning()
 
 	return NextResponse.json(paste)
 }

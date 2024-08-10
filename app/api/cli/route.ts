@@ -1,4 +1,5 @@
 import { db } from "@/lib/database"
+import { getExpiresAt } from "@/lib/date"
 import { clientEnv } from "@/lib/env/client"
 import { pastes } from "@/lib/schema"
 import { NextResponse } from "next/server"
@@ -16,7 +17,8 @@ export const POST = async (request: Request) => {
 		.insert(pastes)
 		.values({
 			content: Buffer.from(pasteContent).toString("base64"),
-			oneTime: false
+			oneTime: false,
+			expiresAt: getExpiresAt("1-day")
 		})
 		.returning()
 
