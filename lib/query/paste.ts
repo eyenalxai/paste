@@ -22,6 +22,12 @@ export const usePaste = ({ uuid, initialPasteContent }: UsePasteProps) => {
 	} = useQuery({
 		queryKey: ["paste", uuid],
 		initialData: initialPasteContent,
+		staleTime: Number.POSITIVE_INFINITY,
+		refetchOnWindowFocus: false,
+		refetchOnMount: false,
+		refetchInterval: false,
+		refetchIntervalInBackground: false,
+		refetchOnReconnect: false,
 		queryFn: async () => {
 			const paste = await fetchPaste(uuid)
 
