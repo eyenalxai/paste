@@ -59,7 +59,7 @@ export default function Page() {
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className={cn("space-y-4")}>
-				<div className={cn("flex", "flex-row", "gap-x-4", "justify-start", "items-center")}>
+				<div className={cn("flex", "flex-row", "flex-wrap", "gap-4", "justify-start", "items-center")}>
 					<FormField
 						control={form.control}
 						name="encrypted"
@@ -95,8 +95,8 @@ export default function Page() {
 									</div>
 									<Select onValueChange={field.onChange} defaultValue={field.value}>
 										<FormControl>
-											<SelectTrigger>
-												<SelectValue placeholder="Select a verified email to display" />
+											<SelectTrigger className={cn("w-32")}>
+												<SelectValue>{field.value}</SelectValue>
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
