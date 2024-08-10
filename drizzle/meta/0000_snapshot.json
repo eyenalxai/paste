@@ -1,5 +1,5 @@
 {
-  "id": "ae4cbdbe-57e1-49c7-9508-665bdd798f48",
+  "id": "c18dfc7e-7765-4e3a-90f4-b433396eb37d",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -26,6 +26,12 @@
           "type": "boolean",
           "primaryKey": false,
           "notNull": false
+        },
+        "encrypted": {
+          "name": "encrypted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
         },
         "expires_at": {
           "name": "expires_at",
