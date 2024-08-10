@@ -1,7 +1,8 @@
 "use client"
 
-import {usePaste} from "@/lib/query/paste"
-import {toast} from "sonner"
+import { usePaste } from "@/lib/query/paste"
+import { cn } from "@/lib/utils"
+import { toast } from "sonner"
 
 type PageProps = {
 	params: {
@@ -19,9 +20,5 @@ export default function Page({ params: { uuid } }: PageProps) {
 
 	if (isLoading || !pasteContent) return "Loading..."
 
-	return (
-		<div>
-			<div>{pasteContent}</div>
-		</div>
-	)
+	return <p className={cn("border", "p-4", "rounded")}>{pasteContent}</p>
 }
