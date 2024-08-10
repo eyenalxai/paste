@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1723231778158,
-      "tag": "0000_faithful_captain_flint",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1723280341209,
-      "tag": "0001_faithful_tarantula",
+      "when": 1723283360968,
+      "tag": "0000_parallel_skaar",
       "breakpoints": true
     }
   ]

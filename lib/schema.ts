@@ -4,7 +4,7 @@ export const pastes = pgTable("pastes", {
 	uuid: uuid("uuid").primaryKey().defaultRandom(),
 	content: text("content").notNull(),
 	oneTime: boolean("one_time"),
-	expiresAt: timestamp("expires_at", { withTimezone: true }).notNull()
+	expiresAt: timestamp("expires_at", { mode: "string", withTimezone: true }).notNull()
 })
 
 export type PasteInsert = Omit<typeof pastes.$inferSelect, "createdAt" | "uuid">
