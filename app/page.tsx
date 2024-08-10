@@ -5,7 +5,7 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { PasteFormSchema } from "@/lib/form"
+import { PasteFormSchema, selectExpiresAfterOptions } from "@/lib/form"
 import { savePaste } from "@/lib/paste/save-paste"
 import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -100,10 +100,11 @@ export default function Page() {
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
-											<SelectItem value="5-minutes">5 minutes</SelectItem>
-											<SelectItem value="10-minutes">10 minutes</SelectItem>
-											<SelectItem value="1-hour">1 hour</SelectItem>
-											<SelectItem value="1-day">1 day</SelectItem>
+											{Object.entries(selectExpiresAfterOptions).map(([key, value]) => (
+												<SelectItem key={key} value={key}>
+													{value}
+												</SelectItem>
+											))}
 										</SelectContent>
 									</Select>
 								</div>
