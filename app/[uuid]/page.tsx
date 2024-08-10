@@ -1,14 +1,15 @@
 import { PasteDisplay } from "@/components/paste-display"
+import { clientEnv } from "@/lib/env/client"
 import { getPaste } from "@/lib/select"
 import type { Metadata } from "next"
 
-type PageProps = {
+export type PastePageProps = {
 	params: {
 		uuid: string
 	}
 }
 
-export async function generateMetadata({ params: { uuid } }: PageProps) {
+export async function generateMetadata({ params: { uuid } }: PastePageProps) {
 	const [paste] = await getPaste({ uuid })
 
 	if (!paste) {
@@ -17,6 +18,7 @@ export async function generateMetadata({ params: { uuid } }: PageProps) {
 			title: title,
 			openGraph: {
 				title: title,
+				url: new URL(`${clientEnv.frontendUrl}/${uuid}`),
 				type: "website"
 			}
 		} satisfies Metadata
@@ -31,6 +33,7 @@ export async function generateMetadata({ params: { uuid } }: PageProps) {
 			openGraph: {
 				title: title,
 				description: description,
+				url: new URL(`${clientEnv.frontendUrl}/${uuid}`),
 				type: "website"
 			}
 		} satisfies Metadata
@@ -45,12 +48,13 @@ export async function generateMetadata({ params: { uuid } }: PageProps) {
 		openGraph: {
 			title: title,
 			description: description,
+			url: new URL(`${clientEnv.frontendUrl}/${uuid}`),
 			type: "website"
 		}
 	} satisfies Metadata
 }
 
-export default async function Page({ params: { uuid } }: PageProps) {
+export default async function Page({ params: { uuid } }: PastePageProps) {
 	const [paste] = await getPaste({ uuid })
 
 	if (!paste) return <h1>Paste does not exist or has expired</h1>

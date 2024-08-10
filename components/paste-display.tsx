@@ -19,5 +19,5 @@ export const PasteDisplay = ({ uuid, initialPasteContent }: PasteDisplayProps) =
 
 	if (isLoading || !pasteContent) return "Loading..."
 
-	return <p className={cn("border", "p-4", "rounded", "font-mono")}>{pasteContent}</p>
+	return <p className={cn("border", "p-4", "rounded", "font-mono", "whitespace-pre-wrap")}>{pasteContent}</p>
 }
