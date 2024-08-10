@@ -2,6 +2,7 @@ import { db } from "@/lib/database"
 import { getExpiresAt } from "@/lib/date"
 import { PasteFormSchema } from "@/lib/form"
 import { pastes } from "@/lib/schema"
+import { getPaste } from "@/lib/select"
 import { eq, lt } from "drizzle-orm"
 import { NextResponse } from "next/server"
 import type { z } from "zod"
@@ -36,7 +37,7 @@ export const GET = async (request: Request) => {
 	const uuid = searchParams.get("uuid")
 	if (!uuid) return new NextResponse("uuid query param is required", { status: 400 })
 
-	const [paste] = await db.select().from(pastes).where(eq(pastes.uuid, uuid))
+	const [paste] = await getPaste({ uuid })
 	if (!paste) return new NextResponse("paste not found", { status: 404 })
 
 	if (paste.oneTime) {

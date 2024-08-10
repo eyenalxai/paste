@@ -1,15 +1,16 @@
 "use client"
 
-import { getPaste } from "@/lib/fetch/paste"
+import { fetchPaste } from "@/lib/fetch/paste"
 import { decryptPasteContentFromBase64 } from "@/lib/paste/encrypt-decrypt"
 import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 
 type UsePasteProps = {
 	uuid: string
+	initialPasteContent: string | undefined
 }
 
-export const usePaste = ({ uuid }: UsePasteProps) => {
+export const usePaste = ({ uuid, initialPasteContent }: UsePasteProps) => {
 	const [encryptedPayloadBase64] = useState(
 		typeof window !== "undefined" && window.location.hash ? window.location.hash.slice(1) : undefined
 	)
@@ -20,8 +21,9 @@ export const usePaste = ({ uuid }: UsePasteProps) => {
 		error
 	} = useQuery({
 		queryKey: ["paste", uuid],
+		initialData: initialPasteContent,
 		queryFn: async () => {
-			const paste = await getPaste(uuid)
+			const paste = await fetchPaste(uuid)
 
 			if (!paste.encrypted) return paste.content
 
