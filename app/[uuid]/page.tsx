@@ -1,8 +1,4 @@
-"use client"
-
-import { usePaste } from "@/lib/query/paste"
-import { cn } from "@/lib/utils"
-import { toast } from "sonner"
+import { PasteDisplay } from "@/components/paste-display"
 
 type PageProps = {
 	params: {
@@ -11,14 +7,5 @@ type PageProps = {
 }
 
 export default function Page({ params: { uuid } }: PageProps) {
-	const { pasteContent, isLoading, error } = usePaste({ uuid })
-
-	if (error) {
-		toast.error(error.message)
-		return null
-	}
-
-	if (isLoading || !pasteContent) return "Loading..."
-
-	return <p className={cn("border", "p-4", "rounded", "font-mono")}>{pasteContent}</p>
+	return <PasteDisplay uuid={uuid} />
 }
