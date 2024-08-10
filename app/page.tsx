@@ -96,7 +96,9 @@ export default function Page() {
 									<Select onValueChange={field.onChange} defaultValue={field.value}>
 										<FormControl>
 											<SelectTrigger className={cn("w-32")}>
-												<SelectValue>{field.value}</SelectValue>
+												<SelectValue>
+													{selectExpiresAfterOptions[field.value as keyof typeof selectExpiresAfterOptions]}
+												</SelectValue>
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
