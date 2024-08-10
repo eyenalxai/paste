@@ -2,7 +2,7 @@ import { db } from "@/lib/database"
 import { getExpiresAt } from "@/lib/date"
 import { PasteFormSchema } from "@/lib/form"
 import { pastes } from "@/lib/schema"
-import { eq } from "drizzle-orm"
+import { eq, lt } from "drizzle-orm"
 import { NextResponse } from "next/server"
 import type { z } from "zod"
 
@@ -16,7 +16,7 @@ export const POST = async (request: Request) => {
 		.values({
 			content: pasteValidated.content,
 			oneTime: pasteValidated.oneTime,
-			expiresAt: getExpiresAt(pasteValidated.expiresAfter)
+			expiresAt: getExpiresAt(pasteValidated.expiresAfter).toISOString()
 		})
 		.returning()
 
@@ -24,6 +24,12 @@ export const POST = async (request: Request) => {
 }
 
 export const GET = async (request: Request) => {
+	const deleted = await db.delete(pastes).where(lt(pastes.expiresAt, new Date().toISOString())).returning()
+
+	if (deleted.length > 0) {
+		console.log(`Deleted ${deleted.length} expired pastes`)
+	}
+
 	const { searchParams } = new URL(request.url)
 
 	const uuid = searchParams.get("uuid")

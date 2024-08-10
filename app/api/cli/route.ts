@@ -18,7 +18,7 @@ export const POST = async (request: Request) => {
 		.values({
 			content: Buffer.from(pasteContent).toString("base64"),
 			oneTime: false,
-			expiresAt: getExpiresAt("1-day")
+			expiresAt: getExpiresAt("1-day").toISOString()
 		})
 		.returning()
 

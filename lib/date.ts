@@ -4,6 +4,8 @@ import type { z } from "zod"
 
 export const getExpiresAt = (expiresAfter: z.infer<typeof ExpiresAfter>) => {
 	switch (expiresAfter) {
+		case "5-minutes":
+			return new Date(Date.now() + 1000 * 60 * 5)
 		case "1-hour":
 			return new Date(Date.now() + 1000 * 60 * 60)
 		case "1-day":
