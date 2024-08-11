@@ -61,8 +61,6 @@ export const detectContentLanguage = ({ content }: DetectContentLanguageProps): 
 			errorScore: evaluateParser({ parser, content: contentToParse })
 		}))
 
-	console.log(scores)
-
 	const result = scores.reduce<LanguageScore | undefined>((acc, curr) => {
 		if (!acc || curr.errorScore < acc.errorScore) {
 			return curr
