@@ -35,6 +35,7 @@ export default async function Image({ params: { uuid } }: PastePageProps) {
 				width: "100%",
 				height: "100%",
 				display: "flex",
+				flexDirection: "column",
 				alignItems: "flex-start",
 				justifyContent: "flex-start",
 				padding: "1rem",
@@ -43,13 +44,23 @@ export default async function Image({ params: { uuid } }: PastePageProps) {
 		>
 			<div
 				style={{
-					backgroundImage: "linear-gradient(0deg, #020817 40%, #fff 100%)",
+					backgroundImage: "linear-gradient(0deg, #020817 0%, #fff 100%)",
 					backgroundClip: "text",
 					color: "transparent",
 					display: "block"
 				}}
 			>
 				{paste.content.length > 800 ? `${paste.content.slice(0, 800)}...` : paste.content}
+			</div>
+			<div
+				style={{
+					paddingBottom: "6rem",
+					fontSize: "6rem",
+					color: "white",
+					fontFamily: "sans-serif"
+				}}
+			>
+				PASTE
 			</div>
 		</div>,
 		{
