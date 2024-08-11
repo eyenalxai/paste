@@ -57,7 +57,12 @@ export const detectContentLanguage = ({ content }: DetectContentLanguageProps): 
 			score: evaluateParser({ parser, content: contentToParse })
 		}))
 
-	const highestScore = scores.reduce((acc, { score }) => (score > acc ? score : acc), 0)
+	const result = scores.reduce<LanguageScore | undefined>((acc, curr) => {
+		if (curr.score > 80 && (!acc || curr.score > acc.score)) {
+			return curr
+		}
+		return acc
+	}, undefined)
 
-	return highestScore > 80 ? scores.find(({ score }) => score === highestScore)?.language : undefined
+	return result?.language
 }
