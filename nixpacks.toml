@@ -10,7 +10,6 @@ NODE_ENV = "production"
 [phases.setup]
 nixPkgs = [
     "nodejs_22",
-    'python_312',
     "yarn-1_x",
     "openssl",
 ]
