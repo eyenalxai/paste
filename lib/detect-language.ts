@@ -27,7 +27,7 @@ type DetectContentLanguageProps = {
 }
 
 export const detectContentLanguage = ({ content }: DetectContentLanguageProps): Language | undefined => {
-	const contentToParse = content.length > 256 ? content.slice(0, 256) : content
+	const contentToParse = content.length > 4096 ? content.slice(0, 4096) : content
 
 	const languageToParserLanguageMap: {
 		// biome-ignore lint/suspicious/noExplicitAny: bad typings in tree-sitter
