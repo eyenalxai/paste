@@ -4025,6 +4025,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"globals@npm:^15.4.0":
+  version: 15.9.0
+  resolution: "globals@npm:15.9.0"
+  checksum: 10c0/de4b553e412e7e830998578d51b605c492256fb2a9273eaeec6ec9ee519f1c5aa50de57e3979911607fd7593a4066420e01d8c3d551e7a6a236e96c521aee36c
+  languageName: node
+  linkType: hard
+
 "globalthis@npm:^1.0.3":
   version: 1.0.4
   resolution: "globalthis@npm:1.0.4"
@@ -6245,6 +6252,7 @@ __metadata:
     tailwindcss-animate: "npm:^1.0.7"
     tree-sitter: "npm:^0.21.1"
     tree-sitter-go: "npm:^0.21.0"
+    tree-sitter-php: "npm:^0.22.8"
     tree-sitter-python: "npm:^0.21.0"
     tree-sitter-typescript: "npm:^0.21.2"
     typescript: "npm:5.5.4"
@@ -7500,6 +7508,23 @@ __metadata:
     tree_sitter:
       optional: true
   checksum: 10c0/b5d024d1ca4f75f92083df9d4c001774f856ec4d620e3fd6d1f5f39acc0904ca56ceb46d3992f44298106dfa7e50569d603abbe7b8ef4773932945c2e221b7c7
+  languageName: node
+  linkType: hard
+
+"tree-sitter-php@npm:^0.22.8":
+  version: 0.22.8
+  resolution: "tree-sitter-php@npm:0.22.8"
+  dependencies:
+    globals: "npm:^15.4.0"
+    node-addon-api: "npm:^8.0.0"
+    node-gyp: "npm:latest"
+    node-gyp-build: "npm:^4.8.1"
+  peerDependencies:
+    tree-sitter: ^0.21.1
+  peerDependenciesMeta:
+    tree_sitter:
+      optional: true
+  checksum: 10c0/8b37d4c1d71ec624daf9bc52da5bf36d0084352b3f80d599d44f5db4704f9d283e9e86837780255293a2dd48b2ed9a43b72fff73de83a248f1329a1eb8fdf155
   languageName: node
   linkType: hard
 
