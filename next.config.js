@@ -9,7 +9,8 @@ const nextConfig = {
 				"tree-sitter-go",
 				"tree-sitter-python",
 				"tree-sitter-typescript",
-				"tree-sitter-rust"
+				"tree-sitter-rust",
+				"tree-sitter-bash"
 			]
 
 			for (const pkg of treeSitterPackages) {
