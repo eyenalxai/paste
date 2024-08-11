@@ -18,13 +18,13 @@ export default async function Image({ params: { uuid } }: PastePageProps) {
 
 	if (!paste || paste.encrypted) return null
 
-	console.log("generating image")
-
 	return new ImageResponse(
 		<div
 			style={{
 				fontSize: "2rem",
-				background: "white",
+				fontFamily: "monospace",
+				backgroundColor: "#020817",
+				color: "#f8fafc",
 				width: "100%",
 				height: "100%",
 				display: "flex",
