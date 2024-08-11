@@ -31,7 +31,7 @@ export const GET = async (request: Request) => {
 	const deleted = await db.delete(pastes).where(lt(pastes.expiresAt, new Date().toISOString())).returning()
 
 	if (deleted.length > 0) {
-		console.log(`Deleted ${deleted.length} expired pastes`)
+		console.info(`Deleted ${deleted.length} expired pastes`)
 	}
 
 	const { searchParams } = new URL(request.url)
