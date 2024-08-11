@@ -2,10 +2,11 @@ import { evaluateParser } from "@/lib/parser"
 import Parser from "tree-sitter"
 import Go from "tree-sitter-go"
 import Python from "tree-sitter-python"
+import Rust from "tree-sitter-rust"
 
 const TSX = require("tree-sitter-typescript").tsx
 
-export type Language = "go" | "tsx" | "python"
+export type Language = "go" | "tsx" | "python" | "rust"
 
 type LanguageParser = {
 	language: Language
@@ -30,7 +31,8 @@ export const detectContentLanguage = ({ content }: DetectContentLanguageProps): 
 	} = {
 		go: Go,
 		tsx: TSX,
-		python: Python
+		python: Python,
+		rust: Rust
 	}
 
 	const languageParsers: (LanguageParser | undefined)[] = Object.entries(languageToParserLanguageMap).map(

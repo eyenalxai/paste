@@ -3,10 +3,18 @@ const nextConfig = {
 	webpack: (config, { isServer }) => {
 		if (isServer) {
 			config.externals = config.externals || []
-			config.externals.push("tree-sitter")
-			config.externals.push("tree-sitter-go")
-			config.externals.push("tree-sitter-python")
-			config.externals.push("tree-sitter-typescript")
+
+			const treeSitterPackages = [
+				"tree-sitter",
+				"tree-sitter-go",
+				"tree-sitter-python",
+				"tree-sitter-typescript",
+				"tree-sitter-rust"
+			]
+
+			for (const pkg of treeSitterPackages) {
+				config.externals.push(pkg)
+			}
 		}
 		return config
 	},
