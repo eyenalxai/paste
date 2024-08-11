@@ -1,28 +1,30 @@
-providers = ['node']
+# Build plan
+
+providers = ["node"]
 
 [variables]
-CI = 'true'
-NIXPACKS_METADATA = 'node'
-NODE_ENV = 'production'
+CI = "true"
+NIXPACKS_METADATA = "node"
+NODE_ENV = "production"
 
 [phases.setup]
 nixPkgs = [
-    'nodejs_22',
-    'yarn-1_x',
-    'openssl',
+    "nodejs_22",
+    "yarn-1_x",
+    "openssl",
 ]
 
 [phases.install]
-dependsOn = ['setup']
+dependsOn = ["setup"]
 cmds = [
-    'npm install -g corepack@0.24.1 && corepack enable',
-    'yarn install --check-cache --immutable',
+    "npm install -g corepack@0.24.1 && corepack enable",
+    "yarn install --check-cache --immutable",
 ]
 
 [phases.build]
-dependsOn = ['install']
-cmds = ['yarn run build']
+dependsOn = ["install"]
+cmds = ["yarn run build"]
 
 [start]
-cmd = 'yarn run migrate && yarn run start'
+cmd = "yarn run migrate && yarn run start"
 
