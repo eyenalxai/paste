@@ -8,9 +8,9 @@ git clone https://github.com/eyenalxai/paste.git
 ```
 2. Build the image
 ```bash
-nixpacks build paste \ 
--e NEXT_PUBLIC_FRONTEND_URL=https://my-domain.com \ 
--e DATABASE_URL=postgres://postgres:mysecretpassword@database.com:5432/postgres \ 
+nixpacks build paste \
+-e NEXT_PUBLIC_FRONTEND_URL=https://my-domain.com \
+-e DATABASE_URL=postgres://postgres:mysecretpassword@database.com:5432/postgres \
 --name paste -t latest
 ```
 
