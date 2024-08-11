@@ -5,7 +5,7 @@ export const pastes = pgTable("pastes", {
 	uuid: uuid("uuid").primaryKey().defaultRandom(),
 	content: text("content").notNull(),
 	oneTime: boolean("one_time"),
-	encrypted: boolean("encrypted").notNull(),
+	ivBase64: text("iv_base64"),
 	language: varchar("language").$type<Language>(),
 	expiresAt: timestamp("expires_at", { mode: "string", withTimezone: true }).notNull()
 })
