@@ -4,14 +4,13 @@
 
 1. Clone and cd into the repo
 ```shell
-git clone https://github.com/eyenalxai/paste.git && cd paste
+git clone https://github.com/eyenalxai/paste.git
 ```
-
 2. Build the image
 ```shell
-nixpacks build . \ 
+nixpacks build paste \ 
 -e NEXT_PUBLIC_FRONTEND_URL=https://my-domain.com \ 
--e DATABASE_URL=postgres://postgres:mysecretpassword@192.168.1.135:5432/postgres \ 
+-e DATABASE_URL=postgres://postgres:mysecretpassword@database.com:5432/postgres \ 
 --name paste -t latest
 ```
 
