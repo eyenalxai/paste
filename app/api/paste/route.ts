@@ -13,15 +13,11 @@ export const POST = async (request: Request) => {
 
 	const pasteValidated = PasteFormSchema.parse(receivedPaste)
 
-	if (!pasteValidated.encrypted) {
-		const language = detectContentLanguage({ content: pasteValidated.content })
-		console.log(`Detected language: ${language}`)
-	}
-
 	const [paste] = await db
 		.insert(pastes)
 		.values({
 			content: pasteValidated.content,
+			language: pasteValidated.encrypted ? undefined : detectContentLanguage({ content: pasteValidated.content }),
 			encrypted: pasteValidated.encrypted,
 			oneTime: pasteValidated.oneTime,
 			expiresAt: getExpiresAt(pasteValidated.expiresAfter).toISOString()
