@@ -7,16 +7,22 @@ import type { ReactNode } from "react"
 type PasteContainerProps = {
 	loading?: boolean
 	content?: string
+	uuid?: string
 	children: ReactNode
 }
 
-export const PasteContainer = ({ loading, content, children }: PasteContainerProps) => (
+export const PasteContainer = ({ loading, content, uuid, children }: PasteContainerProps) => (
 	<div className={cn("flex", "flex-col", "gap-4")}>
 		<div className={cn("flex", "flex-row", "flex-wrap", "gap-4", "justify-start", "items-center")}>
 			<CopyContentButton loading={loading} content={content} />
 			<Button variant={"outline"} asChild>
 				<Link href={"/"}>New paste</Link>
 			</Button>
+			{uuid && (
+				<Button variant={"outline"} asChild>
+					<Link href={`/${uuid}/raw`}>Raw</Link>
+				</Button>
+			)}
 		</div>
 		<div className={cn(!loading && ["border", "p-4"], "rounded", "font-mono", "whitespace-pre-wrap", "text-sm")}>
 			{children}

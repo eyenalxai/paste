@@ -24,6 +24,10 @@ const nextConfig = {
 		return {
 			beforeFiles: [
 				{
+					source: "/:uuid*/raw",
+					destination: "/api/paste/:uuid*/raw"
+				},
+				{
 					source: "/",
 					destination: "/api/cli",
 					has: [
