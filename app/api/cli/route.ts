@@ -2,11 +2,23 @@ import { db } from "@/lib/database"
 import { getExpiresAt } from "@/lib/date"
 import { detectContentLanguage } from "@/lib/detect-language"
 import { clientEnv } from "@/lib/env/client"
+import { serverEnv } from "@/lib/env/server"
 import { pastes } from "@/lib/schema"
 import { NextResponse } from "next/server"
 
+export const maxDuration = 5 // In seconds
+
 export const POST = async (request: Request) => {
 	const formData = await request.formData()
+
+	const formDataBytes = [...formData.entries()].reduce(
+		(acc, [_key, value]) => acc + new Blob([value.toString()]).size,
+		0
+	)
+
+	if (formDataBytes > serverEnv.maxPayloadSize) {
+		return new NextResponse(`request body size exceeds ${serverEnv.maxPayloadSize} bytes`, { status: 413 })
+	}
 
 	const pasteContent = formData.get("paste") as string | null
 
