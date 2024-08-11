@@ -1,3 +1,4 @@
+import { PasteContainer } from "@/components/paste-container"
 import { PasteDisplay } from "@/components/paste-display"
 import { RemoteMdx } from "@/components/remote-mdx"
 import { clientEnv } from "@/lib/env/client"
@@ -68,7 +69,12 @@ export default async function Page({ params: { uuid } }: PastePageProps) {
 		const mdxSource = await serialize(source, {
 			mdxOptions: { rehypePlugins: [rehypeHighlight] }
 		})
-		return <RemoteMdx mdxSource={mdxSource} />
+
+		return (
+			<PasteContainer>
+				<RemoteMdx mdxSource={mdxSource} />
+			</PasteContainer>
+		)
 	}
 
 	return <PasteDisplay uuid={uuid} />
