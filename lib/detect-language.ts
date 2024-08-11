@@ -33,7 +33,7 @@ export const detectContentLanguage = ({ content }: DetectContentLanguageProps): 
 		python: Python
 	}
 
-	const languageParserPairs: LanguageParser[] = Object.entries(languageToParserLanguageMap).map(
+	const languageParsers: LanguageParser[] = Object.entries(languageToParserLanguageMap).map(
 		([language, parserLanguage]) => {
 			const parser = new Parser()
 			parser.setLanguage(parserLanguage)
@@ -41,7 +41,7 @@ export const detectContentLanguage = ({ content }: DetectContentLanguageProps): 
 		}
 	)
 
-	const scores: LanguageScore[] = languageParserPairs.map(({ language, parser }) => ({
+	const scores: LanguageScore[] = languageParsers.map(({ language, parser }) => ({
 		language,
 		score: evaluateParser({ parser, content: contentToParse })
 	}))
