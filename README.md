@@ -16,13 +16,13 @@ nixpacks build paste \
 
 3. Run the container
 ```bash
-docker run -d -p 3000:3000 --name paste paste
+docker run --name paste -p 3000:3000 -d paste:latest
 ```
 
 If you want to run it on the different port, you can change it via `PORT` environment variable.
 
 ```bash
-docker run -d -e PORT=8000 -p 8000:8000 --name paste paste
+docker run --name paste -e PORT=8000 -p 8000:8000 -d paste:latest
 ```
 
 Client side encryption requires secure environment (HTTPS) to work, so you will need to figure it out.
