@@ -7,10 +7,9 @@ import { useState } from "react"
 
 type UsePasteProps = {
 	uuid: string
-	initialPasteContent: string | undefined
 }
 
-export const usePaste = ({ uuid, initialPasteContent }: UsePasteProps) => {
+export const usePaste = ({ uuid }: UsePasteProps) => {
 	const [encryptedPayloadBase64] = useState(
 		typeof window !== "undefined" && window.location.hash ? window.location.hash.slice(1) : undefined
 	)
@@ -21,7 +20,6 @@ export const usePaste = ({ uuid, initialPasteContent }: UsePasteProps) => {
 		error
 	} = useQuery({
 		queryKey: ["paste", uuid],
-		initialData: initialPasteContent,
 		staleTime: Number.POSITIVE_INFINITY,
 		refetchOnWindowFocus: false,
 		refetchOnMount: false,
@@ -30,8 +28,6 @@ export const usePaste = ({ uuid, initialPasteContent }: UsePasteProps) => {
 		refetchOnReconnect: false,
 		queryFn: async () => {
 			const paste = await fetchPaste(uuid)
-
-			if (!paste.encrypted) return paste.content
 
 			if (!encryptedPayloadBase64) throw new Error("Missing encrypted payload")
 

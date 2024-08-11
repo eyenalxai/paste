@@ -6,11 +6,10 @@ import { toast } from "sonner"
 
 type PasteDisplayProps = {
 	uuid: string
-	initialPasteContent: string | undefined
 }
 
-export const PasteDisplay = ({ uuid, initialPasteContent }: PasteDisplayProps) => {
-	const { pasteContent, isLoading, error } = usePaste({ uuid, initialPasteContent })
+export const PasteDisplay = ({ uuid }: PasteDisplayProps) => {
+	const { pasteContent, isLoading, error } = usePaste({ uuid })
 
 	if (error) {
 		toast.error(error.message)
