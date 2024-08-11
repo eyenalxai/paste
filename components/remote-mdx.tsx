@@ -1,11 +1,17 @@
-"use client"
-
-import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote"
+import { MDXRemote } from "next-mdx-remote/rsc"
+import rehypeHighlight from "rehype-highlight"
 
 type RemoteMdxProps = {
-	mdxSource: MDXRemoteSerializeResult
+	source: string
 }
 
-export function RemoteMdx({ mdxSource }: RemoteMdxProps) {
-	return <MDXRemote {...mdxSource} />
+export function RemoteMdx({ source }: RemoteMdxProps) {
+	return (
+		<MDXRemote
+			source={source}
+			options={{
+				mdxOptions: { rehypePlugins: [rehypeHighlight] }
+			}}
+		/>
+	)
 }

@@ -2,11 +2,9 @@ import { PasteContainer } from "@/components/paste-container"
 import { PasteDisplay } from "@/components/paste-display"
 import { RemoteMdx } from "@/components/remote-mdx"
 import { clientEnv } from "@/lib/env/client"
-import { wrapper } from "@/lib/markdown"
+import { wrapInMarkdown } from "@/lib/markdown"
 import { getPaste } from "@/lib/select"
 import type { Metadata } from "next"
-import { serialize } from "next-mdx-remote/serialize"
-import rehypeHighlight from "rehype-highlight"
 
 export type PastePageProps = {
 	params: {
@@ -65,13 +63,11 @@ export default async function Page({ params: { uuid } }: PastePageProps) {
 	if (!paste) return <h1>Paste does not exist or has expired</h1>
 
 	if (!paste.encrypted) {
-		const mdxSource = await serialize(wrapper({ language: paste.language, content: paste.content }), {
-			mdxOptions: { rehypePlugins: [rehypeHighlight] }
-		})
+		const wrapped = wrapInMarkdown({ language: paste.language, content: paste.content })
 
 		return (
 			<PasteContainer>
-				<RemoteMdx mdxSource={mdxSource} />
+				<RemoteMdx source={wrapped} />
 			</PasteContainer>
 		)
 	}
