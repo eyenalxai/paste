@@ -4930,6 +4930,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-addon-api@npm:^7.1.0":
+  version: 7.1.1
+  resolution: "node-addon-api@npm:7.1.1"
+  dependencies:
+    node-gyp: "npm:latest"
+  checksum: 10c0/fb32a206276d608037fa1bcd7e9921e177fe992fc610d098aa3128baca3c0050fc1e014fa007e9b3874cf865ddb4f5bd9f43ccb7cbbbe4efaff6a83e920b17e9
+  languageName: node
+  linkType: hard
+
+"node-addon-api@npm:^8.0.0":
+  version: 8.1.0
+  resolution: "node-addon-api@npm:8.1.0"
+  dependencies:
+    node-gyp: "npm:latest"
+  checksum: 10c0/b4009408ea4d0cdda9b59765e949422d464cdbb3e42b9330bddceda7829e0c3cdae7ae9dd1e4203ef731cd51f5a52b339afef581efb72c539f1f1a5464bb291b
+  languageName: node
+  linkType: hard
+
 "node-domexception@npm:^1.0.0":
   version: 1.0.0
   resolution: "node-domexception@npm:1.0.0"
@@ -4945,6 +4963,17 @@ __metadata:
     fetch-blob: "npm:^3.1.4"
     formdata-polyfill: "npm:^4.0.10"
   checksum: 10c0/f3d5e56190562221398c9f5750198b34cf6113aa304e34ee97c94fd300ec578b25b2c2906edba922050fce983338fde0d5d34fcb0fc3336ade5bd0e429ad7538
+  languageName: node
+  linkType: hard
+
+"node-gyp-build@npm:^4.8.0, node-gyp-build@npm:^4.8.1":
+  version: 4.8.1
+  resolution: "node-gyp-build@npm:4.8.1"
+  bin:
+    node-gyp-build: bin.js
+    node-gyp-build-optional: optional.js
+    node-gyp-build-test: build-test.js
+  checksum: 10c0/e36ca3d2adf2b9cca316695d7687207c19ac6ed326d6d7c68d7112cebe0de4f82d6733dff139132539fcc01cf5761f6c9082a21864ab9172edf84282bc849ce7
   languageName: node
   linkType: hard
 
@@ -5254,6 +5283,10 @@ __metadata:
     tailwind-merge: "npm:^2.4.0"
     tailwindcss: "npm:3.4.9"
     tailwindcss-animate: "npm:^1.0.7"
+    tree-sitter: "npm:^0.21.1"
+    tree-sitter-go: "npm:^0.21.0"
+    tree-sitter-python: "npm:^0.21.0"
+    tree-sitter-typescript: "npm:^0.21.2"
     typescript: "npm:5.5.4"
     zod: "npm:^3.23.8"
   languageName: unknown
@@ -6383,6 +6416,65 @@ __metadata:
   dependencies:
     is-number: "npm:^7.0.0"
   checksum: 10c0/487988b0a19c654ff3e1961b87f471702e708fa8a8dd02a298ef16da7206692e8552a0250e8b3e8759270f62e9d8314616f6da274734d3b558b1fc7b7724e892
+  languageName: node
+  linkType: hard
+
+"tree-sitter-go@npm:^0.21.0":
+  version: 0.21.0
+  resolution: "tree-sitter-go@npm:0.21.0"
+  dependencies:
+    node-addon-api: "npm:^8.0.0"
+    node-gyp: "npm:latest"
+    node-gyp-build: "npm:^4.8.0"
+  peerDependencies:
+    tree-sitter: ^0.21.0
+  peerDependenciesMeta:
+    tree_sitter:
+      optional: true
+  checksum: 10c0/b5d024d1ca4f75f92083df9d4c001774f856ec4d620e3fd6d1f5f39acc0904ca56ceb46d3992f44298106dfa7e50569d603abbe7b8ef4773932945c2e221b7c7
+  languageName: node
+  linkType: hard
+
+"tree-sitter-python@npm:^0.21.0":
+  version: 0.21.0
+  resolution: "tree-sitter-python@npm:0.21.0"
+  dependencies:
+    node-addon-api: "npm:^7.1.0"
+    node-gyp: "npm:latest"
+    node-gyp-build: "npm:^4.8.0"
+  peerDependencies:
+    tree-sitter: ^0.21.0
+  peerDependenciesMeta:
+    tree_sitter:
+      optional: true
+  checksum: 10c0/165937ab8e059847fd494202f417aa0d9883e4e245facccf3717323c60558456ce62a13e648f4679462112b63f9879fc8262f79c90318b62870ddbf00d529988
+  languageName: node
+  linkType: hard
+
+"tree-sitter-typescript@npm:^0.21.2":
+  version: 0.21.2
+  resolution: "tree-sitter-typescript@npm:0.21.2"
+  dependencies:
+    node-addon-api: "npm:^8.0.0"
+    node-gyp: "npm:latest"
+    node-gyp-build: "npm:^4.8.1"
+  peerDependencies:
+    tree-sitter: ^0.21.0
+  peerDependenciesMeta:
+    tree_sitter:
+      optional: true
+  checksum: 10c0/209cb19d93980dad73a8cf98d7d6824a9b445a95653bec3ad6cc926da6bced6da7d89df84f8eee8efd22eb1a1ad1d8f7efa38df255e1cdcea200dab10d53dea7
+  languageName: node
+  linkType: hard
+
+"tree-sitter@npm:^0.21.1":
+  version: 0.21.1
+  resolution: "tree-sitter@npm:0.21.1"
+  dependencies:
+    node-addon-api: "npm:^8.0.0"
+    node-gyp: "npm:latest"
+    node-gyp-build: "npm:^4.8.0"
+  checksum: 10c0/c144830c28ce588f5c5cf060390286ffece760636bfff03cf9110a7910504be3da6873d3bdc4faa9d5424433401122adbba605c9754bfd6fca63500265738ffb
   languageName: node
   linkType: hard
 
