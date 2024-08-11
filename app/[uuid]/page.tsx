@@ -65,8 +65,7 @@ export default async function Page({ params: { uuid } }: PastePageProps) {
 	if (!paste) return <h1>Paste does not exist or has expired</h1>
 
 	if (!paste.encrypted) {
-		const source = paste.language ? wrapper({ language: paste.language, content: paste.content }) : paste.content
-		const mdxSource = await serialize(source, {
+		const mdxSource = await serialize(wrapper({ language: paste.language, content: paste.content }), {
 			mdxOptions: { rehypePlugins: [rehypeHighlight] }
 		})
 
