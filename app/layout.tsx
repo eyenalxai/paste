@@ -1,4 +1,5 @@
 import "./globals.css"
+import "./code-style.css"
 import { Providers } from "@/components/providers"
 import { clientEnv } from "@/lib/env/client"
 import { fontMono, fontSans } from "@/lib/fonts"
