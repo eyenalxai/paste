@@ -1,19 +1,29 @@
-# 🚀 Next.js 14 Template
+# Paste
 
-Available on GitHub: [https://github.com/eyenalxai/nextjs-template](https://github.com/eyenalxai/nextjs-template)
+## How to deploy
 
-## App Router & shadcn/UI
+1. Clone and cd into the repo
+```shell
+git clone https://github.com/eyenalxai/paste.git && cd paste
+```
 
-This template employs the App Router and shadcn/ui, leveraging the power of React's latest features combined with re-usable components built with Radix UI and Tailwind CSS. Visit [shadcn UI](https://ui.shadcn.com) for more details.
+2. Build the image
+```shell
+nixpacks build . \ 
+-e NEXT_PUBLIC_FRONTEND_URL=https://my-domain.com \ 
+-e DATABASE_URL=postgres://postgres:mysecretpassword@192.168.1.135:5432/postgres \ 
+--name paste -t latest
+```
 
-## Dynamic Theming
+3. Run the container
+```shell
+docker run -d -p 3000:3000 --name paste paste
+```
 
-Ensure user-friendly appearance adjustments with seamless toggling 🌓 between dark and light modes based on the system preferences.
+If you want to run it on the different port, you can change it via `PORT` environment variable.
 
-## Pre-Configured Biome and ESLint
+```shell
+docker run -d -e PORT=8000 -p 8000:8000 --name paste paste
+```
 
-Benefit from clean and error-free coding courtesy of pre-configured setups for Biome and ESLint.
-  
-## License
-
-This project operates under The Unlicense license.
+Client side encryption requires secure environment (HTTPS) to work, so you will need to figure it out.
