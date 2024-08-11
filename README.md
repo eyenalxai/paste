@@ -3,11 +3,11 @@
 ## How to deploy
 
 1. Clone and cd into the repo
-```shell
+```bash
 git clone https://github.com/eyenalxai/paste.git
 ```
 2. Build the image
-```shell
+```bash
 nixpacks build paste \ 
 -e NEXT_PUBLIC_FRONTEND_URL=https://my-domain.com \ 
 -e DATABASE_URL=postgres://postgres:mysecretpassword@database.com:5432/postgres \ 
@@ -15,13 +15,13 @@ nixpacks build paste \
 ```
 
 3. Run the container
-```shell
+```bash
 docker run -d -p 3000:3000 --name paste paste
 ```
 
 If you want to run it on the different port, you can change it via `PORT` environment variable.
 
-```shell
+```bash
 docker run -d -e PORT=8000 -p 8000:8000 --name paste paste
 ```
 
