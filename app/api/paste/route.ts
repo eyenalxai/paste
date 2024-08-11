@@ -1,5 +1,6 @@
 import { db } from "@/lib/database"
 import { getExpiresAt } from "@/lib/date"
+import { detectContentLanguage } from "@/lib/detect-language"
 import { PasteFormSchema } from "@/lib/form"
 import { pastes } from "@/lib/schema"
 import { getPaste } from "@/lib/select"
@@ -11,6 +12,11 @@ export const POST = async (request: Request) => {
 	const receivedPaste: z.infer<typeof PasteFormSchema> = await request.json()
 
 	const pasteValidated = PasteFormSchema.parse(receivedPaste)
+
+	if (!pasteValidated.encrypted) {
+		const language = detectContentLanguage({ content: pasteValidated.content })
+		console.log(`Detected language: ${language}`)
+	}
 
 	const [paste] = await db
 		.insert(pastes)
