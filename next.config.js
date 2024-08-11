@@ -4,6 +4,9 @@ const nextConfig = {
 		if (isServer) {
 			config.externals = config.externals || []
 			config.externals.push("tree-sitter")
+			config.externals.push("tree-sitter-go")
+			config.externals.push("tree-sitter-python")
+			config.externals.push("tree-sitter-typescript")
 		}
 		return config
 	},
