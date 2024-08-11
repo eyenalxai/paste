@@ -5,6 +5,6 @@ type WrapProps = {
 	content: string
 }
 
-export const wrapper = ({ language, content }: WrapProps) => {
+export const wrapInMarkdown = ({ language, content }: WrapProps) => {
 	return language ? `\`\`\`${language}\n${content}\n\`\`\`` : `\`\`\`plaintext\n${content}\n\`\`\``
 }
