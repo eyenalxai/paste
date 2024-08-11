@@ -5,7 +5,7 @@ import Python from "tree-sitter-python"
 
 const TSX = require("tree-sitter-typescript").tsx
 
-type Language = "go" | "tsx" | "python"
+export type Language = "go" | "tsx" | "python"
 
 type LanguageParser = {
 	language: Language
