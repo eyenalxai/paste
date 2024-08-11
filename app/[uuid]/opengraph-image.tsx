@@ -41,7 +41,16 @@ export default async function Image({ params: { uuid } }: PastePageProps) {
 				whiteSpace: "pre-wrap"
 			}}
 		>
-			{paste.content.length > 800 ? `${paste.content.slice(0, 800)}...` : paste.content}
+			<div
+				style={{
+					backgroundImage: "linear-gradient(0deg, #020817 40%, #fff 100%)",
+					backgroundClip: "text",
+					color: "transparent",
+					display: "block"
+				}}
+			>
+				{paste.content.length > 800 ? `${paste.content.slice(0, 800)}...` : paste.content}
+			</div>
 		</div>,
 		{
 			...size,
