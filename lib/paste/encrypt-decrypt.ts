@@ -2,8 +2,8 @@ import { KEY_USAGES, decryptData, encryptData, generateKey } from "@/lib/crypto"
 import { arrayBufferToBase64, base64ToArrayBuffer, keyToBase64 } from "@/lib/encode-decode"
 
 export type EncryptedPayload = {
-	keyBase64: string
-	ivBase64: string
+	k: string
+	iv: string
 }
 
 type EncryptPasteContentToBase64Props = {
@@ -19,8 +19,8 @@ export const encryptPasteContentToBase64 = async ({ pasteContent }: EncryptPaste
 	const ivBase64 = arrayBufferToBase64(iv)
 
 	const encryptedPayload = {
-		keyBase64: keyBase64,
-		ivBase64: ivBase64
+		k: keyBase64,
+		iv: ivBase64
 	} satisfies EncryptedPayload
 
 	const jsonEncryptedPayload = JSON.stringify(encryptedPayload)
@@ -40,7 +40,7 @@ export const decryptPasteContentFromBase64 = async ({
 	encryptedContentBase64,
 	encryptedPayloadBase64
 }: DecryptPasteContentFromBase64Props) => {
-	const { keyBase64, ivBase64 } = JSON.parse(
+	const { k: keyBase64, iv: ivBase64 } = JSON.parse(
 		new TextDecoder().decode(base64ToArrayBuffer(encryptedPayloadBase64))
 	) as EncryptedPayload
 
