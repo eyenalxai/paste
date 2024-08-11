@@ -33,18 +33,25 @@ export const detectContentLanguage = ({ content }: DetectContentLanguageProps): 
 		python: Python
 	}
 
-	const languageParsers: LanguageParser[] = Object.entries(languageToParserLanguageMap).map(
+	const languageParsers: (LanguageParser | undefined)[] = Object.entries(languageToParserLanguageMap).map(
 		([language, parserLanguage]) => {
-			const parser = new Parser()
-			parser.setLanguage(parserLanguage)
-			return { language: language as Language, parser }
+			try {
+				const parser = new Parser()
+				parser.setLanguage(parserLanguage)
+				return { language: language as Language, parser }
+			} catch (error) {
+				console.error(`Error initializing parser for ${language}: ${error}`)
+				return undefined
+			}
 		}
 	)
 
-	const scores: LanguageScore[] = languageParsers.map(({ language, parser }) => ({
-		language,
-		score: evaluateParser({ parser, content: contentToParse })
-	}))
+	const scores: LanguageScore[] = languageParsers
+		.filter((languageParser) => languageParser !== undefined)
+		.map(({ language, parser }) => ({
+			language,
+			score: evaluateParser({ parser, content: contentToParse })
+		}))
 
 	const highestScore = scores.reduce((acc, { score }) => (score > acc ? score : acc), 0)
 
