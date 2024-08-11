@@ -10,7 +10,6 @@ import { savePaste } from "@/lib/paste/save-paste"
 import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Copy } from "lucide-react"
-import Link from "next/link"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -42,7 +41,9 @@ export default function Page() {
 							<div>URL copied to clipboard</div>
 							{!formData.encrypted && (
 								<Button asChild variant={"outline"} className={cn("h-8")}>
-									<Link href={pasteUrl}>Open</Link>
+									<a target={"_blank"} rel="noopener noreferrer" href={pasteUrl}>
+										Open
+									</a>
 								</Button>
 							)}
 						</div>
