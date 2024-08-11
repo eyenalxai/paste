@@ -1,5 +1,7 @@
 import { CopyContentButton } from "@/components/copy-content-button"
+import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import Link from "next/link"
 import type { ReactNode } from "react"
 
 type PasteContainerProps = {
@@ -10,8 +12,13 @@ type PasteContainerProps = {
 
 export const PasteContainer = ({ loading, content, children }: PasteContainerProps) => (
 	<div className={cn("flex", "flex-col", "gap-4")}>
-		<CopyContentButton loading={loading} content={content} />
-		<div className={cn(!loading && "border", "p-4", "rounded", "font-mono", "whitespace-pre-wrap", "text-sm")}>
+		<div className={cn("flex", "flex-row", "flex-wrap", "gap-4", "justify-start", "items-center")}>
+			<CopyContentButton loading={loading} content={content} />
+			<Button variant={"outline"} asChild>
+				<Link href={"/"}>New paste</Link>
+			</Button>
+		</div>
+		<div className={cn(!loading && ["border", "p-4"], "rounded", "font-mono", "whitespace-pre-wrap", "text-sm")}>
 			{children}
 		</div>
 	</div>
