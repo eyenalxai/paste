@@ -5,35 +5,15 @@ type EvaluateParserProps = {
 	content: string
 }
 
-export const evaluateParser = ({ parser, content }: EvaluateParserProps) => {
+export const evaluateParser = ({ parser, content }: EvaluateParserProps): number => {
 	const tree = parser.parse(content)
 
-	const countNodes = (
-		node: Parser.SyntaxNode,
-		counts: { total: number; errors: number }
-	): { total: number; errors: number } => {
-		counts.total++
+	const countErrors = (node: Parser.SyntaxNode): number =>
+		(node.isMissing ? 4 : 0) +
+		(node.hasError ? 2 : 0) +
+		Array.from({ length: node.childCount })
+			.map((_, i) => node.child(i))
+			.reduce((acc, child) => acc + (child ? countErrors(child) : 0), 0)
 
-		if (node.hasError || node.isMissing) {
-			counts.errors++
-		}
-
-		for (let i = 0; i < node.childCount; i++) {
-			const child = node.child(i)
-			if (child) {
-				countNodes(child, counts)
-			}
-		}
-
-		return counts
-	}
-
-	const { total, errors } = countNodes(tree.rootNode, {
-		total: 0,
-		errors: 0
-	})
-
-	const errorPenalty = 4
-
-	return total > 0 ? ((total - errors * errorPenalty) / total) * 100 : 0
+	return countErrors(tree.rootNode)
 }

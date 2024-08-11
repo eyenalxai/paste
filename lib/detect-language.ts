@@ -1,13 +1,16 @@
-import { evaluateParser } from "@/lib/parser"
 import Parser from "tree-sitter"
 import Bash from "tree-sitter-bash"
 import Go from "tree-sitter-go"
 import Python from "tree-sitter-python"
 import Rust from "tree-sitter-rust"
 
+import { evaluateParser } from "@/lib/parser"
+// @ts-ignore: bad typings in tree-sitter-toml
+import TOML from "tree-sitter-toml"
+
 const TSX = require("tree-sitter-typescript").tsx
 
-export type Language = "go" | "tsx" | "python" | "rust" | "bash"
+export type Language = "go" | "tsx" | "python" | "rust" | "bash" | "toml"
 
 type LanguageParser = {
 	language: Language
@@ -16,7 +19,7 @@ type LanguageParser = {
 
 type LanguageScore = {
 	language: Language
-	score: number
+	errorScore: number
 }
 
 type DetectContentLanguageProps = {
@@ -34,7 +37,8 @@ export const detectContentLanguage = ({ content }: DetectContentLanguageProps): 
 		tsx: TSX,
 		python: Python,
 		rust: Rust,
-		bash: Bash
+		bash: Bash,
+		toml: TOML
 	}
 
 	const languageParsers: (LanguageParser | undefined)[] = Object.entries(languageToParserLanguageMap).map(
@@ -54,11 +58,13 @@ export const detectContentLanguage = ({ content }: DetectContentLanguageProps): 
 		.filter((languageParser) => languageParser !== undefined)
 		.map(({ language, parser }) => ({
 			language,
-			score: evaluateParser({ parser, content: contentToParse })
+			errorScore: evaluateParser({ parser, content: contentToParse })
 		}))
 
+	console.log(scores)
+
 	const result = scores.reduce<LanguageScore | undefined>((acc, curr) => {
-		if (curr.score > 80 && (!acc || curr.score > acc.score)) {
+		if (!acc || curr.errorScore < acc.errorScore) {
 			return curr
 		}
 		return acc
