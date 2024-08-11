@@ -27,7 +27,7 @@ export async function generateMetadata({ params: { uuid } }: PastePageProps) {
 		} satisfies Metadata
 	}
 
-	if (paste.encrypted) {
+	if (paste.ivBase64) {
 		const title = "Encrypted paste"
 		const description = "This paste is encrypted and cannot be previewed"
 		return {
@@ -62,7 +62,7 @@ export default async function Page({ params: { uuid } }: PastePageProps) {
 
 	if (!paste) return <h1>Paste does not exist or has expired</h1>
 
-	if (!paste.encrypted) {
+	if (!paste.ivBase64) {
 		const wrapped = wrapInMarkdown({ language: paste.language, content: paste.content })
 
 		return (

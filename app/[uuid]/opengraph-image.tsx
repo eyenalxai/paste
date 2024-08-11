@@ -19,7 +19,7 @@ export const contentType = "image/png"
 export default async function Image({ params: { uuid } }: PastePageProps) {
 	const [paste] = await getPaste({ uuid })
 
-	if (!paste || paste.encrypted) return null
+	if (!paste || paste.ivBase64) return null
 
 	const fontData = await fs.promises.readFile(
 		path.join(fileURLToPath(import.meta.url), "../../../public/Roboto-Mono-Regular.woff")

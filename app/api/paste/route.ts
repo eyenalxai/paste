@@ -1,7 +1,7 @@
 import { db } from "@/lib/database"
 import { getExpiresAt } from "@/lib/date"
 import { detectContentLanguage } from "@/lib/detect-language"
-import { PasteFormSchema } from "@/lib/form"
+import { SecurePasteFormSchema } from "@/lib/form"
 import { pastes } from "@/lib/schema"
 import { getPaste } from "@/lib/select"
 import { eq, lt } from "drizzle-orm"
@@ -9,16 +9,16 @@ import { NextResponse } from "next/server"
 import type { z } from "zod"
 
 export const POST = async (request: Request) => {
-	const receivedPaste: z.infer<typeof PasteFormSchema> = await request.json()
+	const receivedPaste: z.infer<typeof SecurePasteFormSchema> = await request.json()
 
-	const pasteValidated = PasteFormSchema.parse(receivedPaste)
+	const pasteValidated = SecurePasteFormSchema.parse(receivedPaste)
 
 	const [paste] = await db
 		.insert(pastes)
 		.values({
 			content: pasteValidated.content,
-			language: pasteValidated.encrypted ? undefined : detectContentLanguage({ content: pasteValidated.content }),
-			encrypted: pasteValidated.encrypted,
+			language: pasteValidated.iv ? undefined : detectContentLanguage({ content: pasteValidated.content }),
+			ivBase64: pasteValidated.iv,
 			oneTime: pasteValidated.oneTime,
 			expiresAt: getExpiresAt(pasteValidated.expiresAfter).toISOString()
 		})

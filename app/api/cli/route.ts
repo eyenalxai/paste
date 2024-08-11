@@ -20,7 +20,7 @@ export const POST = async (request: Request) => {
 			content: pasteContent,
 			language: detectContentLanguage({ content: pasteContent }),
 			oneTime: false,
-			encrypted: false,
+			ivBase64: undefined,
 			expiresAt: getExpiresAt("1-day").toISOString()
 		})
 		.returning()

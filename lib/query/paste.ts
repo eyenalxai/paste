@@ -10,7 +10,7 @@ type UsePasteProps = {
 }
 
 export const usePaste = ({ uuid }: UsePasteProps) => {
-	const [encryptedPayloadBase64] = useState(
+	const [keyBase64] = useState(
 		typeof window !== "undefined" && window.location.hash ? window.location.hash.slice(1) : undefined
 	)
 
@@ -27,12 +27,15 @@ export const usePaste = ({ uuid }: UsePasteProps) => {
 		refetchIntervalInBackground: false,
 		refetchOnReconnect: false,
 		queryFn: async () => {
+			if (!keyBase64) throw new Error("Missing encrypted payload")
+
 			const paste = await fetchPaste(uuid)
 
-			if (!encryptedPayloadBase64) throw new Error("Missing encrypted payload")
+			if (!paste.ivBase64) throw new Error("Missing initialization vector")
 
 			return await decryptPasteContentFromBase64({
-				encryptedPayloadBase64,
+				keyBase64,
+				ivBase64: paste.ivBase64,
 				encryptedContentBase64: paste.content
 			})
 		}
