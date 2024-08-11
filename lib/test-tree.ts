@@ -6,11 +6,12 @@ import Python from "tree-sitter-python"
 const TSX = require("tree-sitter-typescript").tsx
 const TypeScript = require("tree-sitter-typescript").typescript
 
-function evaluateParser(content: string, language: any) {
-	const parser = new Parser()
-	parser.setLanguage(language)
-	console.log("using language", parser.getLanguage().name)
+type EvaluateParserProps = {
+	parser: Parser
+	content: string
+}
 
+function evaluateParser({ parser, content }: EvaluateParserProps) {
 	const tree = parser.parse(content)
 
 	const countNodes = (
@@ -19,7 +20,7 @@ function evaluateParser(content: string, language: any) {
 	): { total: number; errors: number } => {
 		counts.total++
 
-		if (node.hasError) {
+		if (node.hasError || node.isMissing) {
 			counts.errors++
 		}
 
@@ -33,9 +34,14 @@ function evaluateParser(content: string, language: any) {
 		return counts
 	}
 
-	const { total, errors } = countNodes(tree.rootNode, { total: 0, errors: 0 })
+	const { total, errors } = countNodes(tree.rootNode, {
+		total: 0,
+		errors: 0
+	})
 
-	return total > 0 ? ((total - errors) / total) * 100 : 0
+	const errorPenalty = 4
+
+	return total > 0 ? ((total - errors * errorPenalty) / total) * 100 : 0
 }
 
 type OofProps = {
@@ -46,25 +52,25 @@ export const oof = ({ content }: OofProps) => {
 	const parserGo = new Parser()
 	parserGo.setLanguage(Go)
 
-	const parserTSX = new Parser()
-	parserTSX.setLanguage(TSX)
-
 	const parserTypeScript = new Parser()
 	parserTypeScript.setLanguage(TypeScript)
+
+	const parserTSX = new Parser()
+	parserTSX.setLanguage(TSX)
 
 	const parserPython = new Parser()
 	parserPython.setLanguage(Python)
 
-	const goScore = evaluateParser(content, Go)
+	const goScore = evaluateParser({ parser: parserGo, content })
 	console.log(`Go: ${goScore}`)
 
-	const typescriptScore = evaluateParser(content, TypeScript)
+	const typescriptScore = evaluateParser({ parser: parserTypeScript, content })
 	console.log(`TypeScript: ${typescriptScore}`)
 
-	const tsxScore = evaluateParser(content, TSX)
+	const tsxScore = evaluateParser({ parser: parserTSX, content })
 	console.log(`TSX: ${tsxScore}`)
 
-	const pythonScore = evaluateParser(content, Python)
+	const pythonScore = evaluateParser({ parser: parserPython, content })
 	console.log(`Python: ${pythonScore}`)
 
 	// Function to print node details for debugging
@@ -83,4 +89,7 @@ export const oof = ({ content }: OofProps) => {
 			printNode(node.child(i), indent + 2)
 		}
 	}
+
+	console.log("\nTSX Parse Tree:")
+	// printNode(parserTSX.parse(content).rootNode)
 }
