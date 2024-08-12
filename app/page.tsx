@@ -58,7 +58,11 @@ export default function Page() {
 
 				form.reset({
 					content: "",
-					encrypted: formData.encrypted
+					oneTime: false,
+					encrypted: formData.encrypted,
+					contentType: "auto",
+					syntax: undefined,
+					expiresAfter: "1-hour"
 				})
 			})
 	}
@@ -106,7 +110,7 @@ export default function Page() {
 									<div className={cn("flex", "justify-center", "items-center", "text-center", "whitespace-nowrap")}>
 										Expires after
 									</div>
-									<Select onValueChange={field.onChange} defaultValue={field.value}>
+									<Select onValueChange={field.onChange} value={field.value}>
 										<FormControl>
 											<SelectTrigger className={cn("w-32")}>
 												<SelectValue>
@@ -126,35 +130,38 @@ export default function Page() {
 							</FormItem>
 						)}
 					/>
-					<FormField
-						control={form.control}
-						name="contentType"
-						render={({ field }) => (
-							<FormItem>
-								<div className={cn("flex", "flex-row", "gap-x-2")}>
-									<div className={cn("flex", "justify-center", "items-center", "text-center", "whitespace-nowrap")}>
-										Content type
+					{!form.watch("encrypted") && (
+						<FormField
+							control={form.control}
+							name="contentType"
+							render={({ field }) => (
+								<FormItem>
+									<div className={cn("flex", "flex-row", "gap-x-2")}>
+										<div className={cn("flex", "justify-center", "items-center", "text-center", "whitespace-nowrap")}>
+											Content type
+										</div>
+										<Select onValueChange={field.onChange} value={field.value}>
+											<FormControl>
+												<SelectTrigger className={cn("w-32")}>
+													<SelectValue>
+														{selectContentTypeOptions[field.value as keyof typeof selectContentTypeOptions]}
+													</SelectValue>
+												</SelectTrigger>
+											</FormControl>
+											<SelectContent>
+												{Object.entries(selectContentTypeOptions).map(([key, value]) => (
+													<SelectItem key={key} value={key}>
+														{value}
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
 									</div>
-									<Select onValueChange={field.onChange} defaultValue={field.value}>
-										<FormControl>
-											<SelectTrigger className={cn("w-32")}>
-												<SelectValue>
-													{selectContentTypeOptions[field.value as keyof typeof selectContentTypeOptions]}
-												</SelectValue>
-											</SelectTrigger>
-										</FormControl>
-										<SelectContent>
-											{Object.entries(selectContentTypeOptions).map(([key, value]) => (
-												<SelectItem key={key} value={key}>
-													{value}
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
-								</div>
-							</FormItem>
-						)}
-					/>
+								</FormItem>
+							)}
+						/>
+					)}
+
 					{form.watch("contentType") === "source" && (
 						<FormField
 							control={form.control}
@@ -165,7 +172,7 @@ export default function Page() {
 										<div className={cn("flex", "justify-center", "items-center", "text-center", "whitespace-nowrap")}>
 											Syntax
 										</div>
-										<Select onValueChange={field.onChange} defaultValue={field.value}>
+										<Select onValueChange={field.onChange} value={field.value}>
 											<FormControl>
 												<SelectTrigger className={cn("w-56")}>
 													<SelectValue placeholder={"Select syntax"}>
