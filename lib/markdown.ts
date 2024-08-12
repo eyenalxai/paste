@@ -1,10 +1,15 @@
-import type { Language } from "@/lib/detect-language"
+import type { AllSyntax } from "@/lib/types"
 
 type WrapProps = {
-	language: Language | null
+	syntax: AllSyntax | null
 	content: string
 }
 
-export const wrapInMarkdown = ({ language, content }: WrapProps) => {
-	return language ? `\`\`\`${language}\n${content}\n\`\`\`` : `\`\`\`plaintext\n${content}\n\`\`\``
+export const wrapInMarkdown = ({ syntax, content }: WrapProps) => {
+	if (syntax === "markdown") {
+		console.log("Markdown detected")
+		return content
+	}
+
+	return syntax ? `\`\`\`${syntax}\n${content}\n\`\`\`` : `\`\`\`plaintext\n${content}\n\`\`\``
 }

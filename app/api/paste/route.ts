@@ -1,9 +1,9 @@
 import { db } from "@/lib/database"
 import { getExpiresAt } from "@/lib/date"
-import { detectContentLanguage } from "@/lib/detect-language"
 import { serverEnv } from "@/lib/env/server"
 import { SecurePasteFormSchema } from "@/lib/form"
 import { pastes } from "@/lib/schema"
+import { getPasteSyntax } from "@/lib/syntax/paste"
 import { NextResponse } from "next/server"
 import type { z } from "zod"
 
@@ -20,11 +20,19 @@ export const POST = async (request: Request) => {
 
 	const pasteValidated = SecurePasteFormSchema.parse(receivedPaste)
 
+	const pasteSyntax = pasteValidated.iv
+		? undefined
+		: getPasteSyntax({
+				syntax: pasteValidated.syntax,
+				contentType: pasteValidated.contentType,
+				content: pasteValidated.content
+			})
+
 	const [paste] = await db
 		.insert(pastes)
 		.values({
 			content: pasteValidated.content,
-			language: pasteValidated.iv ? undefined : detectContentLanguage({ content: pasteValidated.content }),
+			syntax: pasteSyntax,
 			ivBase64: pasteValidated.iv,
 			oneTime: pasteValidated.oneTime,
 			expiresAt: getExpiresAt(pasteValidated.expiresAfter).toISOString()

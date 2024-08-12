@@ -1,9 +1,9 @@
 import { db } from "@/lib/database"
 import { getExpiresAt } from "@/lib/date"
-import { detectContentLanguage } from "@/lib/detect-language"
 import { clientEnv } from "@/lib/env/client"
 import { serverEnv } from "@/lib/env/server"
 import { pastes } from "@/lib/schema"
+import { detectContentSyntax } from "@/lib/syntax/detect-language"
 import { NextResponse } from "next/server"
 
 export const maxDuration = 5 // In seconds
@@ -30,7 +30,7 @@ export const POST = async (request: Request) => {
 		.insert(pastes)
 		.values({
 			content: pasteContent,
-			language: detectContentLanguage({ content: pasteContent }),
+			syntax: detectContentSyntax({ content: pasteContent }),
 			oneTime: false,
 			ivBase64: undefined,
 			expiresAt: getExpiresAt("1-day").toISOString()

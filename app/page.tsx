@@ -5,7 +5,7 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { PasteFormSchema, selectExpiresAfterOptions } from "@/lib/form"
+import { PasteFormSchema, selectContentTypeOptions, selectExpiresAfterOptions, selectLanguageOptions } from "@/lib/form"
 import { savePaste } from "@/lib/paste/save-paste"
 import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -22,7 +22,9 @@ export default function Page() {
 			content: "",
 			encrypted: true,
 			oneTime: false,
-			expiresAfter: "1-hour"
+			expiresAfter: "1-hour",
+			contentType: "auto",
+			syntax: undefined
 		}
 	})
 
@@ -124,6 +126,66 @@ export default function Page() {
 							</FormItem>
 						)}
 					/>
+					<FormField
+						control={form.control}
+						name="contentType"
+						render={({ field }) => (
+							<FormItem>
+								<div className={cn("flex", "flex-row", "gap-x-2")}>
+									<div className={cn("flex", "justify-center", "items-center", "text-center", "whitespace-nowrap")}>
+										Content type
+									</div>
+									<Select onValueChange={field.onChange} defaultValue={field.value}>
+										<FormControl>
+											<SelectTrigger className={cn("w-32")}>
+												<SelectValue>
+													{selectContentTypeOptions[field.value as keyof typeof selectContentTypeOptions]}
+												</SelectValue>
+											</SelectTrigger>
+										</FormControl>
+										<SelectContent>
+											{Object.entries(selectContentTypeOptions).map(([key, value]) => (
+												<SelectItem key={key} value={key}>
+													{value}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+								</div>
+							</FormItem>
+						)}
+					/>
+					{form.watch("contentType") === "source" && (
+						<FormField
+							control={form.control}
+							name="syntax"
+							render={({ field }) => (
+								<FormItem>
+									<div className={cn("flex", "flex-row", "gap-x-2")}>
+										<div className={cn("flex", "justify-center", "items-center", "text-center", "whitespace-nowrap")}>
+											Syntax
+										</div>
+										<Select onValueChange={field.onChange} defaultValue={field.value}>
+											<FormControl>
+												<SelectTrigger className={cn("w-56")}>
+													<SelectValue placeholder={"Select syntax"}>
+														{selectLanguageOptions[field.value as keyof typeof selectLanguageOptions]}
+													</SelectValue>
+												</SelectTrigger>
+											</FormControl>
+											<SelectContent>
+												{Object.entries(selectLanguageOptions).map(([key, value]) => (
+													<SelectItem key={key} value={key}>
+														{value}
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
+									</div>
+								</FormItem>
+							)}
+						/>
+					)}
 				</div>
 				<FormField
 					control={form.control}

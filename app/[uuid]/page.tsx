@@ -63,7 +63,7 @@ export default async function Page({ params: { uuid } }: PastePageProps) {
 	if (!paste) return <h1>Paste does not exist or has expired</h1>
 
 	if (!paste.ivBase64) {
-		const wrapped = wrapInMarkdown({ language: paste.language, content: paste.content })
+		const wrapped = wrapInMarkdown({ syntax: paste.syntax, content: paste.content })
 
 		return (
 			<PasteContainer content={paste.content} uuid={uuid}>
