@@ -66,7 +66,7 @@ export default async function Page({ params: { uuid } }: PastePageProps) {
 		const wrapped = wrapInMarkdown({ syntax: paste.syntax, content: paste.content })
 
 		return (
-			<PasteContainer content={paste.content} uuid={uuid}>
+			<PasteContainer content={paste.content} uuid={uuid} noWrap>
 				<RemoteMdx source={wrapped} />
 			</PasteContainer>
 		)
