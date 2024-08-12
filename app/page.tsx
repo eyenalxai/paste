@@ -161,8 +161,7 @@ export default function Page() {
 							)}
 						/>
 					)}
-
-					{form.watch("contentType") === "source" && (
+					{!form.watch("encrypted") && form.watch("contentType") === "source" && (
 						<FormField
 							control={form.control}
 							name="syntax"
