@@ -171,7 +171,7 @@ export default function Page() {
 										<div className={cn("flex", "justify-center", "items-center", "text-center", "whitespace-nowrap")}>
 											Syntax
 										</div>
-										<Select onValueChange={field.onChange} value={field.value}>
+										<Select onValueChange={field.onChange} value={field.value || ""}>
 											<FormControl>
 												<SelectTrigger className={cn("w-56")}>
 													<SelectValue placeholder={"Select syntax"}>
