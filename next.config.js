@@ -6,12 +6,12 @@ const nextConfig = {
 
 			const treeSitterPackages = [
 				"tree-sitter",
+				"tree-sitter-bash",
 				"tree-sitter-go",
 				"tree-sitter-python",
-				"tree-sitter-typescript",
 				"tree-sitter-rust",
-				"tree-sitter-bash",
-				"@tree-sitter-grammars/tree-sitter-toml"
+				"@tree-sitter-grammars/tree-sitter-toml",
+				"tree-sitter-typescript"
 			]
 
 			for (const pkg of treeSitterPackages) {
