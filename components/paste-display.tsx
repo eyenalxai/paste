@@ -10,10 +10,11 @@ import { Loader } from "lucide-react"
 type PasteDisplayProps = {
 	uuid: string
 	syntax: AllSyntax | null
+	extension: string | undefined
 }
 
-export const PasteDisplay = ({ uuid, syntax }: PasteDisplayProps) => {
-	const { paste, isLoading, error } = usePaste({ uuid, syntax })
+export const PasteDisplay = ({ uuid, syntax, extension }: PasteDisplayProps) => {
+	const { paste, isLoading, error } = usePaste({ uuid, syntax, extension })
 
 	if (error) {
 		return (

@@ -3,17 +3,20 @@ import { PasteDisplay } from "@/components/paste-display"
 import { clientEnv } from "@/lib/env/client"
 import { wrapInMarkdown } from "@/lib/markdown"
 import { getPaste } from "@/lib/select"
+import { extractUuidAndExtension } from "@/lib/uuid-extension"
 import type { Metadata } from "next"
 import { MDXRemote } from "next-mdx-remote/rsc"
 import rehypeHighlight from "rehype-highlight"
 
 export type PastePageProps = {
 	params: {
-		uuid: string
+		uuidWithExt: string
 	}
 }
 
-export async function generateMetadata({ params: { uuid } }: PastePageProps) {
+export async function generateMetadata({ params: { uuidWithExt } }: PastePageProps) {
+	const [uuid] = extractUuidAndExtension(uuidWithExt)
+
 	const [paste] = await getPaste({ uuid })
 
 	if (!paste) {
@@ -58,13 +61,15 @@ export async function generateMetadata({ params: { uuid } }: PastePageProps) {
 	} satisfies Metadata
 }
 
-export default async function Page({ params: { uuid } }: PastePageProps) {
+export default async function Page({ params: { uuidWithExt } }: PastePageProps) {
+	const [uuid, extension] = extractUuidAndExtension(uuidWithExt)
+
 	const [paste] = await getPaste({ uuid })
 
 	if (!paste) return <h1>Paste does not exist or has expired</h1>
 
 	if (!paste.ivBase64) {
-		const wrapped = wrapInMarkdown({ syntax: paste.syntax, content: paste.content })
+		const wrapped = wrapInMarkdown({ syntax: paste.syntax, content: paste.content, extension })
 
 		return (
 			<PasteContainer content={paste.content} uuid={uuid} noWrap>
@@ -78,5 +83,5 @@ export default async function Page({ params: { uuid } }: PastePageProps) {
 		)
 	}
 
-	return <PasteDisplay uuid={uuid} syntax={paste.syntax} />
+	return <PasteDisplay uuid={uuid} syntax={paste.syntax} extension={extension} />
 }

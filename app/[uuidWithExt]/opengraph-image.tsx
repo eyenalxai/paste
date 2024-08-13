@@ -1,8 +1,9 @@
 import * as fs from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
-import type { PastePageProps } from "@/app/[uuid]/page"
+import type { PastePageProps } from "@/app/[uuidWithExt]/page"
 import { getPaste } from "@/lib/select"
+import { extractUuidAndExtension } from "@/lib/uuid-extension"
 import { ImageResponse } from "next/og"
 
 export const dynamic = "force-static"
@@ -16,7 +17,8 @@ export const size = {
 
 export const contentType = "image/png"
 
-export default async function Image({ params: { uuid } }: PastePageProps) {
+export default async function Image({ params: { uuidWithExt } }: PastePageProps) {
+	const [uuid] = extractUuidAndExtension(uuidWithExt)
 	const [paste] = await getPaste({ uuid })
 
 	if (!paste || paste.ivBase64) return null

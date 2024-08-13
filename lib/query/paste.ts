@@ -16,9 +16,10 @@ import { unified } from "unified"
 type UsePasteProps = {
 	uuid: string
 	syntax: AllSyntax | null
+	extension: string | undefined
 }
 
-export const usePaste = ({ uuid, syntax }: UsePasteProps) => {
+export const usePaste = ({ uuid, syntax, extension }: UsePasteProps) => {
 	const [keyBase64] = useState(
 		typeof window !== "undefined" && window.location.hash ? window.location.hash.slice(1) : undefined
 	)
@@ -54,7 +55,7 @@ export const usePaste = ({ uuid, syntax }: UsePasteProps) => {
 				.use(rehypeSanitize)
 				.use(rehypeStringify)
 				.use(rehypeHighlight)
-				.process(wrapInMarkdown({ syntax, content: rawContent }))
+				.process(wrapInMarkdown({ syntax, extension, content: rawContent }))
 
 			return {
 				markdownContent: markdownContent,
