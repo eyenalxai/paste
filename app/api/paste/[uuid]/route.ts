@@ -19,7 +19,7 @@ export const GET = async (_request: Request, { params: { uuid } }: GetPasteParam
 
 	if (!uuid) return new NextResponse("uuid is required", { status: 400 })
 
-	const [paste] = await getPaste({ uuid })
+	const [paste] = await getPaste(uuid)
 	if (!paste) return new NextResponse("paste not found", { status: 404 })
 
 	if (paste.oneTime) {

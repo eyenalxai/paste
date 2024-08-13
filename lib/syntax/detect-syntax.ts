@@ -80,7 +80,7 @@ export const detectContentSyntax = (content: string): z.infer<typeof Syntax> | u
 		.filter((languageParser) => languageParser !== undefined)
 		.map(({ syntax, parser }) => ({
 			syntax: syntax,
-			errorScore: evaluateParser({ parser, content: contentToParse })
+			errorScore: evaluateParser(parser, contentToParse)
 		}))
 
 	return selectSyntaxWithHighestPriority(scores)

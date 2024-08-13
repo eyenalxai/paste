@@ -19,7 +19,7 @@ export const contentType = "image/png"
 
 export default async function Image({ params: { uuidWithExt } }: PastePageProps) {
 	const [uuid] = extractUuidAndExtension(uuidWithExt)
-	const [paste] = await getPaste({ uuid })
+	const [paste] = await getPaste(uuid)
 
 	if (!paste || paste.ivBase64) return null
 

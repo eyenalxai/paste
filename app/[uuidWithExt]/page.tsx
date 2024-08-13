@@ -18,7 +18,7 @@ export type PastePageProps = {
 export async function generateMetadata({ params: { uuidWithExt } }: PastePageProps) {
 	const [uuid] = extractUuidAndExtension(uuidWithExt)
 
-	const [paste] = await getPaste({ uuid })
+	const [paste] = await getPaste(uuid)
 
 	if (!paste) {
 		const title = "Paste does not exist or has expired"
@@ -65,7 +65,7 @@ export async function generateMetadata({ params: { uuidWithExt } }: PastePagePro
 export default async function Page({ params: { uuidWithExt } }: PastePageProps) {
 	const [uuid, extension] = extractUuidAndExtension(uuidWithExt)
 
-	const [paste] = await getPaste({ uuid })
+	const [paste] = await getPaste(uuid)
 
 	if (!paste) return <h1>Paste does not exist or has expired</h1>
 

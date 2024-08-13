@@ -3,12 +3,8 @@ import { pastes } from "@/lib/schema"
 import { and, eq, gt } from "drizzle-orm"
 import { cache } from "react"
 
-type GetPasteProps = {
-	uuid: string
-}
-
 export const getPaste = cache(
-	async ({ uuid }: GetPasteProps) =>
+	async (uuid: string) =>
 		await db
 			.select()
 			.from(pastes)

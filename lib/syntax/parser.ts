@@ -6,12 +6,7 @@ const getNodeErrorScore = (node: Parser.SyntaxNode, depth = 0): number => {
 	return 0
 }
 
-type EvaluateParserProps = {
-	parser: Parser
-	content: string
-}
-
-export const evaluateParser = ({ parser, content }: EvaluateParserProps) => {
+export const evaluateParser = (parser: Parser, content: string) => {
 	const countErrors = (node: Parser.SyntaxNode, depth = 0): number =>
 		getNodeErrorScore(node, depth) +
 		Array.from({ length: node.childCount })
