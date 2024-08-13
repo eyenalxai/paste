@@ -7,6 +7,7 @@ export const pastes = pgTable("pastes", {
 	oneTime: boolean("one_time"),
 	ivBase64: text("iv_base64"),
 	syntax: varchar("syntax").$type<AllSyntax>(),
+	link: boolean("link").notNull(),
 	expiresAt: timestamp("expires_at", { mode: "string", withTimezone: true }).notNull()
 })
 
