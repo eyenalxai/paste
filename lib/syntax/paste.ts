@@ -22,5 +22,5 @@ export const getPasteSyntax = ({
 		return "markdown"
 	}
 
-	return encrypted ? undefined : detectContentSyntax({ content })
+	return encrypted ? undefined : detectContentSyntax(content)
 }

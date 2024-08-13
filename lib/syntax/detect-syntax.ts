@@ -31,11 +31,7 @@ export const syntaxPriority: Record<z.infer<typeof Syntax>, number> = {
 	bash: 0
 }
 
-type SelectSyntaxWithHighestPriorityProps = {
-	scores: SyntaxScore[]
-}
-
-const selectSyntaxWithHighestPriority = ({ scores }: SelectSyntaxWithHighestPriorityProps) => {
+const selectSyntaxWithHighestPriority = (scores: SyntaxScore[]) => {
 	const groupedByErrorScore = scores.reduce(
 		(acc, curr) => {
 			if (!acc[curr.errorScore]) acc[curr.errorScore] = []
@@ -52,11 +48,7 @@ const selectSyntaxWithHighestPriority = ({ scores }: SelectSyntaxWithHighestPrio
 	return sortedCandidates[0]?.syntax
 }
 
-type DetectContentSyntaxProps = {
-	content: string
-}
-
-export const detectContentSyntax = ({ content }: DetectContentSyntaxProps): z.infer<typeof Syntax> | undefined => {
+export const detectContentSyntax = (content: string): z.infer<typeof Syntax> | undefined => {
 	const contentToParse = content.length > 4096 ? content.slice(0, 4096) : content
 
 	const syntaxToParserLanguageMap: {
@@ -91,5 +83,5 @@ export const detectContentSyntax = ({ content }: DetectContentSyntaxProps): z.in
 			errorScore: evaluateParser({ parser, content: contentToParse })
 		}))
 
-	return selectSyntaxWithHighestPriority({ scores })
+	return selectSyntaxWithHighestPriority(scores)
 }

@@ -30,7 +30,7 @@ export const POST = async (request: Request) => {
 		.insert(pastes)
 		.values({
 			content: pasteContent,
-			syntax: detectContentSyntax({ content: pasteContent }),
+			syntax: detectContentSyntax(pasteContent),
 			link: false,
 			oneTime: false,
 			ivBase64: undefined,
