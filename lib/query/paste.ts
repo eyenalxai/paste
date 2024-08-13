@@ -49,11 +49,11 @@ export const usePaste = ({ uuid, syntax }: UsePasteProps) => {
 			})
 
 			const markdownContent = await unified()
-				.use(remarkParse) // Convert into markdown AST
-				.use(remarkRehype) // Transform to HTML AST
-				.use(rehypeSanitize) // Sanitize HTML input
+				.use(remarkParse)
+				.use(remarkRehype)
+				.use(rehypeSanitize)
 				.use(rehypeStringify)
-				.use(rehypeHighlight) // Convert AST into serialized HTML
+				.use(rehypeHighlight)
 				.process(wrapInMarkdown({ syntax, content: rawContent }))
 
 			return {

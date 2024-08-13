@@ -29,7 +29,9 @@ export const PasteContainer = ({ loading, content, uuid, noWrap, ...props }: Pas
 			</Button>
 			{uuid && (
 				<Button variant={"outline"} asChild>
-					<Link href={`/${uuid}/raw`}>Raw</Link>
+					<a target="_blank" rel="noopener noreferrer" href={`/${uuid}/raw`}>
+						Raw
+					</a>
 				</Button>
 			)}
 		</div>
