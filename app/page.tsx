@@ -71,7 +71,6 @@ export default function Page() {
 	const contentType = form.watch("contentType")
 
 	useEffect(() => {
-		console.log("triggered")
 		if (encrypted && contentType === "auto") {
 			form.setValue("contentType", "plaintext")
 			form.setValue("syntax", undefined)
