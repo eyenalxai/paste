@@ -2003,6 +2003,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tree-sitter-grammars/tree-sitter-toml@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@tree-sitter-grammars/tree-sitter-toml@npm:0.6.0"
+  dependencies:
+    node-addon-api: "npm:^8.0.0"
+    node-gyp: "npm:latest"
+    node-gyp-build: "npm:^4.8.0"
+    regexp-util: "npm:^2.0.0"
+  peerDependencies:
+    tree-sitter: ^0.21.1
+  peerDependenciesMeta:
+    tree_sitter:
+      optional: true
+  checksum: 10c0/e9f5ca63b7ad6de44cd8051d09b9cacc0cba6793cd170f49773a7f297b1344338ff6edc6c3c070f28576207645609536c3dac6d7576b5d4bf4f186736d0c295f
+  languageName: node
+  linkType: hard
+
 "@ts-morph/common@npm:~0.19.0":
   version: 0.19.0
   resolution: "@ts-morph/common@npm:0.19.0"
@@ -6769,6 +6786,7 @@ __metadata:
     "@radix-ui/react-switch": "npm:^1.1.0"
     "@tailwindcss/typography": "npm:^0.5.14"
     "@tanstack/react-query": "npm:^5.51.23"
+    "@tree-sitter-grammars/tree-sitter-toml": "npm:^0.6.0"
     "@types/node": "npm:22.1.0"
     "@types/react": "npm:18.3.3"
     "@types/react-dom": "npm:18.3.0"
@@ -6805,7 +6823,6 @@ __metadata:
     tree-sitter-go: "npm:^0.21.0"
     tree-sitter-python: "npm:^0.21.0"
     tree-sitter-rust: "npm:^0.21.0"
-    tree-sitter-toml: "https://github.com/tree-sitter-grammars/tree-sitter-toml.git#v0.6.0"
     tree-sitter-typescript: "npm:^0.21.2"
     typescript: "npm:5.5.4"
     unified: "npm:^11.0.5"
@@ -8176,22 +8193,6 @@ __metadata:
     tree_sitter:
       optional: true
   checksum: 10c0/8927cb744f5b0f3463890bddf5133ba4c5a659052037fc13d8c28359a2a786a5a2c30292b04c29e33ce17a112509d4f004c1bc4f99dfef83f27f724751ce24df
-  languageName: node
-  linkType: hard
-
-"tree-sitter-toml@https://github.com/tree-sitter-grammars/tree-sitter-toml.git#v0.6.0":
-  version: 0.6.0
-  resolution: "tree-sitter-toml@https://github.com/tree-sitter-grammars/tree-sitter-toml.git#commit=16a30c83ce427385b8d14939c45c137fcfca6c42"
-  dependencies:
-    node-addon-api: "npm:^8.0.0"
-    node-gyp-build: "npm:^4.8.0"
-    regexp-util: "npm:^2.0.0"
-  peerDependencies:
-    tree-sitter: ^0.21.1
-  peerDependenciesMeta:
-    tree_sitter:
-      optional: true
-  checksum: 10c0/dfdb2b21de9202a23df54921ddfc72d282060721e9f104740204502d18450a2e5bdb1f5553cd776c1b68677c715affb7b07fa81c8ad4a259202ab8148adb1f7e
   languageName: node
   linkType: hard
 

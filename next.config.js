@@ -11,7 +11,7 @@ const nextConfig = {
 				"tree-sitter-typescript",
 				"tree-sitter-rust",
 				"tree-sitter-bash",
-				"tree-sitter-toml"
+				"@tree-sitter-grammars/tree-sitter-toml"
 			]
 
 			for (const pkg of treeSitterPackages) {

@@ -19,6 +19,7 @@
 		"@radix-ui/react-slot": "^1.1.0",
 		"@radix-ui/react-switch": "^1.1.0",
 		"@tanstack/react-query": "^5.51.23",
+		"@tree-sitter-grammars/tree-sitter-toml": "^0.6.0",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",
 		"cmdk": "1.0.0",
@@ -44,7 +45,6 @@
 		"tree-sitter-go": "^0.21.0",
 		"tree-sitter-python": "^0.21.0",
 		"tree-sitter-rust": "^0.21.0",
-		"tree-sitter-toml": "https://github.com/tree-sitter-grammars/tree-sitter-toml.git#v0.6.0",
 		"tree-sitter-typescript": "^0.21.2",
 		"unified": "^11.0.5",
 		"zod": "^3.23.8"

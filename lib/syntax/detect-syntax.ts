@@ -1,3 +1,4 @@
+import TOML from "@tree-sitter-grammars/tree-sitter-toml"
 import Parser from "tree-sitter"
 import Bash from "tree-sitter-bash"
 import Go from "tree-sitter-go"
@@ -7,7 +8,6 @@ import Rust from "tree-sitter-rust"
 import type { Syntax } from "@/lib/form"
 import { evaluateParser } from "@/lib/syntax/parser"
 // @ts-ignore: bad typings in tree-sitter-toml
-import TOML from "tree-sitter-toml"
 import type { z } from "zod"
 
 const TSX = require("tree-sitter-typescript").tsx
