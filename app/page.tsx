@@ -173,14 +173,16 @@ export default function Page() {
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
-											{Object.entries(selectContentTypeOptions).map(([key, value]) => {
-												if (encrypted && key === "auto") return null
-												return (
-													<SelectItem key={key} value={key}>
-														{value}
-													</SelectItem>
-												)
-											})}
+											{Object.entries(selectContentTypeOptions)
+												.sort(([_a, a], [_b, b]) => a.localeCompare(b))
+												.map(([key, value]) => {
+													if (encrypted && key === "auto") return null
+													return (
+														<SelectItem key={key} value={key}>
+															{value}
+														</SelectItem>
+													)
+												})}
 										</SelectContent>
 									</Select>
 								</div>
@@ -219,20 +221,22 @@ export default function Page() {
 													<CommandList>
 														<CommandEmpty>No syntax found.</CommandEmpty>
 														<CommandGroup>
-															{Object.entries(selectSyntaxOptions).map(([key, value]) => (
-																<CommandItem
-																	key={key}
-																	value={value}
-																	onSelect={() => {
-																		form.setValue("syntax", key as z.infer<typeof Syntax>)
-																	}}
-																>
-																	<Check
-																		className={cn("mr-2 size-4", key === field.value ? "opacity-100" : "opacity-0")}
-																	/>
-																	{value}
-																</CommandItem>
-															))}
+															{Object.entries(selectSyntaxOptions)
+																.sort(([_a, a], [_b, b]) => a.localeCompare(b))
+																.map(([key, value]) => (
+																	<CommandItem
+																		key={key}
+																		value={value}
+																		onSelect={() => {
+																			form.setValue("syntax", key as z.infer<typeof Syntax>)
+																		}}
+																	>
+																		<Check
+																			className={cn("mr-2 size-4", key === field.value ? "opacity-100" : "opacity-0")}
+																		/>
+																		{value}
+																	</CommandItem>
+																))}
 														</CommandGroup>
 													</CommandList>
 												</Command>
