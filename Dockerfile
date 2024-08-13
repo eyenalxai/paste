@@ -4,9 +4,6 @@ ENV NODE_ENV production
 # Uncomment the following line in case you want to disable telemetry
 # ENV NEXT_TELEMETRY_DISABLED 1
 
-ARG DATABASE_URL
-ARG NEXT_PUBLIC_FRONTEND_URL
-
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y yarnpkg
@@ -28,6 +25,9 @@ COPY ./postcss.config.js ./postcss.config.js
 COPY ./tailwind.config.js ./tailwind.config.js
 COPY ./tsconfig.json ./tsconfig.json
 
+ARG DATABASE_URL
+ARG NEXT_PUBLIC_FRONTEND_URL
+
 RUN yarn install --check-cache --immutable && yarn build
 
 FROM base AS runner
@@ -42,10 +42,13 @@ COPY --chown=node --from=builder /app/node_modules ./node_modules
 
 USER node
 
-EXPOSE 3000
+ENV HOST 0.0.0.0
 
-ENV HOST=0.0.0.0
-ENV PORT=3000
-ENV NODE_ENV=production
+ARG DATABASE_URL
+ENV DATABASE_URL ${DATABASE_URL}
 
+ARG PORT
+ENV PORT ${PORT:-3000}
+
+EXPOSE ${PORT}
 CMD [ "yarn", "start" ]
