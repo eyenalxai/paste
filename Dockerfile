@@ -9,7 +9,7 @@ ARG NEXT_PUBLIC_FRONTEND_URL
 
 WORKDIR /app
 
-RUN apt update && apt install -y yarnpkg
+RUN apt-get update && apt-get install -y yarnpkg
 
 COPY package.json yarn.lock .yarnrc.yml ./
 COPY .yarn/releases/yarn-${YARN_VERSION}.cjs .yarn/releases/yarn-${YARN_VERSION}.cjs
@@ -27,8 +27,6 @@ COPY ./next.config.js ./next.config.js
 COPY ./postcss.config.js ./postcss.config.js
 COPY ./tailwind.config.js ./tailwind.config.js
 COPY ./tsconfig.json ./tsconfig.json
-
-RUN ls -la
 
 RUN yarn install --check-cache --immutable && yarn build
 
