@@ -3,15 +3,17 @@
 import { PasteContainer } from "@/components/paste-container"
 import { Alert } from "@/components/ui/alert"
 import { usePaste } from "@/lib/query/paste"
+import type { AllSyntax } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { Loader } from "lucide-react"
 
 type PasteDisplayProps = {
 	uuid: string
+	syntax: AllSyntax | null
 }
 
-export const PasteDisplay = ({ uuid }: PasteDisplayProps) => {
-	const { pasteContent, isLoading, error } = usePaste({ uuid })
+export const PasteDisplay = ({ uuid, syntax }: PasteDisplayProps) => {
+	const { paste, isLoading, error } = usePaste({ uuid, syntax })
 
 	if (error) {
 		return (
@@ -29,7 +31,7 @@ export const PasteDisplay = ({ uuid }: PasteDisplayProps) => {
 		)
 	}
 
-	if (isLoading || !pasteContent)
+	if (isLoading || !paste)
 		return (
 			<PasteContainer loading>
 				<div className={cn("w-full", "flex", "justify-start")}>
@@ -38,5 +40,5 @@ export const PasteDisplay = ({ uuid }: PasteDisplayProps) => {
 			</PasteContainer>
 		)
 
-	return <PasteContainer content={pasteContent}>{pasteContent}</PasteContainer>
+	return <PasteContainer noWrap content={paste.rawContent} markdown={paste.markdownContent} />
 }

@@ -1,10 +1,11 @@
 import { PasteContainer } from "@/components/paste-container"
 import { PasteDisplay } from "@/components/paste-display"
-import { RemoteMdx } from "@/components/remote-mdx"
 import { clientEnv } from "@/lib/env/client"
 import { wrapInMarkdown } from "@/lib/markdown"
 import { getPaste } from "@/lib/select"
 import type { Metadata } from "next"
+import { MDXRemote } from "next-mdx-remote/rsc"
+import rehypeHighlight from "rehype-highlight"
 
 export type PastePageProps = {
 	params: {
@@ -67,10 +68,15 @@ export default async function Page({ params: { uuid } }: PastePageProps) {
 
 		return (
 			<PasteContainer content={paste.content} uuid={uuid} noWrap>
-				<RemoteMdx source={wrapped} />
+				<MDXRemote
+					source={wrapped}
+					options={{
+						mdxOptions: { rehypePlugins: [rehypeHighlight] }
+					}}
+				/>
 			</PasteContainer>
 		)
 	}
 
-	return <PasteDisplay uuid={uuid} />
+	return <PasteDisplay uuid={uuid} syntax={paste.syntax} />
 }

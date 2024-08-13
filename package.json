@@ -30,6 +30,8 @@
 		"react-dom": "18.3.1",
 		"react-hook-form": "^7.52.2",
 		"rehype-highlight": "^7.0.0",
+		"rehype-sanitize": "^6.0.0",
+		"rehype-stringify": "^10.0.0",
 		"server-only": "^0.0.1",
 		"sonner": "^1.5.0",
 		"tailwind-merge": "^2.4.0",
@@ -41,6 +43,7 @@
 		"tree-sitter-rust": "^0.21.0",
 		"tree-sitter-toml": "https://github.com/tree-sitter-grammars/tree-sitter-toml.git#v0.6.0",
 		"tree-sitter-typescript": "^0.21.2",
+		"unified": "^11.0.5",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
