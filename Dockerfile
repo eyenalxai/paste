@@ -25,9 +25,9 @@ COPY ./postcss.config.js ./postcss.config.js
 COPY ./tailwind.config.js ./tailwind.config.js
 COPY ./tsconfig.json ./tsconfig.json
 
-ARG DATABASE_URL
 ARG NEXT_PUBLIC_FRONTEND_URL
 
+ENV BUILD_TIME TRUE
 RUN yarn install --check-cache --immutable && yarn build
 
 FROM base AS runner
@@ -42,6 +42,7 @@ COPY --chown=node --from=builder /app/node_modules ./node_modules
 
 USER node
 
+ENV BUILD_TIME FALSE
 ENV HOST 0.0.0.0
 
 ARG DATABASE_URL

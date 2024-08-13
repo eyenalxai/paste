@@ -3,7 +3,6 @@ services:
     container_name: paste
     build:
       args:
-        DATABASE_URL: postgres://postgres:mysecretpassword@database.com:5432/postgres
         NEXT_PUBLIC_FRONTEND_URL: https://my-domain.com
     ports:
       - "${PORT:-3000}:${PORT:-3000}"
