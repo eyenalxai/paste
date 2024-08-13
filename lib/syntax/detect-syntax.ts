@@ -22,6 +22,36 @@ type SyntaxScore = {
 	errorScore: number
 }
 
+export const syntaxPriority: Record<z.infer<typeof Syntax>, number> = {
+	toml: 5,
+	go: 4,
+	rust: 3,
+	tsx: 2,
+	python: 1,
+	bash: 0
+}
+
+type SelectSyntaxWithHighestPriorityProps = {
+	scores: SyntaxScore[]
+}
+
+const selectSyntaxWithHighestPriority = ({ scores }: SelectSyntaxWithHighestPriorityProps) => {
+	const groupedByErrorScore = scores.reduce(
+		(acc, curr) => {
+			if (!acc[curr.errorScore]) acc[curr.errorScore] = []
+			acc[curr.errorScore].push(curr)
+			return acc
+		},
+		{} as Record<number, SyntaxScore[]>
+	)
+
+	const lowestErrorScore = Math.min(...Object.keys(groupedByErrorScore).map(Number))
+	const candidates = groupedByErrorScore[lowestErrorScore]
+	const sortedCandidates = candidates.sort((a, b) => syntaxPriority[b.syntax] - syntaxPriority[a.syntax])
+
+	return sortedCandidates[0]?.syntax
+}
+
 type DetectContentSyntaxProps = {
 	content: string
 }
@@ -61,12 +91,5 @@ export const detectContentSyntax = ({ content }: DetectContentSyntaxProps): z.in
 			errorScore: evaluateParser({ parser, content: contentToParse })
 		}))
 
-	const result = scores.reduce<SyntaxScore | undefined>((acc, curr) => {
-		if (!acc || curr.errorScore < acc.errorScore) {
-			return curr
-		}
-		return acc
-	}, undefined)
-
-	return result?.syntax
+	return selectSyntaxWithHighestPriority({ scores })
 }
