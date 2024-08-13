@@ -1,1 +1,0 @@
-ALTER TABLE "pastes" ADD COLUMN "link" boolean NOT NULL;

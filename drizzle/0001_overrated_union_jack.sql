@@ -1,1 +1,0 @@
-ALTER TABLE "pastes" RENAME COLUMN "language" TO "syntax";

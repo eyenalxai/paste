@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS "pastes" (
 	"content" text NOT NULL,
 	"one_time" boolean,
 	"iv_base64" text,
-	"language" varchar,
+	"syntax" varchar,
+	"link" boolean NOT NULL,
 	"expires_at" timestamp with time zone NOT NULL
 );
