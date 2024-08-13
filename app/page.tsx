@@ -1,15 +1,23 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { PasteFormSchema, selectContentTypeOptions, selectExpiresAfterOptions, selectLanguageOptions } from "@/lib/form"
+import {
+	PasteFormSchema,
+	type Syntax,
+	selectContentTypeOptions,
+	selectExpiresAfterOptions,
+	selectLanguageOptions
+} from "@/lib/form"
 import { savePaste } from "@/lib/paste/save-paste"
 import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Copy } from "lucide-react"
+import { Check, ChevronsUpDown, Copy } from "lucide-react"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -184,27 +192,51 @@ export default function Page() {
 							control={form.control}
 							name="syntax"
 							render={({ field }) => (
-								<FormItem>
+								<FormItem className="flex flex-col">
 									<div className={cn("flex", "flex-row", "gap-x-2")}>
 										<div className={cn("flex", "justify-center", "items-center", "text-center", "whitespace-nowrap")}>
 											Syntax
 										</div>
-										<Select onValueChange={field.onChange} value={field.value || ""}>
-											<FormControl>
-												<SelectTrigger className={cn("w-56")}>
-													<SelectValue placeholder={"Select syntax"}>
-														{selectLanguageOptions[field.value as keyof typeof selectLanguageOptions]}
-													</SelectValue>
-												</SelectTrigger>
-											</FormControl>
-											<SelectContent>
-												{Object.entries(selectLanguageOptions).map(([key, value]) => (
-													<SelectItem key={key} value={key}>
-														{value}
-													</SelectItem>
-												))}
-											</SelectContent>
-										</Select>
+										<Popover>
+											<PopoverTrigger asChild>
+												<FormControl>
+													<Button
+														variant="outline"
+														role="combobox"
+														className={cn("w-[200px] justify-between", !field.value && "text-muted-foreground")}
+													>
+														{field.value
+															? selectLanguageOptions[field.value as z.infer<typeof Syntax>]
+															: "Select syntax"}
+														<ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
+													</Button>
+												</FormControl>
+											</PopoverTrigger>
+											<PopoverContent className="w-[200px] p-0">
+												<Command>
+													<CommandInput placeholder="Search syntax..." />
+													<CommandList>
+														<CommandEmpty>No syntax found.</CommandEmpty>
+														<CommandGroup>
+															{Object.entries(selectLanguageOptions).map(([key, value]) => (
+																<CommandItem
+																	key={key}
+																	value={value}
+																	onSelect={() => {
+																		form.setValue("syntax", key as z.infer<typeof Syntax>)
+																	}}
+																>
+																	<Check
+																		className={cn("mr-2 size-4", key === field.value ? "opacity-100" : "opacity-0")}
+																	/>
+																	{value}
+																</CommandItem>
+															))}
+														</CommandGroup>
+													</CommandList>
+												</Command>
+											</PopoverContent>
+										</Popover>
 									</div>
 								</FormItem>
 							)}
