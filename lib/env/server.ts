@@ -2,11 +2,18 @@ import "server-only"
 
 class ServerEnv {
 	// biome-ignore lint/style/noNonNullAssertion: constructor throws if not set
-	databaseUrl = process.env.DATABASE_URL!
 	maxPayloadSize = 1024 * 1024
 
-	constructor() {
-		if (!this.databaseUrl) throw new Error("DATABASE_URL not set")
+	private _databaseUrl: string | undefined
+
+	get databaseUrl() {
+		if (!this._databaseUrl) {
+			this._databaseUrl = process.env.DATABASE_URL
+			if (!this._databaseUrl) {
+				throw new Error("DATABASE_URL not set")
+			}
+		}
+		return this._databaseUrl
 	}
 }
 
