@@ -1,5 +1,5 @@
 import type { ContentType } from "@/lib/form"
-import { detectContentSyntax } from "@/lib/syntax/detect-language"
+import { detectContentSyntax } from "@/lib/syntax/detect-syntax"
 import type { AllSyntax } from "@/lib/types"
 import type { z } from "zod"
 

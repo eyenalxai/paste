@@ -3,7 +3,7 @@ import { getExpiresAt } from "@/lib/date"
 import { clientEnv } from "@/lib/env/client"
 import { serverEnv } from "@/lib/env/server"
 import { pastes } from "@/lib/schema"
-import { detectContentSyntax } from "@/lib/syntax/detect-language"
+import { detectContentSyntax } from "@/lib/syntax/detect-syntax"
 import { NextResponse } from "next/server"
 
 export const maxDuration = 5 // In seconds
