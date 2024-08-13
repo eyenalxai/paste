@@ -1,7 +1,8 @@
-import * as fs from "node:fs"
+import { readFile } from "node:fs/promises"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 import type { PastePageProps } from "@/app/[uuidWithExt]/page"
+import { getImageTitle } from "@/lib/image"
 import { getPaste } from "@/lib/select"
 import { extractUuidAndExtension } from "@/lib/uuid-extension"
 import { ImageResponse } from "next/og"
@@ -21,11 +22,11 @@ export default async function Image({ params: { uuidWithExt } }: PastePageProps)
 	const [uuid] = extractUuidAndExtension(uuidWithExt)
 	const [paste] = await getPaste(uuid)
 
-	if (!paste || paste.ivBase64) return null
+	if (!paste) return null
 
-	const fontData = await fs.promises.readFile(
-		path.join(fileURLToPath(import.meta.url), "../../../public/Roboto-Mono-Regular.woff")
-	)
+	const title = getImageTitle(paste)
+
+	const fontData = await readFile(path.join(fileURLToPath(import.meta.url), "../../../public/Roboto-Mono-Regular.woff"))
 
 	return new ImageResponse(
 		<div
@@ -62,7 +63,7 @@ export default async function Image({ params: { uuidWithExt } }: PastePageProps)
 					fontFamily: "sans-serif"
 				}}
 			>
-				PASTE
+				{title}
 			</div>
 		</div>,
 		{
