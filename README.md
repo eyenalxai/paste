@@ -2,27 +2,57 @@
 
 ## How to deploy
 
-1. Clone and cd into the repo
+
+Clone and cd into the repo
+
 ```bash
-git clone https://github.com/eyenalxai/paste.git
+git clone https://github.com/eyenalxai/paste.git && cd paste
 ```
-2. Build the image
+
+### Nixpacks
+
+Build the image
 ```bash
-nixpacks build paste \
+nixpacks build . \
 -e NEXT_PUBLIC_FRONTEND_URL=https://my-domain.com \
 -e DATABASE_URL=postgres://postgres:mysecretpassword@database.com:5432/postgres \
 --name paste -t latest
 ```
 
-3. Run the container
+Run the container
 ```bash
 docker run --name paste -p 3000:3000 -d paste:latest
 ```
 
-If you want to run it on the different port, you can change it via `PORT` environment variable.
+Port can be changed with `PORT` environment variable
 
+### Docker
+
+#### Without compose
+
+Build the image
 ```bash
-docker run --name paste -e PORT=8000 -p 8000:8000 -d paste:latest
+docker build --build-arg NEXT_PUBLIC_FRONTEND_URL=https://my-domain.com -t paste:latest .
 ```
 
-Client side encryption requires secure environment (HTTPS) to work, so you will need to figure it out.
+Run the container
+```bash
+docker run --name paste \
+-e DATABASE_URL=postgres://postgres:mysecretpassword@database.com:5432/postgres \
+-p 3000:3000 -d paste:latest
+```
+
+Port can be changed with `PORT` environment variable
+
+
+#### With compose
+
+Edit the `docker-compose.yml` file
+
+Run the container
+```bash
+docker-compose up -d
+```
+
+### Important
+Client side encryption requires secure environment (*HTTPS*) to work, so you will need to figure it out
