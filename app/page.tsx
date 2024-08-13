@@ -20,7 +20,7 @@ export default function Page() {
 		resolver: zodResolver(PasteFormSchema),
 		defaultValues: {
 			content: "",
-			encrypted: true,
+			encrypted: false,
 			oneTime: false,
 			expiresAfter: "1-hour",
 			contentType: "auto",
@@ -60,16 +60,30 @@ export default function Page() {
 					content: "",
 					oneTime: false,
 					encrypted: formData.encrypted,
-					contentType: "auto",
-					syntax: undefined,
+					contentType: formData.contentType,
+					syntax: formData.syntax,
 					expiresAfter: "1-hour"
 				})
 			})
 	}
 
+	const encrypted = form.watch("encrypted")
+	const contentType = form.watch("contentType")
+
 	useEffect(() => {
-		if (form.formState.errors.content?.message) {
-			toast.error(form.formState.errors.content.message)
+		console.log("triggered")
+		if (encrypted && contentType === "auto") {
+			form.setValue("contentType", "plaintext")
+			form.setValue("syntax", undefined)
+		}
+	}, [encrypted, contentType, form, form.setValue])
+
+	useEffect(() => {
+		if (form.formState.errors) {
+			for (const path in form.formState.errors) {
+				const message = form.formState.errors[path as keyof typeof form.formState.errors]?.message
+				if (message) toast.error(message)
+			}
 		}
 	}, [form.formState.errors, form])
 
@@ -130,38 +144,39 @@ export default function Page() {
 							</FormItem>
 						)}
 					/>
-					{!form.watch("encrypted") && (
-						<FormField
-							control={form.control}
-							name="contentType"
-							render={({ field }) => (
-								<FormItem>
-									<div className={cn("flex", "flex-row", "gap-x-2")}>
-										<div className={cn("flex", "justify-center", "items-center", "text-center", "whitespace-nowrap")}>
-											Content type
-										</div>
-										<Select onValueChange={field.onChange} value={field.value}>
-											<FormControl>
-												<SelectTrigger className={cn("w-32")}>
-													<SelectValue>
-														{selectContentTypeOptions[field.value as keyof typeof selectContentTypeOptions]}
-													</SelectValue>
-												</SelectTrigger>
-											</FormControl>
-											<SelectContent>
-												{Object.entries(selectContentTypeOptions).map(([key, value]) => (
+					<FormField
+						control={form.control}
+						name="contentType"
+						render={({ field }) => (
+							<FormItem>
+								<div className={cn("flex", "flex-row", "gap-x-2")}>
+									<div className={cn("flex", "justify-center", "items-center", "text-center", "whitespace-nowrap")}>
+										Content type
+									</div>
+									<Select onValueChange={field.onChange} value={field.value}>
+										<FormControl>
+											<SelectTrigger className={cn("w-32")}>
+												<SelectValue>
+													{selectContentTypeOptions[field.value as keyof typeof selectContentTypeOptions]}
+												</SelectValue>
+											</SelectTrigger>
+										</FormControl>
+										<SelectContent>
+											{Object.entries(selectContentTypeOptions).map(([key, value]) => {
+												if (encrypted && key === "auto") return null
+												return (
 													<SelectItem key={key} value={key}>
 														{value}
 													</SelectItem>
-												))}
-											</SelectContent>
-										</Select>
-									</div>
-								</FormItem>
-							)}
-						/>
-					)}
-					{!form.watch("encrypted") && form.watch("contentType") === "source" && (
+												)
+											})}
+										</SelectContent>
+									</Select>
+								</div>
+							</FormItem>
+						)}
+					/>
+					{contentType === "source" && (
 						<FormField
 							control={form.control}
 							name="syntax"

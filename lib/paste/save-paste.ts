@@ -12,7 +12,8 @@ export const savePaste = async (paste: z.infer<typeof PasteFormSchema>) => {
 
 		const insertedPaste = await insertPaste({
 			content: encryptedContentBase64,
-			contentType: "auto",
+			contentType: paste.contentType,
+			syntax: paste.syntax,
 			iv: ivBase64,
 			oneTime: paste.oneTime,
 			expiresAfter: paste.expiresAfter

@@ -20,13 +20,14 @@ export const POST = async (request: Request) => {
 
 	const pasteValidated = SecurePasteFormSchema.parse(receivedPaste)
 
-	const pasteSyntax = pasteValidated.iv
-		? undefined
-		: getPasteSyntax({
-				syntax: pasteValidated.syntax,
-				contentType: pasteValidated.contentType,
-				content: pasteValidated.content
-			})
+	console.log(pasteValidated)
+
+	const pasteSyntax = getPasteSyntax({
+		encrypted: pasteValidated.iv !== undefined,
+		syntax: pasteValidated.syntax,
+		contentType: pasteValidated.contentType,
+		content: pasteValidated.content
+	})
 
 	const [paste] = await db
 		.insert(pastes)
