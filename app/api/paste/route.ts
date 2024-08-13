@@ -20,8 +20,6 @@ export const POST = async (request: Request) => {
 
 	const pasteValidated = SecurePasteFormSchema.parse(receivedPaste)
 
-	console.log(pasteValidated)
-
 	const pasteSyntax = getPasteSyntax({
 		encrypted: pasteValidated.iv !== undefined,
 		syntax: pasteValidated.syntax,
