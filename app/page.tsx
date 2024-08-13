@@ -203,7 +203,10 @@ export default function Page() {
 													<Button
 														variant="outline"
 														role="combobox"
-														className={cn("w-[200px] justify-between", !field.value && "text-muted-foreground")}
+														className={cn(
+															"w-[200px] justify-between font-normal",
+															!field.value && "text-muted-foreground"
+														)}
 													>
 														{field.value
 															? selectLanguageOptions[field.value as z.infer<typeof Syntax>]
