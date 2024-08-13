@@ -16,10 +16,6 @@ export const getPasteSyntax = ({
 	contentType,
 	content
 }: GetPasteLanguageProps): AllSyntax | undefined => {
-	console.log("encrypted", encrypted)
-	console.log("content", content)
-	console.log("syntax", syntax)
-	console.log("contentType", contentType)
 	if (syntax) return syntax
 
 	if (contentType === "markdown") {
