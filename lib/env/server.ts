@@ -6,7 +6,7 @@ class ServerEnv {
 	maxPayloadSize = 1024 * 1024
 
 	constructor() {
-		if (!this.databaseUrl) throw new Error("NEXT_PUBLIC_FRONTEND_URL not set")
+		if (!this.databaseUrl) throw new Error("DATABASE_URL not set")
 	}
 }
 
