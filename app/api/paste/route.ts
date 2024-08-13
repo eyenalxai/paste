@@ -1,6 +1,6 @@
 import { db } from "@/lib/database"
 import { getExpiresAt } from "@/lib/date"
-import { serverEnv } from "@/lib/env/server"
+import { env } from "@/lib/env.mjs"
 import { SecurePasteFormSchema } from "@/lib/form"
 import { pastes } from "@/lib/schema"
 import { getPasteSyntax } from "@/lib/syntax/paste"
@@ -14,8 +14,8 @@ export const POST = async (request: Request) => {
 
 	const jsonBytes = new TextEncoder().encode(JSON.stringify(receivedPaste)).length
 
-	if (jsonBytes > serverEnv.maxPayloadSize) {
-		return NextResponse.json({ error: `request body size exceeds ${serverEnv.maxPayloadSize} bytes` }, { status: 413 })
+	if (jsonBytes > env.MAX_PAYLOAD_SIZE) {
+		return NextResponse.json({ error: `request body size exceeds ${env.MAX_PAYLOAD_SIZE} bytes` }, { status: 413 })
 	}
 
 	const pasteValidated = SecurePasteFormSchema.parse(receivedPaste)

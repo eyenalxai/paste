@@ -1,7 +1,6 @@
 import { db } from "@/lib/database"
 import { getExpiresAt } from "@/lib/date"
-import { clientEnv } from "@/lib/env/client"
-import { serverEnv } from "@/lib/env/server"
+import { env } from "@/lib/env.mjs"
 import { pastes } from "@/lib/schema"
 import { detectContentSyntax } from "@/lib/syntax/detect-syntax"
 import { NextResponse } from "next/server"
@@ -16,8 +15,8 @@ export const POST = async (request: Request) => {
 		0
 	)
 
-	if (formDataBytes > serverEnv.maxPayloadSize) {
-		return new NextResponse(`request body size exceeds ${serverEnv.maxPayloadSize} bytes`, { status: 413 })
+	if (formDataBytes > env.MAX_PAYLOAD_SIZE) {
+		return new NextResponse(`request body size exceeds ${env.MAX_PAYLOAD_SIZE} bytes`, { status: 413 })
 	}
 
 	const pasteContent = formData.get("paste") as string | null
@@ -38,7 +37,7 @@ export const POST = async (request: Request) => {
 		})
 		.returning()
 
-	return new Response(`${clientEnv.frontendUrl}/${insertedPaste.uuid}\n`, {
+	return new Response(`${env.NEXT_PUBLIC_FRONTEND_URL}/${insertedPaste.uuid}\n`, {
 		headers: {
 			"content-type": "text/plain"
 		}

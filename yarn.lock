@@ -1971,6 +1971,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@t3-oss/env-core@npm:0.11.0":
+  version: 0.11.0
+  resolution: "@t3-oss/env-core@npm:0.11.0"
+  peerDependencies:
+    typescript: ">=5.0.0"
+    zod: ^3.0.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/1e73b787e64ea3bc0911999ee13dc16b521c2ab512cdc479dbdf9e77af203ca62fb7933ce1eca813a95644cbb2a2f275791172cec84315c961986bfd9aa707ee
+  languageName: node
+  linkType: hard
+
+"@t3-oss/env-nextjs@npm:^0.11.0":
+  version: 0.11.0
+  resolution: "@t3-oss/env-nextjs@npm:0.11.0"
+  dependencies:
+    "@t3-oss/env-core": "npm:0.11.0"
+  peerDependencies:
+    typescript: ">=5.0.0"
+    zod: ^3.0.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/aedb9406fa8f538976ea2339ee11b0cbe656ad27d3e58de3fedf420b78c65f5ec1c02f2d46ec5085b6f9c69a3bbf7c4fdbf2675a50275c6585f62cc9b9a243e1
+  languageName: node
+  linkType: hard
+
 "@tailwindcss/typography@npm:^0.5.14":
   version: 0.5.14
   resolution: "@tailwindcss/typography@npm:0.5.14"
@@ -6784,6 +6812,7 @@ __metadata:
     "@radix-ui/react-select": "npm:^2.1.1"
     "@radix-ui/react-slot": "npm:^1.1.0"
     "@radix-ui/react-switch": "npm:^1.1.0"
+    "@t3-oss/env-nextjs": "npm:^0.11.0"
     "@tailwindcss/typography": "npm:^0.5.14"
     "@tanstack/react-query": "npm:^5.51.23"
     "@tree-sitter-grammars/tree-sitter-toml": "npm:^0.6.0"

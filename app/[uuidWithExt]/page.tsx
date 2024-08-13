@@ -1,6 +1,6 @@
 import { PasteContainer } from "@/components/paste-container"
 import { PasteDisplay } from "@/components/paste-display"
-import { clientEnv } from "@/lib/env/client"
+import { env } from "@/lib/env.mjs"
 import { wrapInMarkdown } from "@/lib/markdown"
 import { getPaste } from "@/lib/select"
 import { extractUuidAndExtension } from "@/lib/uuid-extension"
@@ -16,6 +16,8 @@ export type PastePageProps = {
 }
 
 export async function generateMetadata({ params: { uuidWithExt } }: PastePageProps) {
+	const frontendUrl = env.NEXT_PUBLIC_FRONTEND_URL
+
 	const [uuid] = extractUuidAndExtension(uuidWithExt)
 
 	const [paste] = await getPaste(uuid)
@@ -26,7 +28,7 @@ export async function generateMetadata({ params: { uuidWithExt } }: PastePagePro
 			title: title,
 			openGraph: {
 				title: title,
-				url: new URL(`${clientEnv.frontendUrl}/${uuid}`),
+				url: new URL(`${frontendUrl}/${uuid}`),
 				type: "website"
 			}
 		} satisfies Metadata
@@ -41,7 +43,7 @@ export async function generateMetadata({ params: { uuidWithExt } }: PastePagePro
 			openGraph: {
 				title: title,
 				description: description,
-				url: new URL(`${clientEnv.frontendUrl}/${uuid}`),
+				url: new URL(`${frontendUrl}/${uuid}`),
 				type: "website"
 			}
 		} satisfies Metadata
@@ -56,7 +58,7 @@ export async function generateMetadata({ params: { uuidWithExt } }: PastePagePro
 		openGraph: {
 			title: title,
 			description: description,
-			url: new URL(`${clientEnv.frontendUrl}/${uuid}`),
+			url: new URL(`${frontendUrl}/${uuid}`),
 			type: "website"
 		}
 	} satisfies Metadata

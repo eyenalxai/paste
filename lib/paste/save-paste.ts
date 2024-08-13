@@ -1,4 +1,4 @@
-import { clientEnv } from "@/lib/env/client"
+import { env } from "@/lib/env.mjs"
 import { insertPaste } from "@/lib/fetch/paste"
 import type { PasteFormSchema } from "@/lib/form"
 import { encryptPasteContentToBase64 } from "@/lib/paste/encrypt-decrypt"
@@ -19,10 +19,10 @@ export const savePaste = async (paste: z.infer<typeof PasteFormSchema>) => {
 			expiresAfter: paste.expiresAfter
 		})
 
-		return `${clientEnv.frontendUrl}/${insertedPaste.uuid}#${keyBase64}`
+		return `${env.NEXT_PUBLIC_FRONTEND_URL}/${insertedPaste.uuid}#${keyBase64}`
 	}
 
 	const insertedPaste = await insertPaste(paste)
 
-	return `${clientEnv.frontendUrl}/${insertedPaste.uuid}`
+	return `${env.NEXT_PUBLIC_FRONTEND_URL}/${insertedPaste.uuid}`
 }

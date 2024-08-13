@@ -1,7 +1,7 @@
 import "./globals.css"
 import "./code-style.css"
 import { Providers } from "@/components/providers"
-import { clientEnv } from "@/lib/env/client"
+import { env } from "@/lib/env.mjs"
 import { fontMono, fontSans } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import type { Metadata, Viewport } from "next"
@@ -11,14 +11,14 @@ const TITLE = "Paste"
 const DESCRIPTION = "Share text"
 
 export const metadata: Metadata = {
-	metadataBase: new URL(clientEnv.frontendUrl),
+	metadataBase: new URL(env.NEXT_PUBLIC_FRONTEND_URL),
 	title: TITLE,
 	description: DESCRIPTION,
 	openGraph: {
 		title: TITLE,
 		description: DESCRIPTION,
 		type: "website",
-		url: new URL(clientEnv.frontendUrl)
+		url: new URL(env.NEXT_PUBLIC_FRONTEND_URL)
 	}
 }
 
