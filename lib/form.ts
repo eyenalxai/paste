@@ -55,7 +55,7 @@ export const selectContentTypeOptions: Record<z.infer<typeof ContentType>, strin
 	source: "Source"
 }
 
-export const selectLanguageOptions: Record<z.infer<typeof Syntax>, string> = {
+export const selectSyntaxOptions: Record<z.infer<typeof Syntax>, string> = {
 	bash: "Bash",
 	go: "Go",
 	python: "Python",

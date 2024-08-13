@@ -12,7 +12,7 @@ import {
 	type Syntax,
 	selectContentTypeOptions,
 	selectExpiresAfterOptions,
-	selectLanguageOptions
+	selectSyntaxOptions
 } from "@/lib/form"
 import { savePaste } from "@/lib/paste/save-paste"
 import { cn } from "@/lib/utils"
@@ -208,9 +208,7 @@ export default function Page() {
 															!field.value && "text-muted-foreground"
 														)}
 													>
-														{field.value
-															? selectLanguageOptions[field.value as z.infer<typeof Syntax>]
-															: "Select syntax"}
+														{field.value ? selectSyntaxOptions[field.value as z.infer<typeof Syntax>] : "Select syntax"}
 														<ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
 													</Button>
 												</FormControl>
@@ -221,7 +219,7 @@ export default function Page() {
 													<CommandList>
 														<CommandEmpty>No syntax found.</CommandEmpty>
 														<CommandGroup>
-															{Object.entries(selectLanguageOptions).map(([key, value]) => (
+															{Object.entries(selectSyntaxOptions).map(([key, value]) => (
 																<CommandItem
 																	key={key}
 																	value={value}
