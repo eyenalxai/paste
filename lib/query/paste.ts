@@ -59,7 +59,8 @@ export const usePaste = ({ uuid, syntax, extension }: UsePasteProps) => {
 
 			return {
 				markdownContent: markdownContent,
-				rawContent
+				rawContent,
+				link: paste.link
 			}
 		}
 	})

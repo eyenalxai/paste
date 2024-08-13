@@ -1,7 +1,8 @@
+import { isValidUrl } from "@/lib/url"
 import { z } from "zod"
 
 export const ExpiresAfter = z.enum(["5-minutes", "30-minutes", "1-hour", "6-hours", "1-day", "1-week", "1-month"])
-export const ContentType = z.enum(["auto", "markdown", "source", "plaintext"])
+export const ContentType = z.enum(["auto", "link", "markdown", "source", "plaintext"])
 export const Syntax = z.enum(["go", "tsx", "python", "rust", "bash", "toml"])
 
 export const InitializationVectorSchema = z.object({
@@ -30,6 +31,9 @@ export const PasteFormSchema = SharedFormFields.merge(FrontendOnlyDataSchema)
 		message: "Must select a syntax for source code",
 		path: ["syntax"]
 	})
+	.refine((data) => !(data.contentType === "link" && !isValidUrl(data.content)), {
+		message: "Invalid URL"
+	})
 
 export const SecurePasteFormSchema = SharedFormFields.merge(InitializationVectorSchema)
 
@@ -45,6 +49,7 @@ export const selectExpiresAfterOptions: Record<z.infer<typeof ExpiresAfter>, str
 
 export const selectContentTypeOptions: Record<z.infer<typeof ContentType>, string> = {
 	auto: "Auto",
+	link: "Link",
 	markdown: "Markdown",
 	plaintext: "Plaintext",
 	source: "Source"

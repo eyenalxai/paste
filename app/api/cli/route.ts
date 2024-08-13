@@ -31,6 +31,7 @@ export const POST = async (request: Request) => {
 		.values({
 			content: pasteContent,
 			syntax: detectContentSyntax({ content: pasteContent }),
+			link: false,
 			oneTime: false,
 			ivBase64: undefined,
 			expiresAt: getExpiresAt("1-day").toISOString()

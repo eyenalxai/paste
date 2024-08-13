@@ -75,6 +75,10 @@ export default function Page() {
 			form.setValue("contentType", "plaintext")
 			form.setValue("syntax", undefined)
 		}
+
+		if (contentType !== "source") {
+			form.setValue("syntax", undefined)
+		}
 	}, [encrypted, contentType, form, form.setValue])
 
 	useEffect(() => {

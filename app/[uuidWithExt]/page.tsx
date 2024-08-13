@@ -6,6 +6,7 @@ import { getPaste } from "@/lib/select"
 import { extractUuidAndExtension } from "@/lib/uuid-extension"
 import type { Metadata } from "next"
 import { MDXRemote } from "next-mdx-remote/rsc"
+import { permanentRedirect } from "next/navigation"
 import rehypeHighlight from "rehype-highlight"
 
 export type PastePageProps = {
@@ -69,6 +70,10 @@ export default async function Page({ params: { uuidWithExt } }: PastePageProps) 
 	if (!paste) return <h1>Paste does not exist or has expired</h1>
 
 	if (!paste.ivBase64) {
+		if (paste.link) {
+			permanentRedirect(paste.content)
+		}
+
 		const wrapped = wrapInMarkdown({ syntax: paste.syntax, content: paste.content, extension })
 
 		return (

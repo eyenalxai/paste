@@ -34,7 +34,8 @@ export const POST = async (request: Request) => {
 			syntax: pasteSyntax,
 			ivBase64: pasteValidated.iv,
 			oneTime: pasteValidated.oneTime,
-			expiresAt: getExpiresAt(pasteValidated.expiresAfter).toISOString()
+			expiresAt: getExpiresAt(pasteValidated.expiresAfter).toISOString(),
+			link: pasteValidated.contentType === "link"
 		})
 		.returning()
 
