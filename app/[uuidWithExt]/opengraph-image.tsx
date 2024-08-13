@@ -53,12 +53,12 @@ export default async function Image({ params: { uuidWithExt } }: PastePageProps)
 					display: "block"
 				}}
 			>
-				{paste.content.length > 800 ? `${paste.content.slice(0, 800)}...` : paste.content}
+				{paste.content.length > 1400 ? `${paste.content.slice(0, 1400)}...` : paste.content}
 			</div>
 			<div
 				style={{
-					paddingBottom: "6rem",
-					fontSize: "6rem",
+					paddingBottom: "5rem",
+					fontSize: "5rem",
 					color: "white",
 					fontFamily: "sans-serif"
 				}}
