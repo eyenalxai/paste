@@ -10,6 +10,7 @@ type PasteContainerProps = {
 	loading?: boolean
 	content?: string
 	uuid?: string
+	keyBase64?: string
 	noWrap?: boolean
 } & (
 	| {
@@ -20,16 +21,16 @@ type PasteContainerProps = {
 	  }
 )
 
-export const PasteContainer = ({ loading, content, uuid, noWrap, ...props }: PasteContainerProps) => (
+export const PasteContainer = ({ loading, content, uuid, keyBase64, noWrap, ...props }: PasteContainerProps) => (
 	<div className={cn("flex", "flex-col", "gap-4")}>
 		<div className={cn("flex", "flex-row", "flex-wrap", "gap-4", "justify-start", "items-center")}>
 			<CopyContentButton loading={loading} content={content} />
 			<Button variant={"outline"} asChild>
 				<Link href={"/"}>New paste</Link>
 			</Button>
-			{uuid && (
+			{uuid && keyBase64 && (
 				<Button variant={"outline"} asChild>
-					<a target="_blank" rel="noopener noreferrer" href={`/${uuid}/raw`}>
+					<a target="_blank" rel="noopener noreferrer" href={`/${uuid}/raw/?key=${keyBase64}`}>
 						Raw
 					</a>
 				</Button>

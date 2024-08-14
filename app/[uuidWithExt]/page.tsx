@@ -83,7 +83,7 @@ export default async function Page({ params: { uuidWithExt }, searchParams: { ke
 		const wrapped = wrapInMarkdown({ syntax: paste.syntax, content: decryptedContent, extension })
 
 		return (
-			<PasteContainer content={decryptedContent} uuid={uuid} noWrap>
+			<PasteContainer content={decryptedContent} uuid={uuid} keyBase64={decodeURIComponent(key)} noWrap>
 				<MDXRemote
 					source={wrapped}
 					options={{

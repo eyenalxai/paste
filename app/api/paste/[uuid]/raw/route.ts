@@ -7,11 +7,23 @@ import { extractUuidAndExtension } from "@/lib/uuid-extension"
 import { eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
 
-export const GET = async (_request: Request, { params: { uuidWithExt }, searchParams: { key } }: PastePageProps) => {
-	await deleteExpirePastes()
+export type RawPastePageProps = {
+	params: {
+		uuid: string
+	}
+}
 
-	if (!uuidWithExt) return new NextResponse("uuid is required", { status: 400 })
-	const [uuid] = extractUuidAndExtension(uuidWithExt)
+export const GET = async (request: Request, { params: { uuid } }: RawPastePageProps) => {
+	await deleteExpirePastes()
+	console.log("uuid", uuid)
+
+	if (!uuid) return new NextResponse("uuid is required", { status: 400 })
+
+	const { searchParams } = new URL(request.url)
+	const key = searchParams.get("key")
+	console.log("key", key)
+
+	if (!key) return new NextResponse("key is required", { status: 400 })
 
 	const { decryptedContent, paste } = await getDecryptedPaste({ uuid, key })
 	if (!paste) return new NextResponse("paste not found", { status: 404 })
