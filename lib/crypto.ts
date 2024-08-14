@@ -2,15 +2,21 @@
 
 export const KEY_USAGES = ["encrypt", "decrypt"] as const
 
-export const generateKey = async () =>
-	window.crypto.subtle.generateKey(
-		{
-			name: "AES-GCM",
-			length: 256
-		},
-		true,
-		KEY_USAGES
-	)
+export const generateKey = async () => {
+	try {
+		return window.crypto.subtle.generateKey(
+			{
+				name: "AES-GCM",
+				length: 256
+			},
+			true,
+			KEY_USAGES
+		)
+	} catch (error) {
+		console.error(error)
+		throw new Error("Failed to generate key, probably because connection is not secure")
+	}
+}
 
 export const encryptData = async (secretData: string, key: CryptoKey) => {
 	const iv = window.crypto.getRandomValues(new Uint8Array(12))
