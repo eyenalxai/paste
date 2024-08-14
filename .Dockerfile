@@ -55,4 +55,4 @@ ARG PORT
 ENV PORT ${PORT:-3000}
 
 EXPOSE ${PORT}
-CMD [ "yarn", "start" ]
+CMD ["sh", "-c", "yarn run migrate && yarn start"]
