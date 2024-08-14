@@ -1,3 +1,5 @@
+"use client"
+
 export const keyToBase64 = async (key: CryptoKey): Promise<string> => {
 	const exportedKey = await window.crypto.subtle.exportKey("raw", key)
 	return arrayBufferToBase64(exportedKey)

@@ -1,8 +1,8 @@
 "use client"
 
+import { clientDecryptPaste } from "@/lib/crypto/client/encrypt-decrypt"
 import { fetchPaste } from "@/lib/fetch/paste"
 import { wrapInMarkdown } from "@/lib/markdown"
-import { clientDecryptPaste } from "@/lib/paste/encrypt-decrypt"
 import { useQuery } from "@tanstack/react-query"
 import { all } from "lowlight"
 import { useState } from "react"
