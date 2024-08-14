@@ -3,7 +3,7 @@ import path from "node:path"
 import { fileURLToPath } from "node:url"
 import type { PastePageProps } from "@/app/[uuidWithExt]/page"
 import { getImageTitle } from "@/lib/image"
-import { getDecryptedPaste, getPaste } from "@/lib/select"
+import { getDecryptedPaste } from "@/lib/select"
 import { extractUuidAndExtension } from "@/lib/uuid-extension"
 import { ImageResponse } from "next/og"
 

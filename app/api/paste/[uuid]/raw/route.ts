@@ -1,9 +1,7 @@
-import type { PastePageProps } from "@/app/[uuidWithExt]/page"
 import { db } from "@/lib/database"
 import { deleteExpirePastes } from "@/lib/delete"
 import { pastes } from "@/lib/schema"
 import { getDecryptedPaste } from "@/lib/select"
-import { extractUuidAndExtension } from "@/lib/uuid-extension"
 import { eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
 

@@ -1,7 +1,6 @@
 "use client"
 
 import type { SecurePasteFormSchema } from "@/lib/form"
-import type { Paste } from "@/lib/schema"
 import ky from "ky"
 import { z } from "zod"
 
