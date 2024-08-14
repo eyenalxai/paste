@@ -4,6 +4,7 @@ import { env } from "@/lib/env.mjs"
 import { wrapInMarkdown } from "@/lib/markdown"
 import { getPaste } from "@/lib/select"
 import { extractUuidAndExtension } from "@/lib/uuid-extension"
+import { all } from "lowlight"
 import type { Metadata } from "next"
 import { MDXRemote } from "next-mdx-remote/rsc"
 import { permanentRedirect } from "next/navigation"
@@ -83,7 +84,16 @@ export default async function Page({ params: { uuidWithExt } }: PastePageProps) 
 				<MDXRemote
 					source={wrapped}
 					options={{
-						mdxOptions: { rehypePlugins: [rehypeHighlight] }
+						mdxOptions: {
+							rehypePlugins: [
+								[
+									rehypeHighlight,
+									{
+										languages: all
+									}
+								]
+							]
+						}
 					}}
 				/>
 			</PasteContainer>

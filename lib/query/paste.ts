@@ -4,6 +4,7 @@ import { fetchPaste } from "@/lib/fetch/paste"
 import { wrapInMarkdown } from "@/lib/markdown"
 import { decryptPasteContentFromBase64 } from "@/lib/paste/encrypt-decrypt"
 import { useQuery } from "@tanstack/react-query"
+import { all } from "lowlight"
 import { useState } from "react"
 import rehypeHighlight from "rehype-highlight"
 import rehypeSanitize from "rehype-sanitize"
@@ -53,7 +54,9 @@ export const usePaste = ({ uuid, syntax, extension }: UsePasteProps) => {
 				.use(remarkRehype)
 				.use(rehypeSanitize)
 				.use(rehypeStringify)
-				.use(rehypeHighlight)
+				.use(rehypeHighlight, {
+					languages: all
+				})
 				.process(wrapInMarkdown({ syntax, extension, content: rawContent }))
 
 			return {
