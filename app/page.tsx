@@ -45,6 +45,11 @@ export default function Page() {
 			.then((pasteUrl) => {
 				if (!pasteUrl) return
 
+				if (navigator.clipboard?.writeText === undefined) {
+					toast.error("Clipboard API not available, probably because connection is not secure")
+					return
+				}
+
 				return navigator.clipboard.writeText(pasteUrl).then(() => {
 					toast.info(
 						<div className={cn("flex", "flex-row", "gap-4", "justify-between", "items-center", "w-full")}>
