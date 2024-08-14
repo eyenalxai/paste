@@ -5,7 +5,7 @@ type EncryptPasteContentToBase64Props = {
 	pasteContent: string
 }
 
-export const encryptPasteContentToBase64 = async ({ pasteContent }: EncryptPasteContentToBase64Props) => {
+export const clientEncryptPaste = async ({ pasteContent }: EncryptPasteContentToBase64Props) => {
 	const key = await generateKey()
 	const { encryptedData, iv } = await encryptData(pasteContent, key)
 
@@ -26,7 +26,7 @@ type DecryptPasteContentFromBase64Props = {
 	encryptedContentBase64: string
 }
 
-export const decryptPasteContentFromBase64 = async ({
+export const clientDecryptPaste = async ({
 	keyBase64,
 	ivBase64,
 	encryptedContentBase64

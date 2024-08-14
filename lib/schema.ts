@@ -4,7 +4,7 @@ export const pastes = pgTable("pastes", {
 	uuid: uuid("uuid").primaryKey().defaultRandom(),
 	content: text("content").notNull(),
 	oneTime: boolean("one_time"),
-	ivBase64: text("iv_base64"),
+	ivClientBase64: text("iv_client_base64"),
 	syntax: varchar("syntax"),
 	link: boolean("link").notNull(),
 	expiresAt: timestamp("expires_at", { mode: "string", withTimezone: true }).notNull()

@@ -29,7 +29,7 @@ export const POST = async (request: Request) => {
 			syntax: await detectContentSyntax(contentTrimmed),
 			link: false,
 			oneTime: false,
-			ivBase64: undefined,
+			ivClientBase64: undefined,
 			expiresAt: getExpiresAt("1-day").toISOString()
 		})
 		.returning()

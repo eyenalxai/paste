@@ -20,7 +20,7 @@ export const POST = async (request: Request) => {
 	const contentTrimmed = pasteValidated.content.trim()
 
 	const pasteSyntax = await getPasteSyntax({
-		encrypted: pasteValidated.iv !== undefined,
+		encrypted: pasteValidated.ivClient !== undefined,
 		syntax: pasteValidated.syntax,
 		contentType: pasteValidated.contentType,
 		content: contentTrimmed
@@ -31,7 +31,7 @@ export const POST = async (request: Request) => {
 		.values({
 			content: contentTrimmed,
 			syntax: pasteSyntax,
-			ivBase64: pasteValidated.iv,
+			ivClientBase64: pasteValidated.ivClient,
 			oneTime: pasteValidated.oneTime,
 			expiresAt: getExpiresAt(pasteValidated.expiresAfter).toISOString(),
 			link: pasteValidated.contentType === "link"

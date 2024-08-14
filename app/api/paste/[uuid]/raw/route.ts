@@ -22,7 +22,7 @@ export const GET = async (_request: Request, { params: { uuid } }: GetPasteParam
 	const [paste] = await getPaste(uuid)
 	if (!paste) return new NextResponse("paste not found", { status: 404 })
 
-	if (paste.ivBase64) return new NextResponse("paste is encrypted", { status: 400 })
+	if (paste.ivClientBase64) return new NextResponse("paste is encrypted", { status: 400 })
 
 	if (paste.oneTime) {
 		await db.delete(pastes).where(eq(pastes.uuid, uuid))

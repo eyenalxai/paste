@@ -2,7 +2,7 @@
 
 import { fetchPaste } from "@/lib/fetch/paste"
 import { wrapInMarkdown } from "@/lib/markdown"
-import { decryptPasteContentFromBase64 } from "@/lib/paste/encrypt-decrypt"
+import { clientDecryptPaste } from "@/lib/paste/encrypt-decrypt"
 import { useQuery } from "@tanstack/react-query"
 import { all } from "lowlight"
 import { useState } from "react"
@@ -41,11 +41,11 @@ export const usePaste = ({ uuid, syntax, extension }: UsePasteProps) => {
 
 			const paste = await fetchPaste(uuid)
 
-			if (!paste.ivBase64) throw new Error("Missing initialization vector")
+			if (!paste.ivClientBase64) throw new Error("Missing initialization vector")
 
-			const rawContent = await decryptPasteContentFromBase64({
+			const rawContent = await clientDecryptPaste({
 				keyBase64,
-				ivBase64: paste.ivBase64,
+				ivBase64: paste.ivClientBase64,
 				encryptedContentBase64: paste.content
 			})
 

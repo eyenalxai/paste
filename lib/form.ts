@@ -85,7 +85,7 @@ export const selectSyntaxOptions: Record<z.infer<typeof Syntax>, string> = {
 }
 
 export const InitializationVectorSchema = z.object({
-	iv: z.string().optional()
+	ivClient: z.string().optional()
 })
 
 export const FrontendOnlyDataSchema = z.object({
