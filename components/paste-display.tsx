@@ -9,12 +9,29 @@ import { useEffect } from "react"
 
 type PasteDisplayProps = {
 	uuid: string
+	ivClientBase64: string
+	serverDecryptedContent: string
+	link: boolean
 	syntax: string | null
 	extension: string | undefined
 }
 
-export const PasteDisplay = ({ uuid, syntax, extension }: PasteDisplayProps) => {
-	const { paste, isLoading, error } = usePaste({ uuid, syntax, extension })
+export const PasteDisplay = ({
+	uuid,
+	ivClientBase64,
+	serverDecryptedContent,
+	link,
+	syntax,
+	extension
+}: PasteDisplayProps) => {
+	const { paste, isLoading, error } = usePaste({
+		uuid,
+		ivClientBase64,
+		serverDecryptedContent,
+		link,
+		syntax,
+		extension
+	})
 
 	useEffect(() => {
 		if (paste?.link) {

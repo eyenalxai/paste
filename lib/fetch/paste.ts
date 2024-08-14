@@ -15,5 +15,3 @@ export const insertPaste = (paste: z.infer<typeof SecurePasteFormSchema>) =>
 			json: paste
 		})
 		.json<z.infer<typeof SavePasteResponseSchema>>()
-
-export const fetchPaste = (uuid: string) => ky.get(`/api/paste/${uuid}`).json<Paste>()

@@ -1,4 +1,5 @@
 import { contentLength } from "@/lib/content-length"
+import { serverEncryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
 import { db } from "@/lib/database"
 import { getExpiresAt } from "@/lib/date"
 import { SecurePasteFormSchema } from "@/lib/form"
@@ -27,12 +28,15 @@ export const POST = async (request: Request) => {
 		content: contentTrimmed
 	})
 
+	const { keyBase64, ivBase64, encryptedContentBase64 } = await serverEncryptPaste(contentTrimmed)
+
 	const [insertedPaste] = await db
 		.insert(pastes)
 		.values({
-			content: contentTrimmed,
+			content: encryptedContentBase64,
 			syntax: pasteSyntax,
 			ivClientBase64: pasteValidated.ivClient,
+			ivServerBase64: ivBase64,
 			oneTime: pasteValidated.oneTime,
 			expiresAt: getExpiresAt(pasteValidated.expiresAfter).toISOString(),
 			link: pasteValidated.contentType === "link"
@@ -40,6 +44,6 @@ export const POST = async (request: Request) => {
 		.returning()
 
 	return NextResponse.json({
-		url: buildPasteUrl(insertedPaste.uuid)
+		url: buildPasteUrl({ uuid: insertedPaste.uuid, keyBase64 })
 	})
 }

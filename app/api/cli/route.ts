@@ -1,8 +1,8 @@
 import { contentLength } from "@/lib/content-length"
+import { serverEncryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
 import { db } from "@/lib/database"
 import { getExpiresAt } from "@/lib/date"
 import { pastes } from "@/lib/schema"
-import { detectContentSyntax } from "@/lib/syntax/detect"
 import { buildPasteUrl } from "@/lib/url"
 import { NextResponse } from "next/server"
 
@@ -20,21 +20,25 @@ export const POST = async (request: Request) => {
 		return new NextResponse("paste field must be filled with paste content", { status: 400 })
 	}
 
-	const contentTrimmed = pasteContent
+	const { keyBase64, ivBase64, encryptedContentBase64 } = await serverEncryptPaste(pasteContent)
 
 	const [insertedPaste] = await db
 		.insert(pastes)
 		.values({
-			content: contentTrimmed,
-			syntax: await detectContentSyntax(contentTrimmed),
+			content: encryptedContentBase64,
+			syntax: undefined,
 			link: false,
 			oneTime: false,
 			ivClientBase64: undefined,
+			ivServerBase64: ivBase64,
 			expiresAt: getExpiresAt("1-day").toISOString()
 		})
 		.returning()
 
-	const pasteUrl = buildPasteUrl(insertedPaste.uuid)
+	const pasteUrl = buildPasteUrl({
+		uuid: insertedPaste.uuid,
+		keyBase64
+	})
 
 	return new Response(`${pasteUrl}\n`, {
 		headers: {

@@ -1,5 +1,5 @@
 {
-  "id": "0c8d0e2f-23bc-4cd8-b7e4-8240a50b5504",
+  "id": "ac6bcbec-2de7-44c6-ad9e-e72ca8579344",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -27,11 +27,17 @@
           "primaryKey": false,
           "notNull": false
         },
-        "iv_base64": {
-          "name": "iv_base64",
+        "iv_client_base64": {
+          "name": "iv_client_base64",
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "iv_server_base64": {
+          "name": "iv_server_base64",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         },
         "syntax": {
           "name": "syntax",

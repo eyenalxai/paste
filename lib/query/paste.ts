@@ -1,7 +1,6 @@
 "use client"
 
 import { clientDecryptPaste } from "@/lib/crypto/client/encrypt-decrypt"
-import { fetchPaste } from "@/lib/fetch/paste"
 import { wrapInMarkdown } from "@/lib/markdown"
 import { useQuery } from "@tanstack/react-query"
 import { all } from "lowlight"
@@ -15,11 +14,14 @@ import { unified } from "unified"
 
 type UsePasteProps = {
 	uuid: string
+	ivClientBase64: string
+	serverDecryptedContent: string
+	link: boolean
 	syntax: string | null
 	extension: string | undefined
 }
 
-export const usePaste = ({ uuid, syntax, extension }: UsePasteProps) => {
+export const usePaste = ({ uuid, ivClientBase64, serverDecryptedContent, link, syntax, extension }: UsePasteProps) => {
 	const [keyBase64] = useState(
 		typeof window !== "undefined" && window.location.hash ? window.location.hash.slice(1) : undefined
 	)
@@ -39,14 +41,10 @@ export const usePaste = ({ uuid, syntax, extension }: UsePasteProps) => {
 		queryFn: async () => {
 			if (!keyBase64) throw new Error("Missing encrypted payload")
 
-			const paste = await fetchPaste(uuid)
-
-			if (!paste.ivClientBase64) throw new Error("Missing initialization vector")
-
 			const rawContent = await clientDecryptPaste({
 				keyBase64,
-				ivBase64: paste.ivClientBase64,
-				encryptedContentBase64: paste.content
+				ivBase64: ivClientBase64,
+				encryptedContentBase64: serverDecryptedContent
 			})
 
 			const markdownContent = await unified()
@@ -62,7 +60,7 @@ export const usePaste = ({ uuid, syntax, extension }: UsePasteProps) => {
 			return {
 				markdownContent: markdownContent,
 				rawContent,
-				link: paste.link
+				link: link
 			}
 		}
 	})

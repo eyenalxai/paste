@@ -5,8 +5,7 @@ import {
 	clientBase64ToArrayBuffer,
 	clientKeyToBase64
 } from "@/lib/crypto/client/encode-decode"
-
-export const KEY_USAGES = ["encrypt", "decrypt"] as const
+import { KEY_USAGES } from "@/lib/crypto/key"
 
 export const clientGenerateKey = async () => {
 	return window.crypto.subtle.generateKey(

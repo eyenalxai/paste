@@ -9,4 +9,4 @@ export const clientArrayBufferToBase64 = (buffer: ArrayBuffer) =>
 	window.btoa(String.fromCharCode(...new Uint8Array(buffer)))
 
 export const clientBase64ToArrayBuffer = (base64: string): ArrayBuffer =>
-	Uint8Array.from(atob(base64), (c) => c.charCodeAt(0)).buffer
+	Uint8Array.from(window.atob(base64), (c) => c.charCodeAt(0)).buffer
