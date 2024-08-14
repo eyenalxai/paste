@@ -1,5 +1,7 @@
 "use client"
 
+import { env } from "@/lib/env.mjs"
+
 export const KEY_USAGES = ["encrypt", "decrypt"] as const
 
 export const generateKey = async () => {
@@ -49,3 +51,5 @@ export const decryptData = async (encryptedData: ArrayBuffer, iv: Uint8Array, ke
 
 	return new TextDecoder().decode(decryptedData)
 }
+
+export const isCryptoAvailable = () => new URL(env.NEXT_PUBLIC_FRONTEND_URL).protocol === "https:"
