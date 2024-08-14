@@ -23,6 +23,8 @@ export const SyntaxSchema = z.object({
 })
 
 export const detectContentSyntax = async (content: string) => {
+	const truncatedContent = content.length > 512 ? `${content.slice(0, 512)}...` : content
+
 	const chatCompletion = await openaiClient.chat.completions.create({
 		messages: [
 			{
@@ -35,9 +37,10 @@ export const detectContentSyntax = async (content: string) => {
 					"Try to differentiate between JavaScript, JSX, TypeScript, TSX and other such examples from other languages. " +
 					"Respond with plaintext if you were not able to detect the syntax." +
 					'If content looks like Markdown, respond with "markdown". ' +
+					"Also you might be working with incomplete content, so be prepared for that and try to detect the syntax as best as you can. " +
 					"Respond using following json schema: { syntax: string }"
 			},
-			{ role: "user", content: content }
+			{ role: "user", content: truncatedContent }
 		],
 		model: "gpt-4o-mini",
 		response_format: zodResponseFormat(SyntaxSchema, "syntax")
