@@ -1,7 +1,7 @@
 # Paste
 
 ## Important
-An HTTPS environment is required for secure operation due to the use of `navigator.clipboard` and `window.crypto` APIs.
+An HTTPS environment is required due to the use of `navigator.clipboard` and `window.crypto` APIs.
 ## How to deploy
 
 Clone and cd into the repo
@@ -19,6 +19,8 @@ nixpacks build . \
 -e DATABASE_URL=postgres://postgres:mysecretpassword@database.com:5432/postgres \
 --name paste -t latest
 ```
+
+Optionally add `NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION=True` and `OPENAI_API_KEY=sk-abcdefg...` to environment variables for OpenAI syntax detection
 
 Run the container
 ```bash
@@ -44,6 +46,8 @@ docker run --name paste \
 ```
 
 Port can be changed with `PORT` environment variable
+
+Optionally add  `NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION=True` as build argument and `OPENAI_API_KEY=sk-abcdefg...` to environment variables for OpenAI syntax detection
 
 
 #### With compose
