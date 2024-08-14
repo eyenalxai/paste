@@ -1,0 +1,14 @@
+.git
+.next
+node_modules
+.dockerignore
+.env*
+.eslintrc.json
+.gitignore
+biome.json
+components.json
+docker-compose.yml
+LICENSE
+next-env.d.ts
+nixpacks.toml
+README.md
