@@ -8,6 +8,7 @@ export const env = createEnv({
 		OPENAI_API_KEY: z
 			.string()
 			.optional()
+			.transform((value) => (value === "" ? undefined : value))
 			.refine(
 				(value) => value !== undefined || process.env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION?.toLowerCase() !== "true",
 				{
