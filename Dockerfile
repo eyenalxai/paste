@@ -20,6 +20,7 @@ COPY ./components ./components
 COPY ./drizzle ./drizzle
 COPY ./lib ./lib
 COPY ./public ./public
+COPY ./drizzle.config.ts ./drizzle.config.ts
 COPY ./next.config.js ./next.config.js
 COPY ./postcss.config.js ./postcss.config.js
 COPY ./tailwind.config.js ./tailwind.config.js
@@ -33,6 +34,7 @@ RUN yarn install --check-cache --immutable && yarn build
 FROM base AS runner
 WORKDIR /app
 
+COPY --chown=node --from=builder /app/drizzle.config.ts ./
 COPY --chown=node --from=builder /app/next.config.js ./
 COPY --chown=node --from=builder /app/.yarn ./.yarn
 COPY --chown=node --from=builder /app/public ./public
