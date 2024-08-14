@@ -2,7 +2,7 @@ import { isValidUrl } from "@/lib/url"
 import { z } from "zod"
 
 export const ExpiresAfter = z.enum(["5-minutes", "30-minutes", "1-hour", "6-hours", "1-day", "1-week", "1-month"])
-export const ContentType = z.enum(["link", "markdown", "source", "plaintext"])
+export const ContentType = z.enum(["auto", "link", "markdown", "source", "plaintext"])
 export const Syntax = z.enum(["go", "tsx", "python", "rust", "bash", "toml"])
 
 export const InitializationVectorSchema = z.object({
@@ -22,6 +22,7 @@ export const SharedFormFields = z.object({
 	contentType: ContentType,
 	syntax: Syntax.optional()
 })
+
 export const PasteFormSchema = SharedFormFields.merge(FrontendOnlyDataSchema)
 	.refine((data) => !(data.contentType === "source" && data.syntax === undefined), {
 		message: "Must select a syntax for source code",
@@ -30,8 +31,16 @@ export const PasteFormSchema = SharedFormFields.merge(FrontendOnlyDataSchema)
 	.refine((data) => !(data.contentType === "link" && !isValidUrl(data.content)), {
 		message: "Invalid URL"
 	})
+	.refine((data) => data.contentType !== "auto" || process.env.NEXT_PUBLIC_OPENAI_CLASSIFICATION_ENABLED, {
+		message: "Automatic content type detection is not available"
+	})
 
-export const SecurePasteFormSchema = SharedFormFields.merge(InitializationVectorSchema)
+export const SecurePasteFormSchema = SharedFormFields.merge(InitializationVectorSchema).refine(
+	(data) => data.contentType !== "auto" || process.env.NEXT_PUBLIC_OPENAI_CLASSIFICATION_ENABLED,
+	{
+		message: "Automatic content type detection is not available"
+	}
+)
 
 export const selectExpiresAfterOptions: Record<z.infer<typeof ExpiresAfter>, string> = {
 	"5-minutes": "5 minutes",
@@ -44,6 +53,7 @@ export const selectExpiresAfterOptions: Record<z.infer<typeof ExpiresAfter>, str
 }
 
 export const selectContentTypeOptions: Record<z.infer<typeof ContentType>, string> = {
+	auto: "Auto",
 	markdown: "Markdown",
 	plaintext: "Plaintext",
 	source: "Source",

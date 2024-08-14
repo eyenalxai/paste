@@ -7,6 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
+import { env } from "@/lib/env.mjs"
 import {
 	PasteFormSchema,
 	type Syntax,
@@ -173,6 +174,8 @@ export default function Page() {
 										</FormControl>
 										<SelectContent>
 											{Object.entries(selectContentTypeOptions).map(([key, value]) => {
+												if (key === "auto" && !env.NEXT_PUBLIC_OPENAI_CLASSIFICATION_ENABLED) return
+
 												if (form.watch("encrypted") && key === "auto") return null
 												return (
 													<SelectItem key={key} value={key}>
