@@ -18,13 +18,15 @@ import {
 import { savePaste } from "@/lib/paste/save-paste"
 import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Check, ChevronsUpDown, Copy } from "lucide-react"
-import { useEffect } from "react"
+import { Check, ChevronsUpDown, Copy, Loader, LoaderCircle } from "lucide-react"
+import { useEffect, useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import type { z } from "zod"
 
 export default function Page() {
+	const [isSubmitting, startTransition] = useTransition()
+
 	const form = useForm<z.infer<typeof PasteFormSchema>>({
 		resolver: zodResolver(PasteFormSchema),
 		defaultValues: {
@@ -38,47 +40,49 @@ export default function Page() {
 	})
 
 	const onSubmit = async (formData: z.infer<typeof PasteFormSchema>) => {
-		savePaste(formData)
-			.catch((error: Error) => {
-				toast.error(error.message)
-				return undefined
-			})
-			.then((pasteUrl) => {
-				if (!pasteUrl) return
-
-				if (navigator.clipboard?.writeText === undefined) {
-					toast.error("Clipboard API not available, probably because connection is not secure")
-					return
-				}
-
-				return navigator.clipboard.writeText(pasteUrl).then(() => {
-					toast.info(
-						<div className={cn("flex", "flex-row", "gap-4", "justify-between", "items-center", "w-full")}>
-							<div>URL copied to clipboard</div>
-							{!formData.encrypted && (
-								<Button asChild variant={"outline"} className={cn("h-8")}>
-									<a target={"_blank"} rel="noopener noreferrer" href={pasteUrl}>
-										Open
-									</a>
-								</Button>
-							)}
-						</div>
-					)
-					return pasteUrl
+		startTransition(() =>
+			savePaste(formData)
+				.catch((error: Error) => {
+					toast.error(error.message)
+					return undefined
 				})
-			})
-			.then((pasteUrl) => {
-				if (!pasteUrl) return
+				.then((pasteUrl) => {
+					if (!pasteUrl) return
 
-				form.reset({
-					content: "",
-					oneTime: formData.oneTime,
-					encrypted: formData.encrypted,
-					contentType: formData.contentType,
-					syntax: formData.syntax,
-					expiresAfter: "1-hour"
+					if (navigator.clipboard?.writeText === undefined) {
+						toast.error("Clipboard API not available, probably because connection is not secure")
+						return
+					}
+
+					return navigator.clipboard.writeText(pasteUrl).then(() => {
+						toast.info(
+							<div className={cn("flex", "flex-row", "gap-4", "justify-between", "items-center", "w-full")}>
+								<div>URL copied to clipboard</div>
+								{!formData.encrypted && (
+									<Button asChild variant={"outline"} className={cn("h-8")}>
+										<a target={"_blank"} rel="noopener noreferrer" href={pasteUrl}>
+											Open
+										</a>
+									</Button>
+								)}
+							</div>
+						)
+						return pasteUrl
+					})
 				})
-			})
+				.then((pasteUrl) => {
+					if (!pasteUrl) return
+
+					form.reset({
+						content: "",
+						oneTime: formData.oneTime,
+						encrypted: formData.encrypted,
+						contentType: formData.contentType,
+						syntax: formData.syntax,
+						expiresAfter: "1-hour"
+					})
+				})
+		)
 	}
 
 	const contentType = form.watch("contentType")
@@ -259,10 +263,16 @@ export default function Page() {
 						</FormItem>
 					)}
 				/>
-				<Button type="submit">
+				<Button disabled={isSubmitting} type="submit" className={cn("w-32")}>
 					<div className={cn("flex", "flex-row", "gap-x-2", "items-center")}>
-						<Copy />
-						<div className={cn("font-semibold")}>Copy URL</div>
+						{isSubmitting ? (
+							<Loader className={cn("animate-spin")} />
+						) : (
+							<>
+								<Copy />
+								<div className={cn("font-semibold")}>Copy URL</div>
+							</>
+						)}
 					</div>
 				</Button>
 			</form>
