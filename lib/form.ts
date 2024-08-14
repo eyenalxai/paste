@@ -31,12 +31,12 @@ export const PasteFormSchema = SharedFormFields.merge(FrontendOnlyDataSchema)
 	.refine((data) => !(data.contentType === "link" && !isValidUrl(data.content)), {
 		message: "Invalid URL"
 	})
-	.refine((data) => data.contentType !== "auto" || process.env.NEXT_PUBLIC_OPENAI_CLASSIFICATION_ENABLED, {
+	.refine((data) => data.contentType !== "auto" || process.env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION, {
 		message: "Automatic content type detection is not available"
 	})
 
 export const SecurePasteFormSchema = SharedFormFields.merge(InitializationVectorSchema).refine(
-	(data) => data.contentType !== "auto" || process.env.NEXT_PUBLIC_OPENAI_CLASSIFICATION_ENABLED,
+	(data) => data.contentType !== "auto" || process.env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION,
 	{
 		message: "Automatic content type detection is not available"
 	}

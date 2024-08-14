@@ -9,10 +9,9 @@ export const env = createEnv({
 			.string()
 			.optional()
 			.refine(
-				(value) =>
-					value !== undefined || process.env.NEXT_PUBLIC_OPENAI_CLASSIFICATION_ENABLED?.toLowerCase() !== "true",
+				(value) => value !== undefined || process.env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION?.toLowerCase() !== "true",
 				{
-					message: "OPENAI_API_KEY must be set if NEXT_PUBLIC_OPENAI_CLASSIFICATION_ENABLED is true."
+					message: "OPENAI_API_KEY must be set if NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION is true."
 				}
 			)
 			.refine((value) => value === undefined || (value.startsWith("sk-") && value.length >= 16), {
@@ -26,11 +25,11 @@ export const env = createEnv({
 			.refine((url) => new URL(url).protocol === "https:", {
 				message: "HTTPS is required"
 			}),
-		NEXT_PUBLIC_OPENAI_CLASSIFICATION_ENABLED: z
+		NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION: z
 			.string()
 			.optional()
 			.refine((value) => value === undefined || value.toLowerCase() === "true" || value.toLowerCase() === "false", {
-				message: "NEXT_PUBLIC_OPENAI_CLASSIFICATION_ENABLED must be 'true' or 'false' if set."
+				message: "NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION must be 'true' or 'false' if set."
 			})
 			.transform((value) => value && value.toLowerCase() === "true")
 	},
@@ -39,7 +38,7 @@ export const env = createEnv({
 		DATABASE_URL: process.env.DATABASE_URL,
 		OPENAI_API_KEY: process.env.OPENAI_API_KEY,
 		NEXT_PUBLIC_FRONTEND_URL: process.env.NEXT_PUBLIC_FRONTEND_URL,
-		NEXT_PUBLIC_OPENAI_CLASSIFICATION_ENABLED: process.env.NEXT_PUBLIC_OPENAI_CLASSIFICATION_ENABLED
+		NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION: process.env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION
 	},
 	skipValidation: process.env.BUILD_TIME === "TRUE"
 })

@@ -34,7 +34,7 @@ export default function Page() {
 			encrypted: false,
 			oneTime: false,
 			expiresAfter: "1-hour",
-			contentType: !env.NEXT_PUBLIC_OPENAI_CLASSIFICATION_ENABLED ? "plaintext" : "auto",
+			contentType: !env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION ? "plaintext" : "auto",
 			syntax: undefined
 		}
 	})
@@ -178,7 +178,7 @@ export default function Page() {
 										</FormControl>
 										<SelectContent>
 											{Object.entries(selectContentTypeOptions).map(([key, value]) => {
-												if (key === "auto" && !env.NEXT_PUBLIC_OPENAI_CLASSIFICATION_ENABLED) return
+												if (key === "auto" && !env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION) return
 
 												if (form.watch("encrypted") && key === "auto") return null
 												return (
