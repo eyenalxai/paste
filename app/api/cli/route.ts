@@ -1,3 +1,4 @@
+import { contentLength } from "@/lib/content-length"
 import { db } from "@/lib/database"
 import { getExpiresAt } from "@/lib/date"
 import { env } from "@/lib/env.mjs"
@@ -8,6 +9,9 @@ import { NextResponse } from "next/server"
 export const maxDuration = 5 // In seconds
 
 export const POST = async (request: Request) => {
+	const badContentLengthResponse = await contentLength(request)
+	if (badContentLengthResponse) return badContentLengthResponse
+
 	const formData = await request.formData()
 
 	const formDataBytes = [...formData.entries()].reduce(

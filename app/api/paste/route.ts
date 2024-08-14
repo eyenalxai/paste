@@ -1,6 +1,6 @@
+import { contentLength } from "@/lib/content-length"
 import { db } from "@/lib/database"
 import { getExpiresAt } from "@/lib/date"
-import { env } from "@/lib/env.mjs"
 import { SecurePasteFormSchema } from "@/lib/form"
 import { pastes } from "@/lib/schema"
 import { getPasteSyntax } from "@/lib/syntax"
@@ -10,13 +10,10 @@ import type { z } from "zod"
 export const maxDuration = 5 // In seconds
 
 export const POST = async (request: Request) => {
+	const badContentLengthResponse = await contentLength(request)
+	if (badContentLengthResponse) return badContentLengthResponse
+
 	const receivedPaste: z.infer<typeof SecurePasteFormSchema> = await request.json()
-
-	const jsonBytes = new TextEncoder().encode(JSON.stringify(receivedPaste)).length
-
-	if (jsonBytes > env.MAX_PAYLOAD_SIZE) {
-		return NextResponse.json({ error: `request body size exceeds ${env.MAX_PAYLOAD_SIZE} bytes` }, { status: 413 })
-	}
 
 	const pasteValidated = SecurePasteFormSchema.parse(receivedPaste)
 
