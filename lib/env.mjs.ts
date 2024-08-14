@@ -34,7 +34,7 @@ export const env = createEnv({
 			.transform((value) => value && value.toLowerCase() === "true")
 	},
 	runtimeEnv: {
-		MAX_PAYLOAD_SIZE: 1024 * 1024,
+		MAX_PAYLOAD_SIZE: 1024 * 1024 * 20, // Total: 20MB
 		DATABASE_URL: process.env.DATABASE_URL,
 		OPENAI_API_KEY: process.env.OPENAI_API_KEY,
 		NEXT_PUBLIC_FRONTEND_URL: process.env.NEXT_PUBLIC_FRONTEND_URL,
