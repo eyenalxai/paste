@@ -4,6 +4,12 @@ import { type Paste, pastes } from "@/lib/schema"
 import { and, eq, gt } from "drizzle-orm"
 import { cache } from "react"
 
+export const selectPaste = async (uuid: string) =>
+	await db
+		.select()
+		.from(pastes)
+		.where(and(eq(pastes.uuid, uuid), gt(pastes.expiresAt, new Date().toISOString())))
+
 type GetPasteProps = {
 	uuid: string
 	key: string
@@ -19,11 +25,8 @@ type GetPasteResult =
 			decryptedContent: string
 	  }
 
-export const getPaste = cache(async ({ uuid, key }: GetPasteProps): Promise<GetPasteResult> => {
-	const [paste] = await db
-		.select()
-		.from(pastes)
-		.where(and(eq(pastes.uuid, uuid), gt(pastes.expiresAt, new Date().toISOString())))
+export const getDecryptedPaste = cache(async ({ uuid, key }: GetPasteProps): Promise<GetPasteResult> => {
+	const [paste] = await selectPaste(uuid)
 
 	if (!paste) {
 		return {
@@ -43,3 +46,5 @@ export const getPaste = cache(async ({ uuid, key }: GetPasteProps): Promise<GetP
 		paste
 	} satisfies GetPasteResult
 })
+
+export const getPaste = cache(async (uuid: string) => await selectPaste(uuid))
