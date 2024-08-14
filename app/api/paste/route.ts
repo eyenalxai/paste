@@ -9,8 +9,6 @@ import { buildPasteUrl } from "@/lib/url"
 import { NextResponse } from "next/server"
 import type { z } from "zod"
 
-export const maxDuration = 5 // In seconds
-
 export const POST = async (request: Request) => {
 	const badContentLengthResponse = await contentLength(request)
 	if (badContentLengthResponse) return badContentLengthResponse
