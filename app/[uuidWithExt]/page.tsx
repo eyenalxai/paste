@@ -2,7 +2,7 @@ import { PasteContainer } from "@/components/paste-container"
 import { PasteDisplay } from "@/components/paste-display"
 import { env } from "@/lib/env.mjs"
 import { wrapInMarkdown } from "@/lib/markdown"
-import { getPaste } from "@/lib/select"
+import { getDecryptedPaste } from "@/lib/select"
 import { extractUuidAndExtension } from "@/lib/uuid-extension"
 import { all } from "lowlight"
 import type { Metadata } from "next"
@@ -24,7 +24,7 @@ export async function generateMetadata({ params: { uuidWithExt }, searchParams: 
 
 	const [uuid] = extractUuidAndExtension(uuidWithExt)
 
-	const { decryptedContent, paste } = await getPaste({ uuid, key })
+	const { decryptedContent, paste } = await getDecryptedPaste({ uuid, key })
 
 	if (!paste) {
 		const title = "Paste does not exist or has expired"
@@ -71,7 +71,7 @@ export async function generateMetadata({ params: { uuidWithExt }, searchParams: 
 export default async function Page({ params: { uuidWithExt }, searchParams: { key } }: PastePageProps) {
 	const [uuid, extension] = extractUuidAndExtension(uuidWithExt)
 
-	const { decryptedContent, paste } = await getPaste({ uuid, key })
+	const { decryptedContent, paste } = await getDecryptedPaste({ uuid, key })
 
 	if (!paste) return <h1>Paste does not exist or has expired</h1>
 
