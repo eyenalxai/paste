@@ -2,6 +2,7 @@ import { db } from "@/lib/database"
 import { getExpiresAt } from "@/lib/date"
 import { env } from "@/lib/env.mjs"
 import { pastes } from "@/lib/schema"
+import { detectContentSyntax } from "@/lib/syntax"
 import { NextResponse } from "next/server"
 
 export const maxDuration = 5 // In seconds
@@ -24,11 +25,13 @@ export const POST = async (request: Request) => {
 		return new NextResponse("paste field must be filled with paste content", { status: 400 })
 	}
 
+	const contentTrimmed = pasteContent
+
 	const [insertedPaste] = await db
 		.insert(pastes)
 		.values({
-			content: pasteContent,
-			syntax: undefined,
+			content: contentTrimmed,
+			syntax: await detectContentSyntax(contentTrimmed),
 			link: false,
 			oneTime: false,
 			ivBase64: undefined,

@@ -1,4 +1,3 @@
-import type { AllSyntax } from "@/lib/types"
 import { boolean, pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core"
 
 export const pastes = pgTable("pastes", {
@@ -6,7 +5,7 @@ export const pastes = pgTable("pastes", {
 	content: text("content").notNull(),
 	oneTime: boolean("one_time"),
 	ivBase64: text("iv_base64"),
-	syntax: varchar("syntax").$type<AllSyntax>(),
+	syntax: varchar("syntax"),
 	link: boolean("link").notNull(),
 	expiresAt: timestamp("expires_at", { mode: "string", withTimezone: true }).notNull()
 })

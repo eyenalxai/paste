@@ -3,7 +3,6 @@
 import { fetchPaste } from "@/lib/fetch/paste"
 import { wrapInMarkdown } from "@/lib/markdown"
 import { decryptPasteContentFromBase64 } from "@/lib/paste/encrypt-decrypt"
-import type { AllSyntax } from "@/lib/types"
 import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 import rehypeHighlight from "rehype-highlight"
@@ -15,7 +14,7 @@ import { unified } from "unified"
 
 type UsePasteProps = {
 	uuid: string
-	syntax: AllSyntax | null
+	syntax: string | null
 	extension: string | undefined
 }
 

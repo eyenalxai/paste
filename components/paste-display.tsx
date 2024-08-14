@@ -3,14 +3,13 @@
 import { PasteContainer } from "@/components/paste-container"
 import { Alert } from "@/components/ui/alert"
 import { usePaste } from "@/lib/query/paste"
-import type { AllSyntax } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { Loader } from "lucide-react"
 import { useEffect } from "react"
 
 type PasteDisplayProps = {
 	uuid: string
-	syntax: AllSyntax | null
+	syntax: string | null
 	extension: string | undefined
 }
 

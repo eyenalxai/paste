@@ -7,7 +7,7 @@ import type { z } from "zod"
 export const savePaste = async (paste: z.infer<typeof PasteFormSchema>) => {
 	if (paste.encrypted) {
 		const { keyBase64, ivBase64, encryptedContentBase64 } = await encryptPasteContentToBase64({
-			pasteContent: paste.content
+			pasteContent: paste.content.trim()
 		})
 
 		const insertedPaste = await insertPaste({

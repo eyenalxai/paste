@@ -1,14 +1,12 @@
-import type { AllSyntax } from "@/lib/types"
-
 type WrapProps = {
-	syntax: AllSyntax | null
+	syntax: string | null
 	extension: string | undefined
 	content: string
 }
 
 export const wrapInMarkdown = ({ syntax, extension, content }: WrapProps) => {
 	if (extension !== undefined) {
-		return `\`\`\`${extension}\n${content}\n\`\`\``
+		return extension === "markdown" ? content : `\`\`\`${extension}\n${content}\n\`\`\``
 	}
 
 	if (syntax === "markdown") {
