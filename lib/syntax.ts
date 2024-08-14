@@ -1,6 +1,7 @@
 import type { ContentType } from "@/lib/form"
 import { openaiClient } from "@/lib/openai"
 import type { AllSyntax } from "@/lib/types"
+import { zodResponseFormat } from "openai/helpers/zod"
 import { z } from "zod"
 
 type GetPasteLanguageProps = {
@@ -33,17 +34,18 @@ export const detectContentSyntax = async (content: string) => {
 					"Respond with a syntax name to be used later in Markdown code blocks. Must be from the list of supported syntaxes by Markdown. " +
 					"Try to differentiate between JavaScript, JSX, TypeScript, TSX and other such examples from other languages. " +
 					"Respond with plaintext if you were not able to detect the syntax." +
+					'If content looks like Markdown, respond with "markdown". ' +
 					"Respond using following json schema: { syntax: string }"
 			},
 			{ role: "user", content: content }
 		],
-		model: "gpt-3.5-turbo",
-		response_format: {
-			type: "json_object"
-		}
+		model: "gpt-4o-mini",
+		response_format: zodResponseFormat(SyntaxSchema, "syntax")
 	})
 
 	const response = chatCompletion.choices[0].message.content
+
+	console.log(`Received response from OpenAI: ${response}`)
 
 	if (response === null) {
 		console.error("Received null response from OpenAI")
