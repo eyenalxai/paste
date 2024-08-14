@@ -18,7 +18,7 @@ import {
 import { savePaste } from "@/lib/paste/save-paste"
 import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Check, ChevronsUpDown, Copy, Loader, LoaderCircle } from "lucide-react"
+import { Check, ChevronsUpDown, Copy, Loader } from "lucide-react"
 import { useEffect, useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
