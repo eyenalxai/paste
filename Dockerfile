@@ -35,6 +35,7 @@ FROM base AS runner
 WORKDIR /app
 
 COPY --chown=node --from=builder /app/drizzle.config.ts ./
+COPY --chown=node --from=builder /app/drizzle ./drizzle
 COPY --chown=node --from=builder /app/next.config.js ./
 COPY --chown=node --from=builder /app/.yarn ./.yarn
 COPY --chown=node --from=builder /app/public ./public
