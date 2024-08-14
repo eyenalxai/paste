@@ -44,4 +44,4 @@ ENV PORT ${PORT:-3000}
 EXPOSE ${PORT}/tcp
 
 ENV BUILD_TIME FALSE
-ENTRYPOINT ["sh", "-c", "bun run migrate && bun --bun run start"]
+ENTRYPOINT ["sh", "-c", "bun run migrate && bun run start"]
