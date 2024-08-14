@@ -1,6 +1,10 @@
 "use client"
 
-import { arrayBufferToBase64, base64ToArrayBuffer, keyToBase64 } from "@/lib/crypto/client/encode-decode"
+import {
+	clientArrayBufferToBase64,
+	clientBase64ToArrayBuffer,
+	clientKeyToBase64
+} from "@/lib/crypto/client/encode-decode"
 
 export const KEY_USAGES = ["encrypt", "decrypt"] as const
 
@@ -19,9 +23,9 @@ export const clientEncryptPaste = async (pasteContent: string) => {
 	const key = await clientGenerateKey()
 	const { encryptedData, iv } = await clientEncryptData(pasteContent, key)
 
-	const encryptedContentBase64 = arrayBufferToBase64(encryptedData)
-	const keyBase64 = await keyToBase64(key)
-	const ivBase64 = arrayBufferToBase64(iv)
+	const encryptedContentBase64 = clientArrayBufferToBase64(encryptedData)
+	const keyBase64 = await clientKeyToBase64(key)
+	const ivBase64 = clientArrayBufferToBase64(iv)
 
 	return {
 		keyBase64,
@@ -37,12 +41,12 @@ type DecryptPasteProps = {
 }
 
 export const clientDecryptPaste = async ({ keyBase64, ivBase64, encryptedContentBase64 }: DecryptPasteProps) => {
-	const keyBuffer = base64ToArrayBuffer(keyBase64)
-	const iv = base64ToArrayBuffer(ivBase64)
+	const keyBuffer = clientBase64ToArrayBuffer(keyBase64)
+	const iv = clientBase64ToArrayBuffer(ivBase64)
 
 	const key = await window.crypto.subtle.importKey("raw", keyBuffer, { name: "AES-GCM", length: 256 }, true, KEY_USAGES)
 
-	const encryptedContentArrayBuffer = base64ToArrayBuffer(encryptedContentBase64)
+	const encryptedContentArrayBuffer = clientBase64ToArrayBuffer(encryptedContentBase64)
 
 	return await clientDecryptData(encryptedContentArrayBuffer, new Uint8Array(iv), key)
 }
