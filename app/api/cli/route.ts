@@ -14,15 +14,6 @@ export const POST = async (request: Request) => {
 
 	const formData = await request.formData()
 
-	const formDataBytes = [...formData.entries()].reduce(
-		(acc, [_key, value]) => acc + new Blob([value.toString()]).size,
-		0
-	)
-
-	if (formDataBytes > env.MAX_PAYLOAD_SIZE) {
-		return new NextResponse(`request body size exceeds ${env.MAX_PAYLOAD_SIZE} bytes`, { status: 413 })
-	}
-
 	const pasteContent = formData.get("paste") as string | null
 
 	if (!pasteContent) {
