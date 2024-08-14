@@ -3,7 +3,7 @@ import { getExpiresAt } from "@/lib/date"
 import { env } from "@/lib/env.mjs"
 import { SecurePasteFormSchema } from "@/lib/form"
 import { pastes } from "@/lib/schema"
-import { getPasteSyntax } from "@/lib/syntax/paste"
+import { getPasteSyntax } from "@/lib/syntax"
 import { NextResponse } from "next/server"
 import type { z } from "zod"
 
