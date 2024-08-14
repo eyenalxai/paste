@@ -3,7 +3,7 @@ import path from "node:path"
 import { fileURLToPath } from "node:url"
 import type { PastePageProps } from "@/app/[uuidWithExt]/page"
 import { getImageTitle } from "@/lib/image"
-import { getPaste } from "@/lib/select"
+import { getDecryptedPaste, getPaste } from "@/lib/select"
 import { extractUuidAndExtension } from "@/lib/uuid-extension"
 import { ImageResponse } from "next/og"
 
@@ -18,9 +18,9 @@ export const size = {
 
 export const contentType = "image/png"
 
-export default async function Image({ params: { uuidWithExt } }: PastePageProps) {
+export default async function Image({ params: { uuidWithExt }, searchParams: { key } }: PastePageProps) {
 	const [uuid] = extractUuidAndExtension(uuidWithExt)
-	const [paste] = await getPaste(uuid)
+	const { decryptedContent, paste } = await getDecryptedPaste({ uuid, key })
 
 	if (!paste) return null
 
@@ -53,7 +53,7 @@ export default async function Image({ params: { uuidWithExt } }: PastePageProps)
 					display: "block"
 				}}
 			>
-				{paste.content.length > 1400 ? `${paste.content.slice(0, 1400)}...` : paste.content}
+				{decryptedContent.length > 1400 ? `${decryptedContent.slice(0, 1400)}...` : decryptedContent}
 			</div>
 			<div
 				style={{
