@@ -8,7 +8,6 @@ export const env = createEnv({
 		OPENAI_API_KEY: z
 			.string()
 			.optional()
-			// Must be set if NEXT_PUBLIC_OPENAI_CLASSIFICATION_ENABLED is true
 			.refine(
 				(value) =>
 					value !== undefined || process.env.NEXT_PUBLIC_OPENAI_CLASSIFICATION_ENABLED?.toLowerCase() !== "true",
