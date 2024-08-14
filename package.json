@@ -1,7 +1,6 @@
 {
 	"name": "paste",
 	"version": "0.1.0",
-	"private": false,
 	"license": "Unlicense",
 	"scripts": {
 		"dev": "next dev",
@@ -60,5 +59,6 @@
 		"shadcn-ui": "^0.8.0",
 		"tailwindcss": "3.4.9",
 		"typescript": "5.5.4"
-	}
+	},
+	"packageManager": "yarn@4.4.0"
 }
