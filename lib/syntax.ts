@@ -1,6 +1,7 @@
+import { env } from "@/lib/env.mjs"
 import type { ContentType } from "@/lib/form"
-import { openaiClient } from "@/lib/openai"
 import type { AllSyntax } from "@/lib/types"
+import OpenAI from "openai"
 import { zodResponseFormat } from "openai/helpers/zod"
 import { z } from "zod"
 
@@ -24,6 +25,10 @@ export const SyntaxSchema = z.object({
 
 export const detectContentSyntax = async (content: string) => {
 	const truncatedContent = content.length > 512 ? `${content.slice(0, 512)}...` : content
+
+	const openaiClient = new OpenAI({
+		apiKey: env.OPENAI_API_KEY
+	})
 
 	const chatCompletion = await openaiClient.chat.completions.create({
 		messages: [
