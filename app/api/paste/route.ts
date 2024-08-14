@@ -4,6 +4,7 @@ import { getExpiresAt } from "@/lib/date"
 import { SecurePasteFormSchema } from "@/lib/form"
 import { pastes } from "@/lib/schema"
 import { getPasteSyntax } from "@/lib/syntax/detect"
+import { buildPasteUrl } from "@/lib/url"
 import { NextResponse } from "next/server"
 import type { z } from "zod"
 
@@ -26,7 +27,7 @@ export const POST = async (request: Request) => {
 		content: contentTrimmed
 	})
 
-	const [paste] = await db
+	const [insertedPaste] = await db
 		.insert(pastes)
 		.values({
 			content: contentTrimmed,
@@ -38,5 +39,7 @@ export const POST = async (request: Request) => {
 		})
 		.returning()
 
-	return NextResponse.json(paste)
+	return NextResponse.json({
+		url: buildPasteUrl(insertedPaste.uuid)
+	})
 }

@@ -3,13 +3,17 @@
 import type { SecurePasteFormSchema } from "@/lib/form"
 import type { Paste } from "@/lib/schema"
 import ky from "ky"
-import type { z } from "zod"
+import { z } from "zod"
+
+export const SavePasteResponseSchema = z.object({
+	url: z.string().url()
+})
 
 export const insertPaste = (paste: z.infer<typeof SecurePasteFormSchema>) =>
 	ky
 		.post("/api/paste", {
 			json: paste
 		})
-		.json<Paste>()
+		.json<z.infer<typeof SavePasteResponseSchema>>()
 
 export const fetchPaste = (uuid: string) => ky.get(`/api/paste/${uuid}`).json<Paste>()

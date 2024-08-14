@@ -1,9 +1,9 @@
 import { contentLength } from "@/lib/content-length"
 import { db } from "@/lib/database"
 import { getExpiresAt } from "@/lib/date"
-import { env } from "@/lib/env.mjs"
 import { pastes } from "@/lib/schema"
 import { detectContentSyntax } from "@/lib/syntax/detect"
+import { buildPasteUrl } from "@/lib/url"
 import { NextResponse } from "next/server"
 
 export const maxDuration = 5 // In seconds
@@ -34,7 +34,9 @@ export const POST = async (request: Request) => {
 		})
 		.returning()
 
-	return new Response(`${env.NEXT_PUBLIC_FRONTEND_URL}/${insertedPaste.uuid}\n`, {
+	const pasteUrl = buildPasteUrl(insertedPaste.uuid)
+
+	return new Response(`${pasteUrl}\n`, {
 		headers: {
 			"content-type": "text/plain"
 		}
