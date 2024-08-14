@@ -17,7 +17,7 @@ type UsePasteProps = {
 	ivClientBase64: string
 	serverDecryptedContent: string
 	link: boolean
-	syntax: string | null
+	syntax: string
 	extension: string | undefined
 }
 
