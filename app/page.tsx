@@ -7,7 +7,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { isCryptoAvailable } from "@/lib/crypto"
 import {
 	PasteFormSchema,
 	type Syntax,
@@ -109,7 +108,7 @@ export default function Page() {
 							<div className={cn("flex", "flex-row", "gap-x-2")}>
 								<div className={cn("flex", "justify-center", "items-center", "text-center")}>Encrypt</div>
 								<FormControl>
-									<Switch disabled={!isCryptoAvailable()} checked={field.value} onCheckedChange={field.onChange} />
+									<Switch checked={field.value} onCheckedChange={field.onChange} />
 								</FormControl>
 							</div>
 						)}
