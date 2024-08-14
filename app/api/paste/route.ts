@@ -3,7 +3,7 @@ import { db } from "@/lib/database"
 import { getExpiresAt } from "@/lib/date"
 import { SecurePasteFormSchema } from "@/lib/form"
 import { pastes } from "@/lib/schema"
-import { getPasteSyntax } from "@/lib/syntax"
+import { getPasteSyntax } from "@/lib/syntax/detect"
 import { NextResponse } from "next/server"
 import type { z } from "zod"
 

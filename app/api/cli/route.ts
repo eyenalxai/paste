@@ -3,7 +3,7 @@ import { db } from "@/lib/database"
 import { getExpiresAt } from "@/lib/date"
 import { env } from "@/lib/env.mjs"
 import { pastes } from "@/lib/schema"
-import { detectContentSyntax } from "@/lib/syntax"
+import { detectContentSyntax } from "@/lib/syntax/detect"
 import { NextResponse } from "next/server"
 
 export const maxDuration = 5 // In seconds

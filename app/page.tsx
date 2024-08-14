@@ -8,14 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { env } from "@/lib/env.mjs"
-import {
-	PasteFormSchema,
-	type Syntax,
-	selectContentTypeOptions,
-	selectExpiresAfterOptions,
-	selectSyntaxOptions
-} from "@/lib/form"
+import { PasteFormSchema, selectContentTypeOptions, selectExpiresAfterOptions } from "@/lib/form"
 import { savePaste } from "@/lib/paste/save-paste"
+import { type Syntax, selectSyntaxOptions } from "@/lib/syntax/select"
 import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Check, ChevronsUpDown, Copy, Loader } from "lucide-react"
