@@ -7,7 +7,12 @@ export const env = createEnv({
 		MAX_PAYLOAD_SIZE: z.number().int().positive()
 	},
 	client: {
-		NEXT_PUBLIC_FRONTEND_URL: z.string().min(5)
+		NEXT_PUBLIC_FRONTEND_URL: z
+			.string()
+			.url()
+			.refine((url) => new URL(url).protocol === "https:", {
+				message: "HTTPS is required"
+			})
 	},
 	runtimeEnv: {
 		MAX_PAYLOAD_SIZE: 1024 * 1024,
