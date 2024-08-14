@@ -1,58 +1,47 @@
-FROM node:22-slim AS base
-ENV YARN_VERSION 4.4.0
-ENV NODE_ENV production
+FROM oven/bun:1 AS base
+ENV NODE_ENV=production
 # Uncomment the following line in case you want to disable telemetry
 # ENV NEXT_TELEMETRY_DISABLED 1
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
-RUN apt-get update && apt-get install -y yarnpkg
+FROM base AS install
+RUN mkdir -p /temp/dev
+COPY package.json bun.lockb /temp/dev/
+RUN cd /temp/dev && bun install --frozen-lockfile
 
-COPY package.json yarn.lock .yarnrc.yml ./
-COPY .yarn/releases/yarn-${YARN_VERSION}.cjs .yarn/releases/yarn-${YARN_VERSION}.cjs
+RUN mkdir -p /temp/prod
+COPY package.json bun.lockb /temp/prod/
+RUN cd /temp/prod && bun install --frozen-lockfile --production
 
-FROM base AS builder
-WORKDIR /app
-
-COPY --from=base /app .
-COPY ./app ./app
-COPY ./components ./components
-COPY ./drizzle ./drizzle
-COPY ./lib ./lib
-COPY ./public ./public
-COPY ./drizzle.config.ts ./drizzle.config.ts
-COPY ./next.config.js ./next.config.js
-COPY ./postcss.config.js ./postcss.config.js
-COPY ./tailwind.config.js ./tailwind.config.js
-COPY ./tsconfig.json ./tsconfig.json
+FROM base AS build
+COPY --from=install /temp/dev/node_modules node_modules
+COPY . .
+RUN ls -la
 
 ARG NEXT_PUBLIC_FRONTEND_URL
+ARG NEXT_PUBLIC_OPENAI_CLASSIFICATION_ENABLED
 
 ENV BUILD_TIME TRUE
-RUN yarn install --check-cache --immutable && yarn build
+RUN bun run build
 
-FROM base AS runner
-WORKDIR /app
+FROM base AS runnder
+COPY --from=install /temp/prod/node_modules node_modules
+COPY --from=build /usr/src/app/ .
 
-COPY --chown=node --from=builder /app/drizzle.config.ts ./
-COPY --chown=node --from=builder /app/drizzle ./drizzle
-COPY --chown=node --from=builder /app/next.config.js ./
-COPY --chown=node --from=builder /app/.yarn ./.yarn
-COPY --chown=node --from=builder /app/public ./public
-COPY --chown=node --from=builder /app/.next ./.next
-COPY --chown=node --from=builder /app/yarn.lock /app/package.json ./
-COPY --chown=node --from=builder /app/node_modules ./node_modules
+USER bun
 
-USER node
-
-ENV BUILD_TIME FALSE
 ENV HOST 0.0.0.0
 
 ARG DATABASE_URL
 ENV DATABASE_URL ${DATABASE_URL}
 
+ARG OPENAI_API_KEY
+ENV OPENAI_API_KEY ${OPENAI_API_KEY}
+
 ARG PORT
 ENV PORT ${PORT:-3000}
+EXPOSE ${PORT}/tcp
 
-EXPOSE ${PORT}
-CMD ["sh", "-c", "yarn run migrate && yarn start"]
+ENV BUILD_TIME FALSE
+ENTRYPOINT ["sh", "-c", "bun run migrate && bun --bun run start"]
