@@ -1,6 +1,5 @@
 import { PasteContainer } from "@/components/paste-container"
 import { PasteDisplay } from "@/components/paste-display"
-import { serverDecryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
 import { wrapInMarkdown } from "@/lib/markdown"
 import { getPaste } from "@/lib/select"
 import { extractUuidAndExtension } from "@/lib/uuid-extension"
@@ -21,15 +20,9 @@ export type PastePageProps = {
 export default async function Page({ params: { uuidWithExt }, searchParams: { key } }: PastePageProps) {
 	const [uuid, extension] = extractUuidAndExtension(uuidWithExt)
 
-	const [paste] = await getPaste(uuid)
+	const { decryptedContent, paste } = await getPaste({ uuid, key })
 
 	if (!paste) return <h1>Paste does not exist or has expired</h1>
-
-	const decryptedContent = await serverDecryptPaste({
-		keyBase64: decodeURIComponent(key),
-		ivBase64: paste.ivServerBase64,
-		encryptedContentBase64: paste.content
-	})
 
 	if (!paste.ivClientBase64) {
 		if (paste.link) {
