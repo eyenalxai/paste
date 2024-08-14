@@ -81,12 +81,17 @@ export default function Page() {
 	}
 
 	const contentType = form.watch("contentType")
+	const encrypted = form.watch("encrypted")
 
 	useEffect(() => {
+		if (encrypted && contentType === "auto") {
+			form.setValue("contentType", "plaintext")
+		}
+
 		if (contentType !== "source") {
 			form.setValue("syntax", undefined)
 		}
-	}, [contentType, form, form.setValue])
+	}, [contentType, encrypted, form, form.setValue])
 
 	useEffect(() => {
 		if (form.formState.errors) {
@@ -175,7 +180,7 @@ export default function Page() {
 											{Object.entries(selectContentTypeOptions).map(([key, value]) => {
 												if (key === "auto" && !env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION) return
 
-												if (form.watch("encrypted") && key === "auto") return null
+												if (encrypted && key === "auto") return null
 												return (
 													<SelectItem key={key} value={key}>
 														{value}

@@ -34,6 +34,9 @@ export const PasteFormSchema = SharedFormFields.merge(FrontendOnlyDataSchema)
 	.refine((data) => data.contentType !== "auto" || process.env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION, {
 		message: "Automatic content type detection is not available"
 	})
+	.refine((data) => !(data.encrypted && data.contentType === "auto"), {
+		message: "Encrypted pastes cannot have automatic content type detection"
+	})
 
 export const SecurePasteFormSchema = SharedFormFields.merge(InitializationVectorSchema).refine(
 	(data) => data.contentType !== "auto" || process.env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION,
