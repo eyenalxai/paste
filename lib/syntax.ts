@@ -56,7 +56,5 @@ export const detectContentSyntax = async (content: string) => {
 
 	const { syntax } = SyntaxSchema.parse(JSON.parse(response))
 
-	console.log(`Detected syntax: ${syntax}`)
-
 	return syntax
 }
