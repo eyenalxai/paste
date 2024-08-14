@@ -2,7 +2,6 @@ import { db } from "@/lib/database"
 import { getExpiresAt } from "@/lib/date"
 import { env } from "@/lib/env.mjs"
 import { pastes } from "@/lib/schema"
-import { detectContentSyntax } from "@/lib/syntax/detect-syntax"
 import { NextResponse } from "next/server"
 
 export const maxDuration = 5 // In seconds
@@ -29,7 +28,7 @@ export const POST = async (request: Request) => {
 		.insert(pastes)
 		.values({
 			content: pasteContent,
-			syntax: detectContentSyntax(pasteContent),
+			syntax: undefined,
 			link: false,
 			oneTime: false,
 			ivBase64: undefined,

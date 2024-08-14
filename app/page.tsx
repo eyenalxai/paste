@@ -31,7 +31,7 @@ export default function Page() {
 			encrypted: false,
 			oneTime: false,
 			expiresAfter: "1-hour",
-			contentType: "auto",
+			contentType: "plaintext",
 			syntax: undefined
 		}
 	})
@@ -75,19 +75,13 @@ export default function Page() {
 			})
 	}
 
-	const encrypted = form.watch("encrypted")
 	const contentType = form.watch("contentType")
 
 	useEffect(() => {
-		if (encrypted && contentType === "auto") {
-			form.setValue("contentType", "plaintext")
-			form.setValue("syntax", undefined)
-		}
-
 		if (contentType !== "source") {
 			form.setValue("syntax", undefined)
 		}
-	}, [encrypted, contentType, form, form.setValue])
+	}, [contentType, form, form.setValue])
 
 	useEffect(() => {
 		if (form.formState.errors) {
@@ -173,16 +167,14 @@ export default function Page() {
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
-											{Object.entries(selectContentTypeOptions)
-												.sort(([_a, a], [_b, b]) => a.localeCompare(b))
-												.map(([key, value]) => {
-													if (encrypted && key === "auto") return null
-													return (
-														<SelectItem key={key} value={key}>
-															{value}
-														</SelectItem>
-													)
-												})}
+											{Object.entries(selectContentTypeOptions).map(([key, value]) => {
+												if (form.watch("encrypted") && key === "auto") return null
+												return (
+													<SelectItem key={key} value={key}>
+														{value}
+													</SelectItem>
+												)
+											})}
 										</SelectContent>
 									</Select>
 								</div>
