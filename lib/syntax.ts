@@ -48,12 +48,7 @@ export const detectContentSyntax = async (content: string) => {
 
 	const response = chatCompletion.choices[0].message.content
 
-	console.log(`Received response from OpenAI: ${response}`)
-
-	if (response === null) {
-		console.error("Received null response from OpenAI")
-		return undefined
-	}
+	if (response === null) return undefined
 
 	const { syntax } = SyntaxSchema.parse(JSON.parse(response))
 
