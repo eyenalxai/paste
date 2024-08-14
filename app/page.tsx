@@ -32,7 +32,7 @@ export default function Page() {
 			encrypted: false,
 			oneTime: false,
 			expiresAfter: "1-hour",
-			contentType: "plaintext",
+			contentType: !env.NEXT_PUBLIC_OPENAI_CLASSIFICATION_ENABLED ? "plaintext" : "auto",
 			syntax: undefined
 		}
 	})
@@ -72,7 +72,7 @@ export default function Page() {
 
 				form.reset({
 					content: "",
-					oneTime: false,
+					oneTime: formData.oneTime,
 					encrypted: formData.encrypted,
 					contentType: formData.contentType,
 					syntax: formData.syntax,
