@@ -3,7 +3,86 @@ import { z } from "zod"
 
 export const ExpiresAfter = z.enum(["5-minutes", "30-minutes", "1-hour", "6-hours", "1-day", "1-week", "1-month"])
 export const ContentType = z.enum(["auto", "link", "markdown", "source", "plaintext"])
-export const Syntax = z.enum(["go", "tsx", "python", "rust", "bash", "toml"])
+export const Syntax = z.enum([
+	".env",
+	"apache",
+	"bash",
+	"c",
+	"cpp",
+	"csharp",
+	"css",
+	"dart",
+	"dockerfile",
+	"go",
+	"graphql",
+	"groovy",
+	"html",
+	"ini",
+	"java",
+	"json",
+	"jsx",
+	"kotlin",
+	"kubernetes",
+	"lua",
+	"makefile",
+	"nginx",
+	"perl",
+	"php",
+	"powershell",
+	"protobuf",
+	"python",
+	"r",
+	"ruby",
+	"rust",
+	"scala",
+	"shell",
+	"sql",
+	"swift",
+	"toml",
+	"tsx",
+	"xml",
+	"yaml"
+])
+export const selectSyntaxOptions: Record<z.infer<typeof Syntax>, string> = {
+	".env": "Environment",
+	apache: "Apache",
+	bash: "Bash",
+	c: "C",
+	cpp: "C++",
+	csharp: "C#",
+	css: "CSS",
+	dart: "Dart",
+	dockerfile: "Dockerfile",
+	go: "Go",
+	graphql: "GraphQL",
+	groovy: "Groovy",
+	html: "HTML",
+	ini: "INI",
+	java: "Java",
+	jsx: "JavaScript",
+	json: "JSON",
+	kotlin: "Kotlin",
+	kubernetes: "Kubernetes",
+	lua: "Lua",
+	makefile: "Makefile",
+	nginx: "Nginx",
+	perl: "Perl",
+	php: "PHP",
+	powershell: "PowerShell",
+	protobuf: "Protobuf",
+	python: "Python",
+	r: "R",
+	ruby: "Ruby",
+	rust: "Rust",
+	scala: "Scala",
+	shell: "Shell",
+	sql: "SQL",
+	swift: "Swift",
+	toml: "TOML",
+	tsx: "TypeScript",
+	xml: "XML",
+	yaml: "YAML"
+}
 
 export const InitializationVectorSchema = z.object({
 	iv: z.string().optional()
@@ -58,13 +137,4 @@ export const selectContentTypeOptions: Record<z.infer<typeof ContentType>, strin
 	plaintext: "Plaintext",
 	source: "Source",
 	link: "Link"
-}
-
-export const selectSyntaxOptions: Record<z.infer<typeof Syntax>, string> = {
-	bash: "Bash",
-	go: "Go",
-	python: "Python",
-	rust: "Rust",
-	toml: "TOML",
-	tsx: "TypeScript"
 }
