@@ -1,7 +1,8 @@
 import { db } from "@/lib/database"
+import { deleteExpirePastes } from "@/lib/delete"
 import { pastes } from "@/lib/schema"
 import { getPaste } from "@/lib/select"
-import { eq, lt } from "drizzle-orm"
+import { eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
 
 type GetPasteParams = {
@@ -11,11 +12,7 @@ type GetPasteParams = {
 }
 
 export const GET = async (_request: Request, { params: { uuid } }: GetPasteParams) => {
-	const deleted = await db.delete(pastes).where(lt(pastes.expiresAt, new Date().toISOString())).returning()
-
-	if (deleted.length > 0) {
-		console.info(`Deleted ${deleted.length} expired pastes`)
-	}
+	await deleteExpirePastes()
 
 	if (!uuid) return new NextResponse("uuid is required", { status: 400 })
 
