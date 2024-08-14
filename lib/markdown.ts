@@ -1,5 +1,5 @@
 type WrapProps = {
-	syntax: string | null
+	syntax: string
 	extension: string | undefined
 	content: string
 }
@@ -13,5 +13,5 @@ export const wrapInMarkdown = ({ syntax, extension, content }: WrapProps) => {
 		return content
 	}
 
-	return syntax ? `\`\`\`${syntax}\n${content}\n\`\`\`` : `\`\`\`plaintext\n${content}\n\`\`\``
+	return `\`\`\`${syntax}\n${content}\n\`\`\``
 }

@@ -24,7 +24,7 @@ export const POST = async (request: Request) => {
 		.insert(pastes)
 		.values({
 			content: encryptedContentBase64,
-			syntax: undefined,
+			syntax: "plaintext",
 			link: false,
 			oneTime: false,
 			ivClientBase64: undefined,

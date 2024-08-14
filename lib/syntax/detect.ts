@@ -14,8 +14,9 @@ type GetPasteLanguageProps = {
 export const getPasteSyntax = async ({ encrypted, syntax, contentType, content }: GetPasteLanguageProps) => {
 	if (syntax) return syntax
 	if (contentType === "markdown") return "markdown"
+	if (contentType === "plaintext") return "plaintext"
 
-	return encrypted ? undefined : await detectContentSyntax(content)
+	return encrypted ? "plaintext" : await detectContentSyntax(content)
 }
 
 export const SyntaxSchema = z.object({
@@ -52,7 +53,10 @@ export const detectContentSyntax = async (content: string) => {
 
 	const response = chatCompletion.choices[0].message.content
 
-	if (response === null) return undefined
+	if (response === null) {
+		console.error("Got null response from OpenAI")
+		return "plaintext"
+	}
 
 	const { syntax } = SyntaxSchema.parse(JSON.parse(response))
 
