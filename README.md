@@ -1,7 +1,8 @@
 # Paste
 
+## Important
+An HTTPS environment is required for secure operation due to the use of `navigator.clipboard` and `window.crypto` APIs.
 ## How to deploy
-
 
 Clone and cd into the repo
 
@@ -54,5 +55,3 @@ Run the container
 docker-compose up -d
 ```
 
-### Important
-Client side encryption requires secure environment (*HTTPS*) to work, so you will need to figure it out
