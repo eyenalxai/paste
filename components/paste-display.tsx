@@ -33,7 +33,9 @@ export const PasteDisplay = ({
 	})
 
 	useEffect(() => {
-		if (paste?.link) {
+		if (!paste) return
+
+		if (paste.link) {
 			window.location.href = paste.rawContent
 		}
 	}, [paste])
