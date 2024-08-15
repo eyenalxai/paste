@@ -39,8 +39,10 @@ export const FrontendSchema = z
 		syntax: SyntaxOptional
 	})
 	.refine(({ contentType, syntax }) => !(contentType === "source" && syntax === undefined), {
-		message: "Must select a syntax for source code",
-		path: ["syntax"]
+		message: "Must select a syntax for source code"
+	})
+	.refine(({ contentType, syntax }) => !(contentType !== "source" && syntax !== undefined), {
+		message: "Syntax selection is only allowed for source content type"
 	})
 	.refine(({ contentType, content }) => !(contentType === "link" && !isValidUrl(content)), {
 		message: "Invalid URL"
@@ -74,6 +76,9 @@ export const BackendSchema = zfd
 	})
 	.refine(({ ivClient }) => ivClient !== undefined || !env.NEXT_PUBLIC_CLIENT_SIDE_ENCRYPTION_ONLY, {
 		message: "Server-side encryption is disabled"
+	})
+	.refine(({ contentType, syntax }) => !(contentType !== "source" && syntax !== undefined), {
+		message: "Syntax selection is only allowed for source content type"
 	})
 
 export const selectExpiresAfterOptions: Record<z.infer<typeof ExpiresAfter>, string> = {
