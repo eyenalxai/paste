@@ -27,17 +27,16 @@ export const PreviewImageContainer = ({ children, title }: PreviewImageContainer
 				backgroundImage: "linear-gradient(0deg, #020817 0%, #fff 100%)",
 				backgroundClip: "text",
 				color: "transparent",
-				display: "block"
+				display: "block",
+				height: "100%"
 			}}
 		>
-			sss
+			{children}
 		</div>
 		<div
 			style={{
-				paddingBottom: "5rem",
 				fontSize: "5rem",
-				color: "white",
-				fontFamily: "sans-serif"
+				color: "white"
 			}}
 		>
 			{title}
