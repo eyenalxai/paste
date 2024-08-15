@@ -26,7 +26,7 @@ export default function Page() {
 		resolver: zodResolver(FrontendSchema),
 		defaultValues: {
 			content: "",
-			encrypted: false,
+			encrypted: env.NEXT_PUBLIC_CLIENT_SIDE_ENCRYPTION_ONLY,
 			oneTime: false,
 			expiresAfter: "1-hour",
 			contentType: !env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION ? "plaintext" : "auto",
@@ -106,18 +106,20 @@ export default function Page() {
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className={cn("space-y-4")}>
 				<div className={cn("flex", "flex-row", "flex-wrap", "gap-4", "justify-start", "items-center")}>
-					<FormField
-						control={form.control}
-						name="encrypted"
-						render={({ field }) => (
-							<div className={cn("flex", "flex-row", "gap-x-2")}>
-								<div className={cn("flex", "justify-center", "items-center", "text-center")}>Encrypt</div>
-								<FormControl>
-									<Switch checked={field.value} onCheckedChange={field.onChange} />
-								</FormControl>
-							</div>
-						)}
-					/>
+					{!env.NEXT_PUBLIC_CLIENT_SIDE_ENCRYPTION_ONLY && (
+						<FormField
+							control={form.control}
+							name="encrypted"
+							render={({ field }) => (
+								<div className={cn("flex", "flex-row", "gap-x-2")}>
+									<div className={cn("flex", "justify-center", "items-center", "text-center")}>Encrypt</div>
+									<FormControl>
+										<Switch checked={field.value} onCheckedChange={field.onChange} />
+									</FormControl>
+								</div>
+							)}
+						/>
+					)}
 					<FormField
 						control={form.control}
 						name="oneTime"

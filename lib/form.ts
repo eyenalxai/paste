@@ -45,11 +45,14 @@ export const FrontendSchema = z
 	.refine(({ contentType, content }) => !(contentType === "link" && !isValidUrl(content)), {
 		message: "Invalid URL"
 	})
-	.refine(({ contentType }) => contentType !== "auto" || process.env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION, {
+	.refine(({ contentType }) => contentType !== "auto" || env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION, {
 		message: "Automatic content type detection is not available"
 	})
 	.refine(({ encrypted, contentType }) => !(encrypted && contentType === "auto"), {
 		message: "Encrypted pastes cannot have automatic content type detection"
+	})
+	.refine(({ encrypted }) => encrypted || !env.NEXT_PUBLIC_CLIENT_SIDE_ENCRYPTION_ONLY, {
+		message: "Server-side encryption is disabled"
 	})
 
 export const BackendSchema = zfd
@@ -66,8 +69,11 @@ export const BackendSchema = zfd
 		contentType: ContentType,
 		syntax: SyntaxOptional
 	})
-	.refine(({ contentType }) => contentType !== "auto" || process.env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION, {
+	.refine(({ contentType }) => contentType !== "auto" || env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION, {
 		message: "Automatic content type detection is not available"
+	})
+	.refine(({ ivClient }) => ivClient !== undefined || !env.NEXT_PUBLIC_CLIENT_SIDE_ENCRYPTION_ONLY, {
+		message: "Server-side encryption is disabled"
 	})
 
 export const selectExpiresAfterOptions: Record<z.infer<typeof ExpiresAfter>, string> = {

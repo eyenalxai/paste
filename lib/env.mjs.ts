@@ -1,10 +1,16 @@
 import { createEnv } from "@t3-oss/env-nextjs"
 import { z } from "zod"
 
+const StringBoolean = z
+	.string()
+	.optional()
+	.transform((value) => (value === "" ? undefined : value))
+	.transform((value) => value && value.toLowerCase() === "true")
+	.pipe(z.boolean().default(false))
+
 export const env = createEnv({
 	server: {
 		DATABASE_URL: z.string().url(),
-
 		OPENAI_API_KEY: z
 			.string()
 			.optional()
@@ -34,20 +40,8 @@ export const env = createEnv({
 				message: "MAX_PAYLOAD_SIZE must be greater than 0"
 			})
 			.transform((value) => value * 1024 * 1024),
-		NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION: z
-			.string()
-			.optional()
-			.refine((value) => value === undefined || value.toLowerCase() === "true" || value.toLowerCase() === "false", {
-				message: "NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION must be 'True' or 'False' if set."
-			})
-			.transform((value) => value && value.toLowerCase() === "true"),
-		NEXT_PUBLIC_CLIENT_SIDE_ENCRYPTION_ONLY: z
-			.string()
-			.optional()
-			.refine((value) => value === undefined || value.toLowerCase() === "true" || value.toLowerCase() === "false", {
-				message: "NEXT_PUBLIC_CLIENT_SIDE_ENCRYPTION_ONLY must be 'True' or 'False' if set."
-			})
-			.transform((value) => value && value.toLowerCase() === "true")
+		NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION: StringBoolean,
+		NEXT_PUBLIC_CLIENT_SIDE_ENCRYPTION_ONLY: StringBoolean
 	},
 	runtimeEnv: {
 		NEXT_PUBLIC_MAX_PAYLOAD_SIZE: process.env.NEXT_PUBLIC_MAX_PAYLOAD_SIZE,
