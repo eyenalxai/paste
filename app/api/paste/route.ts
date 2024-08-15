@@ -47,8 +47,6 @@ export const POST = async (request: Request) => {
 		})
 	}
 
-	console.log("syntax", syntax)
-
 	const [insertedPaste] = await db
 		.insert(pastes)
 		.values({
