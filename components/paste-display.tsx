@@ -55,14 +55,7 @@ export const PasteDisplay = ({
 		)
 	}
 
-	if (isLoading || !paste)
-		return (
-			<PasteContainer loading>
-				<div className={cn("w-full", "flex", "justify-start")}>
-					<Loader className={cn("animate-spin")} />
-				</div>
-			</PasteContainer>
-		)
+	if (isLoading || !paste) return null
 
 	return <PasteContainer noWrap content={paste.rawContent} markdown={paste.markdownContent} />
 }
