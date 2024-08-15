@@ -4,7 +4,14 @@ import { z } from "zod"
 export const env = createEnv({
 	server: {
 		DATABASE_URL: z.string().url(),
-		MAX_PAYLOAD_SIZE: z.number().int().positive(),
+		MAX_PAYLOAD_SIZE: z
+			.string()
+			.optional()
+			.transform((value) => (value === "" || value === undefined ? 2 : Number.parseInt(value)))
+			.refine((value) => value > 0, {
+				message: "MAX_PAYLOAD_SIZE must be greater than 0"
+			})
+			.transform((value) => value * 1024 * 1024),
 		OPENAI_API_KEY: z
 			.string()
 			.optional()
@@ -35,7 +42,7 @@ export const env = createEnv({
 			.transform((value) => value && value.toLowerCase() === "true")
 	},
 	runtimeEnv: {
-		MAX_PAYLOAD_SIZE: 1024 * 1024 * 20, // Total: 20MB
+		MAX_PAYLOAD_SIZE: process.env.MAX_PAYLOAD_SIZE,
 		DATABASE_URL: process.env.DATABASE_URL,
 		OPENAI_API_KEY: process.env.OPENAI_API_KEY,
 		NEXT_PUBLIC_FRONTEND_URL: process.env.NEXT_PUBLIC_FRONTEND_URL,
