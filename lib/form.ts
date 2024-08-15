@@ -10,17 +10,14 @@ const StringBoolean = z.union([z.boolean(), z.string()]).transform((value) => {
 	return value
 })
 
-export const ExpiresAfter = z.enum(["5-minutes", "30-minutes", "1-hour", "6-hours", "1-day", "1-week", "1-month"])
-export const ContentType = z.enum(["auto", "link", "markdown", "source", "plaintext"])
-
-export const Content = z
+const Content = z
 	.string()
 	.transform((value) => value.trim())
 	.refine((value) => value.length >= 2, {
 		message: "Paste must be at least 2 non-whitespace characters"
 	})
-export const OneTime = StringBoolean
-export const SyntaxOptional = z
+const OneTime = StringBoolean
+const SyntaxOptional = z
 	.string()
 	.optional()
 	.transform((value) =>
@@ -28,6 +25,9 @@ export const SyntaxOptional = z
 	)
 	.optional()
 	.or(Syntax)
+
+export const ExpiresAfter = z.enum(["5-minutes", "30-minutes", "1-hour", "6-hours", "1-day", "1-week", "1-month"])
+export const ContentType = z.enum(["auto", "link", "markdown", "source", "plaintext"])
 
 export const FrontendSchema = z
 	.object({
