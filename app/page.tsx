@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { env } from "@/lib/env.mjs"
-import { PasteFormSchema, selectContentTypeOptions, selectExpiresAfterOptions } from "@/lib/form"
+import { FrontendSchema, selectContentTypeOptions, selectExpiresAfterOptions } from "@/lib/form"
 import { savePaste } from "@/lib/paste/save-paste"
 import { type Syntax, selectSyntaxOptions } from "@/lib/syntax/select"
 import { cn } from "@/lib/utils"
@@ -22,8 +22,8 @@ import type { z } from "zod"
 export default function Page() {
 	const [isSubmitting, startTransition] = useTransition()
 
-	const form = useForm<z.infer<typeof PasteFormSchema>>({
-		resolver: zodResolver(PasteFormSchema),
+	const form = useForm<z.infer<typeof FrontendSchema>>({
+		resolver: zodResolver(FrontendSchema),
 		defaultValues: {
 			content: "",
 			encrypted: false,
@@ -34,7 +34,7 @@ export default function Page() {
 		}
 	})
 
-	const onSubmit = async (formData: z.infer<typeof PasteFormSchema>) => {
+	const onSubmit = async (formData: z.infer<typeof FrontendSchema>) => {
 		startTransition(() =>
 			savePaste(formData)
 				.catch((error: Error) => {

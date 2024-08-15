@@ -1,9 +1,9 @@
 import { clientEncryptPaste } from "@/lib/crypto/client/encrypt-decrypt"
 import { SavePasteResponseSchema, insertPaste } from "@/lib/fetch/paste"
-import type { PasteFormSchema } from "@/lib/form"
+import type { FrontendSchema } from "@/lib/form"
 import type { z } from "zod"
 
-export const savePaste = async (paste: z.infer<typeof PasteFormSchema>) => {
+export const savePaste = async (paste: z.infer<typeof FrontendSchema>) => {
 	if (paste.encrypted) {
 		const { keyBase64, ivBase64, encryptedContentBase64 } = await clientEncryptPaste(paste.content.trim())
 

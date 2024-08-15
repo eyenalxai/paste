@@ -2,7 +2,7 @@ import { contentLength } from "@/lib/content-length"
 import { serverEncryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
 import { db } from "@/lib/database"
 import { getExpiresAt } from "@/lib/date"
-import { SecurePasteFormSchema } from "@/lib/form"
+import { BackendSchema } from "@/lib/form"
 import { pastes } from "@/lib/schema"
 import { getPasteSyntax } from "@/lib/syntax/detect"
 import { buildPasteUrl } from "@/lib/url"
@@ -13,9 +13,9 @@ export const POST = async (request: Request) => {
 	const badContentLengthResponse = await contentLength(request)
 	if (badContentLengthResponse) return badContentLengthResponse
 
-	const receivedPaste: z.infer<typeof SecurePasteFormSchema> = await request.json()
+	const receivedPaste: z.infer<typeof BackendSchema> = await request.json()
 
-	const pasteValidated = SecurePasteFormSchema.parse(receivedPaste)
+	const pasteValidated = BackendSchema.parse(receivedPaste)
 
 	const contentTrimmed = pasteValidated.content.trim()
 

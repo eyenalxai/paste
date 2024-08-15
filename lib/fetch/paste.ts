@@ -1,6 +1,6 @@
 "use client"
 
-import type { SecurePasteFormSchema } from "@/lib/form"
+import type { BackendSchema } from "@/lib/form"
 import ky from "ky"
 import { z } from "zod"
 
@@ -8,7 +8,7 @@ export const SavePasteResponseSchema = z.object({
 	url: z.string().url()
 })
 
-export const insertPaste = (paste: z.infer<typeof SecurePasteFormSchema>) =>
+export const insertPaste = (paste: z.infer<typeof BackendSchema>) =>
 	ky
 		.post("/api/paste", {
 			json: paste
