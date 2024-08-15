@@ -24,7 +24,7 @@
 		"clsx": "^2.1.1",
 		"cmdk": "1.0.0",
 		"drizzle-orm": "^0.33.0",
-		"ky": "^1.5.0",
+		"ky": "^1.6.0",
 		"lucide-react": "^0.427.0",
 		"next": "14.2.5",
 		"next-mdx-remote": "^5.0.0",
@@ -39,7 +39,7 @@
 		"rehype-stringify": "^10.0.0",
 		"server-only": "^0.0.1",
 		"sonner": "^1.5.0",
-		"tailwind-merge": "^2.4.0",
+		"tailwind-merge": "^2.5.2",
 		"tailwindcss-animate": "^1.0.7",
 		"unified": "^11.0.5",
 		"zod": "^3.23.8",
@@ -48,7 +48,7 @@
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",
 		"@tailwindcss/typography": "^0.5.14",
-		"@types/node": "22.1.0",
+		"@types/node": "22.3.0",
 		"@types/react": "18.3.3",
 		"@types/react-dom": "18.3.0",
 		"autoprefixer": "10.4.20",
@@ -58,7 +58,7 @@
 		"eslint-plugin-tailwindcss": "^3.17.4",
 		"postcss": "8.4.41",
 		"shadcn-ui": "^0.8.0",
-		"tailwindcss": "3.4.9",
+		"tailwindcss": "3.4.10",
 		"typescript": "5.5.4"
 	},
 	"packageManager": "yarn@4.4.0"
