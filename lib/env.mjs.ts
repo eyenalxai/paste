@@ -7,7 +7,7 @@ export const env = createEnv({
 		MAX_PAYLOAD_SIZE: z
 			.string()
 			.optional()
-			.transform((value) => (value === "" || value === undefined ? 2 : Number.parseInt(value)))
+			.transform((value) => (value === "" || value === undefined ? 2 : Number.parseFloat(value)))
 			.refine((value) => value > 0, {
 				message: "MAX_PAYLOAD_SIZE must be greater than 0"
 			})
