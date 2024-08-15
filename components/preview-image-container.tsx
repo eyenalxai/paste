@@ -17,7 +17,7 @@ export const PreviewImageContainer = ({ children, title }: PreviewImageContainer
 			display: "flex",
 			flexDirection: "column",
 			alignItems: "flex-start",
-			justifyContent: "flex-start",
+			justifyContent: "space-between",
 			padding: "1rem",
 			whiteSpace: "pre-wrap"
 		}}
@@ -30,7 +30,7 @@ export const PreviewImageContainer = ({ children, title }: PreviewImageContainer
 				display: "block"
 			}}
 		>
-			{children}
+			sss
 		</div>
 		<div
 			style={{

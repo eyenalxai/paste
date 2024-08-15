@@ -1,32 +1,32 @@
 import { readFile } from "node:fs/promises"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
-import type { PastePageProps } from "@/app/[uuidWithExt]/page"
 import { PreviewImageContainer } from "@/components/preview-image-container"
 import { serverDecryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
 import { getPaste } from "@/lib/select"
 import { getTitle } from "@/lib/title"
-import { extractUuidAndExtension } from "@/lib/uuid-extension"
 import { ImageResponse } from "next/og"
 import { NextResponse } from "next/server"
 
-export const dynamic = "force-static"
-export const revalidate = false
-
-export const alt = "About Acme"
-export const size = {
+const size = {
 	width: 1200,
 	height: 630
 }
 
-export const contentType = "image/png"
+export type ImagePastePageProps = {
+	params: {
+		uuid: string
+	}
+}
 
-export default async function Image({ params: { uuidWithExt }, searchParams: { key } }: PastePageProps) {
-	const [uuid] = extractUuidAndExtension(uuidWithExt)
+export const GET = async (request: Request, { params: { uuid } }: ImagePastePageProps) => {
+	if (!uuid) return new NextResponse("uuid is required", { status: 400 })
 
 	const [paste] = await getPaste(uuid)
 
 	if (!paste) return new NextResponse("paste not found", { status: 404 })
+
+	if (paste.oneTime) return new NextResponse("image generation for one-time pastes is not supported", { status: 400 })
 
 	const title = getTitle({ paste, uppercase: true })
 
@@ -34,10 +34,13 @@ export default async function Image({ params: { uuidWithExt }, searchParams: { k
 
 	if (!paste.ivClientBase64) {
 		if (!paste.ivServer) throw new Error("Paste is somehow not encrypted at client-side or server-side")
-		if (!key) throw new Error("key is required to decrypt server-side encrypted paste")
+
+		const { searchParams } = new URL(request.url)
+		const key = searchParams.get("key")
+		if (!key) return new NextResponse("key is required", { status: 400 })
 
 		const decryptedContent = await serverDecryptPaste({
-			keyBase64: decodeURIComponent(key),
+			keyBase64: key,
 			ivServer: paste.ivServer,
 			encryptedBuffer: paste.content
 		})

@@ -32,7 +32,7 @@ export const buildPasteMetadata = async ({ uuid, paste, key }: BuildPasteMetadat
 		if (!key) throw new Error("key is required to decrypt server-side encrypted paste")
 
 		const decryptedContent = await serverDecryptPaste({
-			keyBase64: decodeURIComponent(key),
+			keyBase64: key,
 			ivServer: paste.ivServer,
 			encryptedBuffer: paste.content
 		})
@@ -45,8 +45,17 @@ export const buildPasteMetadata = async ({ uuid, paste, key }: BuildPasteMetadat
 			openGraph: {
 				title: title,
 				description: description,
-				url: new URL(`${frontendUrl}/${uuid}?key=${key}`),
-				type: "website"
+				url: new URL(`${frontendUrl}/${uuid}?key=${encodeURIComponent(key)}`),
+				type: "website",
+				images: [
+					{
+						url: `/api/paste/${uuid}/image?key=${encodeURIComponent(key)}`,
+						width: 1200,
+						height: 630,
+						alt: title,
+						type: "image/png"
+					}
+				]
 			}
 		} satisfies Metadata
 	}
@@ -59,7 +68,16 @@ export const buildPasteMetadata = async ({ uuid, paste, key }: BuildPasteMetadat
 			title: title,
 			description: description,
 			url: new URL(`${frontendUrl}/${uuid}`),
-			type: "website"
+			type: "website",
+			images: [
+				{
+					url: `/api/paste/${uuid}/image`,
+					width: 1200,
+					height: 630,
+					alt: title,
+					type: "image/png"
+				}
+			]
 		}
 	} satisfies Metadata
 }
