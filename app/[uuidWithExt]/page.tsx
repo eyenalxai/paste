@@ -11,7 +11,7 @@ export type PastePageProps = {
 		uuidWithExt: string
 	}
 	searchParams: {
-		key: string
+		key?: string
 	}
 }
 
@@ -31,6 +31,7 @@ export default async function Page({ params: { uuidWithExt }, searchParams: { ke
 
 	if (!paste.ivClientBase64) {
 		if (!paste.ivServer) throw new Error("Paste is somehow not encrypted at client-side or server-side")
+		if (!key) throw new Error("key is required to decrypt server-side encrypted paste")
 
 		const keyBase64 = decodeURIComponent(key)
 

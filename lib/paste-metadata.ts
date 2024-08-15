@@ -7,7 +7,7 @@ import type { Metadata } from "next"
 type BuildPasteMetadataProps = {
 	uuid: string
 	paste: Paste
-	key: string
+	key: string | undefined
 }
 
 export const buildPasteMetadata = async ({ uuid, paste, key }: BuildPasteMetadataProps) => {
@@ -29,6 +29,7 @@ export const buildPasteMetadata = async ({ uuid, paste, key }: BuildPasteMetadat
 
 	if (!paste.ivClientBase64) {
 		if (!paste.ivServer) throw new Error("Paste is somehow not encrypted at client-side or server-side")
+		if (!key) throw new Error("key is required to decrypt server-side encrypted paste")
 
 		const decryptedContent = await serverDecryptPaste({
 			keyBase64: decodeURIComponent(key),
@@ -44,7 +45,7 @@ export const buildPasteMetadata = async ({ uuid, paste, key }: BuildPasteMetadat
 			openGraph: {
 				title: title,
 				description: description,
-				url: new URL(`${frontendUrl}/${uuid}`),
+				url: new URL(`${frontendUrl}/${uuid}?key=${key}`),
 				type: "website"
 			}
 		} satisfies Metadata

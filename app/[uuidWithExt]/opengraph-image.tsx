@@ -34,6 +34,7 @@ export default async function Image({ params: { uuidWithExt }, searchParams: { k
 
 	if (!paste.ivClientBase64) {
 		if (!paste.ivServer) throw new Error("Paste is somehow not encrypted at client-side or server-side")
+		if (!key) throw new Error("key is required to decrypt server-side encrypted paste")
 
 		const decryptedContent = await serverDecryptPaste({
 			keyBase64: decodeURIComponent(key),
