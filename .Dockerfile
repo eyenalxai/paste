@@ -46,7 +46,7 @@ ENV OPENAI_API_KEY ${OPENAI_API_KEY}
 
 ARG PORT
 ENV PORT ${PORT:-3000}
-EXPOSE ${PORT}/tcp
+EXPOSE ${PORT}
 
 ENV BUILD_TIME FALSE
 ENTRYPOINT ["sh", "-c", "yarn run migrate && yarn run start"]
