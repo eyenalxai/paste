@@ -60,7 +60,10 @@ export const FrontendSchema = z
 
 export const BackendSchema = zfd
 	.formData({
-		ivClient: z.string().optional(),
+		ivClient: z
+			.string()
+			.optional()
+			.transform((value) => (value === "" || value === "undefined" ? undefined : value)),
 		contentBlob: zfd.file().refine((value) => value.size <= env.NEXT_PUBLIC_MAX_PAYLOAD_SIZE, {
 			message: `Paste size exceeds ${env.NEXT_PUBLIC_MAX_PAYLOAD_SIZE / 1024 / 1024} MiB`
 		}),
