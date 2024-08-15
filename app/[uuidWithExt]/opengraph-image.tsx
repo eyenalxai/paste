@@ -4,8 +4,8 @@ import { fileURLToPath } from "node:url"
 import type { PastePageProps } from "@/app/[uuidWithExt]/page"
 import { PreviewImageContainer } from "@/components/preview-image-container"
 import { serverDecryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
-import { getImageTitle } from "@/lib/image"
 import { getPaste } from "@/lib/select"
+import { getTitle } from "@/lib/title"
 import { extractUuidAndExtension } from "@/lib/uuid-extension"
 import { ImageResponse } from "next/og"
 import { NextResponse } from "next/server"
@@ -28,7 +28,7 @@ export default async function Image({ params: { uuidWithExt }, searchParams: { k
 
 	if (!paste) return new NextResponse("paste not found", { status: 404 })
 
-	const title = getImageTitle(paste)
+	const title = getTitle(paste)
 
 	const fontData = await readFile(path.join(fileURLToPath(import.meta.url), "../../../public/Roboto-Mono-Regular.woff"))
 

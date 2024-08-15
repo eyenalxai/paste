@@ -4,6 +4,7 @@ import { serverDecryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
 import { env } from "@/lib/env.mjs"
 import { wrapInMarkdown } from "@/lib/markdown"
 import { getPaste } from "@/lib/select"
+import { getTitle } from "@/lib/title"
 import { extractUuidAndExtension } from "@/lib/uuid-extension"
 import { all } from "lowlight"
 import type { Metadata } from "next"
@@ -39,6 +40,8 @@ export async function generateMetadata({ params: { uuidWithExt }, searchParams: 
 		} satisfies Metadata
 	}
 
+	const title = getTitle(paste)
+
 	if (!paste.ivClientBase64) {
 		if (!paste.ivServer) throw new Error("Paste is somehow not encrypted at client-side or server-side")
 
@@ -48,7 +51,6 @@ export async function generateMetadata({ params: { uuidWithExt }, searchParams: 
 			encryptedBuffer: paste.content
 		})
 
-		const title = "Paste"
 		const description = decryptedContent.length > 64 ? `${decryptedContent.slice(0, 64)}...` : decryptedContent
 
 		return {
@@ -63,7 +65,6 @@ export async function generateMetadata({ params: { uuidWithExt }, searchParams: 
 		} satisfies Metadata
 	}
 
-	const title = "Encrypted paste"
 	const description = "This paste is encrypted and cannot be previewed"
 	return {
 		title: title,

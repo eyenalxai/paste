@@ -1,6 +1,6 @@
 import type { Paste } from "@/lib/schema"
 
-export const getImageTitle = (paste: Paste) => {
+export const getTitle = (paste: Paste) => {
 	if (paste.link) {
 		return paste.ivClientBase64 !== null ? "ENCRYPTED LINK" : "LINK"
 	}
