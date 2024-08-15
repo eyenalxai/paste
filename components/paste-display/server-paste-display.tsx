@@ -9,14 +9,20 @@ type ServerPasteDisplayProps = {
 	syntax: string
 	decryptedContent: string
 	extension: string | undefined
-	key: string
+	keyBase64: string
 }
 
-export const ServerPasteDisplay = ({ uuid, syntax, decryptedContent, extension, key }: ServerPasteDisplayProps) => {
+export const ServerPasteDisplay = ({
+	uuid,
+	syntax,
+	decryptedContent,
+	extension,
+	keyBase64
+}: ServerPasteDisplayProps) => {
 	const wrapped = wrapInMarkdown({ syntax: syntax, content: decryptedContent, extension })
 
 	return (
-		<PasteContainer content={decryptedContent} uuid={uuid} keyBase64={decodeURIComponent(key)} noWrap>
+		<PasteContainer content={decryptedContent} uuid={uuid} keyBase64={decodeURIComponent(keyBase64)} noWrap>
 			<MDXRemote
 				source={wrapped}
 				options={{
