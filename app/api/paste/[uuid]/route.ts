@@ -1,8 +1,11 @@
+import { Readable } from "node:stream"
+import { createGzip } from "node:zlib"
 import { db } from "@/lib/database"
 import { deleteExpirePastes } from "@/lib/delete"
 import { pastes } from "@/lib/schema"
 import { getPaste } from "@/lib/select"
 import { eq } from "drizzle-orm"
+import type { NextApiRequest, NextApiResponse } from "next"
 import { NextResponse } from "next/server"
 
 type GetPasteParams = {
@@ -11,7 +14,11 @@ type GetPasteParams = {
 	}
 }
 
-export const GET = async (_request: Request, { params: { uuid } }: GetPasteParams) => {
+export const GET = async (
+	_request: NextApiRequest,
+	response: NextApiResponse<Readable>,
+	{ params: { uuid } }: GetPasteParams
+) => {
 	await deleteExpirePastes()
 
 	if (!uuid) return new NextResponse("uuid is required", { status: 400 })
@@ -23,5 +30,7 @@ export const GET = async (_request: Request, { params: { uuid } }: GetPasteParam
 		await db.delete(pastes).where(eq(pastes.uuid, uuid))
 	}
 
-	return NextResponse.json(paste)
+	const pasteGzipped = Readable.from(JSON.stringify(paste)).pipe(createGzip())
+	response.setHeader("Content-Encoding", "gzip")
+	return response.json(pasteGzipped)
 }
