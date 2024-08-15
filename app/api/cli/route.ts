@@ -2,11 +2,16 @@ import { contentLength } from "@/lib/content-length"
 import { serverEncryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
 import { db } from "@/lib/database"
 import { getExpiresAt } from "@/lib/date"
+import { env } from "@/lib/env.mjs"
 import { pastes } from "@/lib/schema"
 import { buildPasteUrl } from "@/lib/url"
 import { NextResponse } from "next/server"
 
 export const POST = async (request: Request) => {
+	if (env.NEXT_PUBLIC_CLIENT_SIDE_ENCRYPTION_ONLY) {
+		return new NextResponse("Server-side encryption is disabled", { status: 400 })
+	}
+
 	const badContentLengthResponse = await contentLength(request)
 	if (badContentLengthResponse) return badContentLengthResponse
 
