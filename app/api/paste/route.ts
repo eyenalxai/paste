@@ -19,15 +19,15 @@ export const POST = async (request: Request) => {
 
 	const content = await contentBlob.text()
 
+	const pasteSyntax = await getPasteSyntax({
+		encrypted: ivClient !== undefined,
+		syntax: syntax,
+		contentType: contentType,
+		content: content
+	})
+
 	if (!ivClient) {
 		const { keyBase64, ivServer, encryptedBuffer } = await serverEncryptPaste(content)
-
-		const pasteSyntax = await getPasteSyntax({
-			encrypted: ivClient !== undefined,
-			syntax: syntax,
-			contentType: contentType,
-			content: content
-		})
 
 		const [insertedPaste] = await db
 			.insert(pastes)
@@ -47,11 +47,13 @@ export const POST = async (request: Request) => {
 		})
 	}
 
+	console.log("syntax", syntax)
+
 	const [insertedPaste] = await db
 		.insert(pastes)
 		.values({
 			content: await serverFileToBuffer(contentBlob),
-			syntax: syntax || "plaintext",
+			syntax: pasteSyntax,
 			ivClientBase64: ivClient,
 			ivServer: null,
 			oneTime: oneTime,

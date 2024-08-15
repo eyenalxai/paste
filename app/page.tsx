@@ -91,6 +91,10 @@ export default function Page() {
 		if (contentType !== "source") {
 			form.setValue("syntax", undefined)
 		}
+
+		if (contentType !== "markdown") {
+			form.setValue("syntax", undefined)
+		}
 	}, [contentType, encrypted, form, form.setValue])
 
 	useEffect(() => {

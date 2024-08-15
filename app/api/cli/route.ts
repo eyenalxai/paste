@@ -4,6 +4,7 @@ import { db } from "@/lib/database"
 import { getExpiresAt } from "@/lib/date"
 import { env } from "@/lib/env.mjs"
 import { pastes } from "@/lib/schema"
+import { getPasteSyntax } from "@/lib/syntax/detect"
 import { buildPasteUrl } from "@/lib/url"
 import { NextResponse } from "next/server"
 
@@ -28,6 +29,13 @@ export const POST = async (request: Request) => {
 	}
 
 	const { keyBase64, ivServer, encryptedBuffer } = await serverEncryptPaste(pasteContent)
+
+	const pasteSyntax = await getPasteSyntax({
+		encrypted: false,
+		syntax: undefined,
+		contentType: "auto",
+		content: pasteContent
+	})
 
 	const [insertedPaste] = await db
 		.insert(pastes)

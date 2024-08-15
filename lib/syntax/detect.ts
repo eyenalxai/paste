@@ -15,8 +15,11 @@ export const getPasteSyntax = async ({ encrypted, syntax, contentType, content }
 	if (syntax) return syntax
 	if (contentType === "markdown") return "markdown"
 	if (contentType === "plaintext") return "plaintext"
+	if (encrypted) return "plaintext"
 
-	return encrypted ? "plaintext" : await detectContentSyntax(content)
+	if (contentType === "auto" && env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION) return await detectContentSyntax(content)
+
+	return "plaintext"
 }
 
 export const SyntaxSchema = z.object({
