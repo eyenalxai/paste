@@ -14,13 +14,11 @@ export type RawPastePageProps = {
 
 export const GET = async (request: Request, { params: { uuid } }: RawPastePageProps) => {
 	await deleteExpirePastes()
-	console.log("uuid", uuid)
 
 	if (!uuid) return new NextResponse("uuid is required", { status: 400 })
 
 	const { searchParams } = new URL(request.url)
 	const key = searchParams.get("key")
-	console.log("key", key)
 
 	if (!key) return new NextResponse("key is required", { status: 400 })
 
