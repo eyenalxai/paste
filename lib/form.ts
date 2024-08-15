@@ -1,3 +1,4 @@
+import { env } from "@/lib/env.mjs"
 import { Syntax } from "@/lib/syntax/select"
 import { isValidUrl } from "@/lib/url"
 import { z } from "zod"
@@ -32,7 +33,12 @@ export const ContentType = z.enum(["auto", "link", "markdown", "source", "plaint
 export const FrontendSchema = z
 	.object({
 		encrypted: StringBoolean,
-		content: Content,
+		content: z
+			.string()
+			.transform((value) => value.trim())
+			.refine((value) => value.length >= 2, {
+				message: "Paste must be at least 2 non-whitespace characters"
+			}),
 		oneTime: OneTime,
 		expiresAfter: ExpiresAfter,
 		contentType: ContentType,
@@ -55,7 +61,9 @@ export const FrontendSchema = z
 export const BackendSchema = zfd
 	.formData({
 		ivClient: z.string().optional(),
-		content: Content,
+		contentBlob: zfd.file().refine((value) => value.size <= env.NEXT_PUBLIC_MAX_PAYLOAD_SIZE, {
+			message: `Paste size exceeds ${env.NEXT_PUBLIC_MAX_PAYLOAD_SIZE / 1024 / 1024} MiB`
+		}),
 		oneTime: OneTime,
 		expiresAfter: ExpiresAfter,
 		contentType: ContentType,

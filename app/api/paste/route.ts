@@ -12,20 +12,20 @@ export const POST = async (request: Request) => {
 	const badContentLengthResponse = await contentLength(request)
 	if (badContentLengthResponse) return badContentLengthResponse
 
-	const { ivClient, content, oneTime, expiresAfter, contentType, syntax } = BackendSchema.parse(
+	const { ivClient, contentBlob, oneTime, expiresAfter, contentType, syntax } = BackendSchema.parse(
 		await request.formData()
 	)
 
-	const contentTrimmed = content.trim()
+	const content = await contentBlob.text()
 
 	const pasteSyntax = await getPasteSyntax({
 		encrypted: ivClient !== undefined,
 		syntax: syntax,
 		contentType: contentType,
-		content: contentTrimmed
+		content: content
 	})
 
-	const { keyBase64, ivServer, encryptedBuffer } = await serverEncryptPaste(contentTrimmed)
+	const { keyBase64, ivServer, encryptedBuffer } = await serverEncryptPaste(content)
 
 	const [insertedPaste] = await db
 		.insert(pastes)
