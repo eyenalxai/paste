@@ -2,10 +2,12 @@ import { env } from "@/lib/env.mjs"
 
 type BuildPasteUrlProps = {
 	uuid: string
-	keyBase64: string
+	keyBase64?: string
 }
 
 export const buildPasteUrl = ({ uuid, keyBase64 }: BuildPasteUrlProps) => {
+	if (!keyBase64) return `${env.NEXT_PUBLIC_FRONTEND_URL}/${uuid}`
+
 	return `${env.NEXT_PUBLIC_FRONTEND_URL}/${uuid}?key=${encodeURIComponent(keyBase64)}`
 }
 

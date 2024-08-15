@@ -10,7 +10,7 @@ import { useEffect } from "react"
 type PasteDisplayProps = {
 	uuid: string
 	ivClientBase64: string
-	serverDecryptedContent: string
+	clientEncryptedContent: string
 	link: boolean
 	syntax: string
 	extension: string | undefined
@@ -19,7 +19,7 @@ type PasteDisplayProps = {
 export const PasteDisplay = ({
 	uuid,
 	ivClientBase64,
-	serverDecryptedContent,
+	clientEncryptedContent,
 	link,
 	syntax,
 	extension
@@ -27,7 +27,7 @@ export const PasteDisplay = ({
 	const { paste, isLoading, error } = usePaste({
 		uuid,
 		ivClientBase64,
-		serverDecryptedContent,
+		clientEncryptedContent,
 		link,
 		syntax,
 		extension

@@ -1,8 +1,9 @@
 import { PasteContainer } from "@/components/paste-container"
 import { PasteDisplay } from "@/components/paste-display"
+import { serverDecryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
 import { env } from "@/lib/env.mjs"
 import { wrapInMarkdown } from "@/lib/markdown"
-import { getDecryptedPaste } from "@/lib/select"
+import { getPaste } from "@/lib/select"
 import { extractUuidAndExtension } from "@/lib/uuid-extension"
 import { all } from "lowlight"
 import type { Metadata } from "next"
@@ -24,7 +25,7 @@ export async function generateMetadata({ params: { uuidWithExt }, searchParams: 
 
 	const [uuid] = extractUuidAndExtension(uuidWithExt)
 
-	const { decryptedContent, paste } = await getDecryptedPaste({ uuid, key })
+	const [paste] = await getPaste(uuid)
 
 	if (!paste) {
 		const title = "Paste does not exist or has expired"
@@ -38,9 +39,18 @@ export async function generateMetadata({ params: { uuidWithExt }, searchParams: 
 		} satisfies Metadata
 	}
 
-	if (paste.ivClientBase64) {
-		const title = "Encrypted paste"
-		const description = "This paste is encrypted and cannot be previewed"
+	if (!paste.ivClientBase64) {
+		if (!paste.ivServer) throw new Error("Paste is somehow not encrypted at client-side or server-side")
+
+		const decryptedContent = await serverDecryptPaste({
+			keyBase64: decodeURIComponent(key),
+			ivServer: paste.ivServer,
+			encryptedBuffer: paste.content
+		})
+
+		const title = "Paste"
+		const description = decryptedContent.length > 64 ? `${decryptedContent.slice(0, 64)}...` : decryptedContent
+
 		return {
 			title: title,
 			description: description,
@@ -53,9 +63,8 @@ export async function generateMetadata({ params: { uuidWithExt }, searchParams: 
 		} satisfies Metadata
 	}
 
-	const title = "Paste"
-	const description = decryptedContent.length > 64 ? `${decryptedContent.slice(0, 64)}...` : decryptedContent
-
+	const title = "Encrypted paste"
+	const description = "This paste is encrypted and cannot be previewed"
 	return {
 		title: title,
 		description: description,
@@ -71,11 +80,19 @@ export async function generateMetadata({ params: { uuidWithExt }, searchParams: 
 export default async function Page({ params: { uuidWithExt }, searchParams: { key } }: PastePageProps) {
 	const [uuid, extension] = extractUuidAndExtension(uuidWithExt)
 
-	const { decryptedContent, paste } = await getDecryptedPaste({ uuid, key })
+	const [paste] = await getPaste(uuid)
 
 	if (!paste) return <h1>Paste does not exist or has expired</h1>
 
 	if (!paste.ivClientBase64) {
+		if (!paste.ivServer) throw new Error("Paste is somehow not encrypted at client-side or server-side")
+
+		const decryptedContent = await serverDecryptPaste({
+			keyBase64: decodeURIComponent(key),
+			ivServer: paste.ivServer,
+			encryptedBuffer: paste.content
+		})
+
 		if (paste.link) {
 			permanentRedirect(decryptedContent)
 		}
@@ -107,7 +124,7 @@ export default async function Page({ params: { uuidWithExt }, searchParams: { ke
 		<PasteDisplay
 			uuid={uuid}
 			ivClientBase64={paste.ivClientBase64}
-			serverDecryptedContent={decryptedContent}
+			clientEncryptedContent={paste.content.toString("utf-8")}
 			link={paste.link}
 			syntax={paste.syntax}
 			extension={extension}

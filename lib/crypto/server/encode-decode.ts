@@ -15,3 +15,8 @@ export const serverArrayBufferToBuffer = async (arrBuffer: ArrayBuffer) => Buffe
 
 export const serverBufferToArrayBuffer = async (buffer: Buffer) =>
 	buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)
+
+export const serverFileToBuffer = async (file: File) => {
+	const arrayBuffer = await file.arrayBuffer()
+	return Buffer.from(arrayBuffer)
+}

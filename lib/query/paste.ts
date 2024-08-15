@@ -15,13 +15,13 @@ import { unified } from "unified"
 type UsePasteProps = {
 	uuid: string
 	ivClientBase64: string
-	serverDecryptedContent: string
+	clientEncryptedContent: string
 	link: boolean
 	syntax: string
 	extension: string | undefined
 }
 
-export const usePaste = ({ uuid, ivClientBase64, serverDecryptedContent, link, syntax, extension }: UsePasteProps) => {
+export const usePaste = ({ uuid, ivClientBase64, clientEncryptedContent, link, syntax, extension }: UsePasteProps) => {
 	const [keyBase64] = useState(
 		typeof window !== "undefined" && window.location.hash ? window.location.hash.slice(1) : undefined
 	)
@@ -44,7 +44,7 @@ export const usePaste = ({ uuid, ivClientBase64, serverDecryptedContent, link, s
 			const rawContent = await clientDecryptPaste({
 				keyBase64,
 				ivBase64: ivClientBase64,
-				encryptedContentBase64: serverDecryptedContent
+				encryptedContentBase64: clientEncryptedContent
 			})
 
 			const markdownContent = await unified()

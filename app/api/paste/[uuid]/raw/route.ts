@@ -1,7 +1,8 @@
+import { serverDecryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
 import { db } from "@/lib/database"
 import { deleteExpirePastes } from "@/lib/delete"
 import { pastes } from "@/lib/schema"
-import { getDecryptedPaste } from "@/lib/select"
+import { getPaste } from "@/lib/select"
 import { eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
 
@@ -23,14 +24,25 @@ export const GET = async (request: Request, { params: { uuid } }: RawPastePagePr
 
 	if (!key) return new NextResponse("key is required", { status: 400 })
 
-	const { decryptedContent, paste } = await getDecryptedPaste({ uuid, key })
-	if (!paste) return new NextResponse("paste not found", { status: 404 })
+	const [paste] = await getPaste(uuid)
 
-	if (paste.ivClientBase64) return new NextResponse("paste is encrypted", { status: 400 })
+	if (!paste) return new NextResponse("paste not found", { status: 404 })
 
 	if (paste.oneTime) {
 		await db.delete(pastes).where(eq(pastes.uuid, uuid))
 	}
 
-	return new NextResponse(decryptedContent, { status: 200 })
+	if (!paste.ivClientBase64) {
+		if (!paste.ivServer) throw new Error("Paste is somehow not encrypted at client-side or server-side")
+
+		const decryptedContent = await serverDecryptPaste({
+			keyBase64: decodeURIComponent(key),
+			ivServer: paste.ivServer,
+			encryptedBuffer: paste.content
+		})
+
+		return new NextResponse(decryptedContent, { status: 200 })
+	}
+
+	return new NextResponse("paste is encrypted", { status: 400 })
 }
