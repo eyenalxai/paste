@@ -13,7 +13,7 @@ export const pastes = pgTable("pastes", {
 	content: bytea("content").notNull(),
 	oneTime: boolean("one_time"),
 	ivClientBase64: text("iv_client_base64"),
-	ivServer: bytea("iv_server4").notNull(),
+	ivServer: bytea("iv_server4"),
 	syntax: varchar("syntax").notNull(),
 	link: boolean("link").notNull(),
 	expiresAt: timestamp("expires_at", { mode: "string", withTimezone: true }).notNull()
