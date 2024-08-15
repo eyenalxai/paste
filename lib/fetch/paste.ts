@@ -8,9 +8,15 @@ export const SavePasteResponseSchema = z.object({
 	url: z.string().url()
 })
 
-export const insertPaste = (paste: z.infer<typeof BackendSchema>) =>
-	ky
+export const insertPaste = (paste: z.infer<typeof BackendSchema>) => {
+	const formData = new FormData()
+	for (const [key, value] of Object.entries(paste)) {
+		formData.append(key, typeof value === "boolean" ? value.toString() : value)
+	}
+
+	return ky
 		.post("/api/paste", {
-			json: paste
+			body: formData
 		})
 		.json<z.infer<typeof SavePasteResponseSchema>>()
+}

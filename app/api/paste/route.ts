@@ -12,7 +12,9 @@ export const POST = async (request: Request) => {
 	const badContentLengthResponse = await contentLength(request)
 	if (badContentLengthResponse) return badContentLengthResponse
 
-	const { ivClient, content, oneTime, expiresAfter, contentType, syntax } = BackendSchema.parse(await request.json())
+	const { ivClient, content, oneTime, expiresAfter, contentType, syntax } = BackendSchema.parse(
+		await request.formData()
+	)
 
 	const contentTrimmed = content.trim()
 

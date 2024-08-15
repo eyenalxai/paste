@@ -1,6 +1,14 @@
 import { Syntax } from "@/lib/syntax/select"
 import { isValidUrl } from "@/lib/url"
 import { z } from "zod"
+import { zfd } from "zod-form-data"
+
+const StringBoolean = z.union([z.boolean(), z.string()]).transform((value) => {
+	if (typeof value === "string") {
+		return value.toLowerCase() === "true"
+	}
+	return value
+})
 
 export const ExpiresAfter = z.enum(["5-minutes", "30-minutes", "1-hour", "6-hours", "1-day", "1-week", "1-month"])
 export const ContentType = z.enum(["auto", "link", "markdown", "source", "plaintext"])
@@ -8,12 +16,19 @@ export const ContentType = z.enum(["auto", "link", "markdown", "source", "plaint
 export const Content = z.string().min(2, {
 	message: "Paste must be at least 2 characters long"
 })
-export const OneTime = z.boolean()
-export const SyntaxOptional = Syntax.optional()
+export const OneTime = StringBoolean
+export const SyntaxOptional = z
+	.string()
+	.optional()
+	.transform((value) =>
+		value === "" || value === "undefined" || value === undefined ? undefined : value.toLowerCase()
+	)
+	.optional()
+	.or(Syntax)
 
 export const FrontendSchema = z
 	.object({
-		encrypted: z.boolean(),
+		encrypted: StringBoolean,
 		content: Content,
 		oneTime: OneTime,
 		expiresAfter: ExpiresAfter,
@@ -34,8 +49,8 @@ export const FrontendSchema = z
 		message: "Encrypted pastes cannot have automatic content type detection"
 	})
 
-export const BackendSchema = z
-	.object({
+export const BackendSchema = zfd
+	.formData({
 		ivClient: z.string().optional(),
 		content: Content,
 		oneTime: OneTime,
