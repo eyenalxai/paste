@@ -4,7 +4,6 @@ import { PasteContainer } from "@/components/paste-container"
 import { Alert } from "@/components/ui/alert"
 import { usePaste } from "@/lib/query/paste"
 import { cn } from "@/lib/utils"
-import { Loader } from "lucide-react"
 import { useEffect } from "react"
 
 type PasteDisplayProps = {
@@ -55,7 +54,7 @@ export const PasteDisplay = ({
 		)
 	}
 
-	if (isLoading || !paste) return null
+	if (isLoading || !paste) return <PasteContainer loading />
 
 	return <PasteContainer noWrap content={paste.rawContent} markdown={paste.markdownContent} />
 }

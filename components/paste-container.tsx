@@ -12,16 +12,19 @@ type PasteContainerProps = {
 	uuid?: string
 	keyBase64?: string
 	noWrap?: boolean
-} & (
-	| {
-			children: ReactNode
-	  }
-	| {
-			markdown: VFile
-	  }
-)
+	children?: ReactNode
+	markdown?: VFile
+}
 
-export const PasteContainer = ({ loading, content, uuid, keyBase64, noWrap, ...props }: PasteContainerProps) => (
+export const PasteContainer = ({
+	loading,
+	content,
+	uuid,
+	keyBase64,
+	noWrap,
+	children,
+	markdown
+}: PasteContainerProps) => (
 	<div className={cn("flex", "flex-col", "gap-4")}>
 		<div className={cn("flex", "flex-row", "flex-wrap", "gap-4", "justify-start", "items-center")}>
 			<CopyContentButton loading={loading} content={content} />
@@ -36,14 +39,11 @@ export const PasteContainer = ({ loading, content, uuid, keyBase64, noWrap, ...p
 				</Button>
 			)}
 		</div>
-		<div
-			className={cn(!loading && ["border", "p-4"], "rounded", "font-mono", !noWrap && "whitespace-pre-wrap", "text-sm")}
-		>
-			{"children" in props ? (
-				<MarkdownDisplay>{props.children}</MarkdownDisplay>
-			) : (
-				<DangerousMarkdownDisplay markdown={props.markdown} />
-			)}
-		</div>
+		{!loading && (
+			<div className={cn(["border", "p-4"], "rounded", "font-mono", !noWrap && "whitespace-pre-wrap", "text-sm")}>
+				{children && <MarkdownDisplay>{children}</MarkdownDisplay>}
+				{markdown && <DangerousMarkdownDisplay markdown={markdown} />}
+			</div>
+		)}
 	</div>
 )
