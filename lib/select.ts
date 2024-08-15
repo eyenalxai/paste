@@ -37,8 +37,8 @@ export const getDecryptedPaste = cache(async ({ uuid, key }: GetPasteProps): Pro
 
 	const decryptedContent = await serverDecryptPaste({
 		keyBase64: decodeURIComponent(key),
-		ivBase64: paste.ivServerBase64,
-		encryptedContentBase64: paste.content
+		ivServer: paste.ivServer,
+		encryptedBuffer: paste.content
 	})
 
 	return {

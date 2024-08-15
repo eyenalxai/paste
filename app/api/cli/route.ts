@@ -18,17 +18,17 @@ export const POST = async (request: Request) => {
 		return new NextResponse("paste field must be filled with paste content", { status: 400 })
 	}
 
-	const { keyBase64, ivBase64, encryptedContentBase64 } = await serverEncryptPaste(pasteContent)
+	const { keyBase64, ivServer, encryptedBuffer } = await serverEncryptPaste(pasteContent)
 
 	const [insertedPaste] = await db
 		.insert(pastes)
 		.values({
-			content: encryptedContentBase64,
+			content: encryptedBuffer,
 			syntax: "plaintext",
 			link: false,
 			oneTime: false,
 			ivClientBase64: undefined,
-			ivServerBase64: ivBase64,
+			ivServer: ivServer,
 			expiresAt: getExpiresAt("1-day").toISOString()
 		})
 		.returning()

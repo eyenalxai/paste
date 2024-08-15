@@ -26,15 +26,15 @@ export const POST = async (request: Request) => {
 		content: contentTrimmed
 	})
 
-	const { keyBase64, ivBase64, encryptedContentBase64 } = await serverEncryptPaste(contentTrimmed)
+	const { keyBase64, ivServer, encryptedBuffer } = await serverEncryptPaste(contentTrimmed)
 
 	const [insertedPaste] = await db
 		.insert(pastes)
 		.values({
-			content: encryptedContentBase64,
+			content: encryptedBuffer,
 			syntax: pasteSyntax,
 			ivClientBase64: pasteValidated.ivClient,
-			ivServerBase64: ivBase64,
+			ivServer: ivServer,
 			oneTime: pasteValidated.oneTime,
 			expiresAt: getExpiresAt(pasteValidated.expiresAfter).toISOString(),
 			link: pasteValidated.contentType === "link"

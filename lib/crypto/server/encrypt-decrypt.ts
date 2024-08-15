@@ -2,8 +2,9 @@
 
 import { KEY_USAGES } from "@/lib/crypto/key"
 import {
-	serverArrayBufferToBase64,
+	serverArrayBufferToBuffer,
 	serverBase64ToArrayBuffer,
+	serverBufferToArrayBuffer,
 	serverKeyToBase64
 } from "@/lib/crypto/server/encode-decode"
 
@@ -22,30 +23,30 @@ export const serverEncryptPaste = async (pasteContent: string) => {
 	const key = await serverGenerateKey()
 	const { encryptedData, iv } = await serverEncryptData(pasteContent, key)
 
-	const encryptedContentBase64 = await serverArrayBufferToBase64(encryptedData)
+	const encryptedBuffer = await serverArrayBufferToBuffer(encryptedData)
 	const keyBase64 = await serverKeyToBase64(key)
-	const ivBase64 = await serverArrayBufferToBase64(iv)
+	const ivServer = await serverArrayBufferToBuffer(iv)
 
 	return {
 		keyBase64,
-		ivBase64,
-		encryptedContentBase64
+		ivServer,
+		encryptedBuffer
 	}
 }
 
 type DecryptPasteProps = {
 	keyBase64: string
-	ivBase64: string
-	encryptedContentBase64: string
+	ivServer: Buffer
+	encryptedBuffer: Buffer
 }
 
-export const serverDecryptPaste = async ({ keyBase64, ivBase64, encryptedContentBase64 }: DecryptPasteProps) => {
+export const serverDecryptPaste = async ({ keyBase64, ivServer, encryptedBuffer }: DecryptPasteProps) => {
 	const keyBuffer = await serverBase64ToArrayBuffer(keyBase64)
-	const iv = await serverBase64ToArrayBuffer(ivBase64)
+	const iv = await serverBufferToArrayBuffer(ivServer)
 
 	const key = await crypto.subtle.importKey("raw", keyBuffer, { name: "AES-GCM", length: 256 }, true, KEY_USAGES)
 
-	const encryptedContentArrayBuffer = await serverBase64ToArrayBuffer(encryptedContentBase64)
+	const encryptedContentArrayBuffer = await serverBufferToArrayBuffer(encryptedBuffer)
 
 	return await serverDecryptData(encryptedContentArrayBuffer, new Uint8Array(iv), key)
 }

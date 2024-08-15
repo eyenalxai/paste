@@ -1,1 +1,0 @@
-ALTER TABLE "pastes" ALTER COLUMN "syntax" SET NOT NULL;
