@@ -30,7 +30,7 @@ export default function Page() {
 			oneTime: false,
 			expiresAfter: "1-hour",
 			contentType: !env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION ? "plaintext" : "auto",
-			syntax: undefined
+			syntax: ""
 		}
 	})
 
@@ -86,12 +86,10 @@ export default function Page() {
 	useEffect(() => {
 		if (encrypted && contentType === "auto") {
 			form.setValue("contentType", "plaintext")
-			return
 		}
 
 		if (contentType !== "source") {
-			form.setValue("syntax", undefined)
-			return
+			form.setValue("syntax", "")
 		}
 	}, [contentType, encrypted, form, form.setValue])
 
