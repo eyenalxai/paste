@@ -39,7 +39,7 @@ export const env = createEnv({
 			.refine((value) => value > 0, {
 				message: "MAX_PAYLOAD_SIZE must be greater than 0"
 			})
-			.transform((value) => value * 1024 * 1024),
+			.transform((value) => value * 1024 * 1024), // In MiB
 		NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION: StringBoolean,
 		NEXT_PUBLIC_CLIENT_SIDE_ENCRYPTION_ONLY: StringBoolean
 	},
