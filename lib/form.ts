@@ -24,22 +24,22 @@ export const SharedFormFields = z.object({
 })
 
 export const PasteFormSchema = SharedFormFields.merge(FrontendOnlyDataSchema)
-	.refine((data) => !(data.contentType === "source" && data.syntax === undefined), {
+	.refine(({ contentType, syntax }) => !(contentType === "source" && syntax === undefined), {
 		message: "Must select a syntax for source code",
 		path: ["syntax"]
 	})
-	.refine((data) => !(data.contentType === "link" && !isValidUrl(data.content)), {
+	.refine(({ contentType, content }) => !(contentType === "link" && !isValidUrl(content)), {
 		message: "Invalid URL"
 	})
-	.refine((data) => data.contentType !== "auto" || process.env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION, {
+	.refine(({ contentType }) => contentType !== "auto" || process.env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION, {
 		message: "Automatic content type detection is not available"
 	})
-	.refine((data) => !(data.encrypted && data.contentType === "auto"), {
+	.refine(({ encrypted, contentType }) => !(encrypted && contentType === "auto"), {
 		message: "Encrypted pastes cannot have automatic content type detection"
 	})
 
 export const SecurePasteFormSchema = SharedFormFields.merge(InitializationVectorSchema).refine(
-	(data) => data.contentType !== "auto" || process.env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION,
+	({ contentType }) => contentType !== "auto" || process.env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION,
 	{
 		message: "Automatic content type detection is not available"
 	}
