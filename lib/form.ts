@@ -11,12 +11,6 @@ const StringBoolean = z.union([z.boolean(), z.string()]).transform((value) => {
 	return value
 })
 
-const Content = z
-	.string()
-	.transform((value) => value.trim())
-	.refine((value) => value.length >= 2, {
-		message: "Paste must be at least 2 non-whitespace characters"
-	})
 const OneTime = StringBoolean
 const SyntaxOptional = z
 	.string()
