@@ -12,10 +12,14 @@ export const POST = async (request: Request) => {
 
 	const formData = await request.formData()
 
-	const pasteContent = formData.get("paste") as string | null
+	const pasteContent = formData.get("paste")
 
 	if (!pasteContent) {
 		return new NextResponse("paste field must be filled with paste content", { status: 400 })
+	}
+
+	if (typeof pasteContent !== "string") {
+		return new NextResponse("paste field must be a string", { status: 400 })
 	}
 
 	const { keyBase64, ivServer, encryptedBuffer } = await serverEncryptPaste(pasteContent)
