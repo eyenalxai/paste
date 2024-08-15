@@ -38,7 +38,14 @@ export const env = createEnv({
 			.string()
 			.optional()
 			.refine((value) => value === undefined || value.toLowerCase() === "true" || value.toLowerCase() === "false", {
-				message: "NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION must be 'true' or 'false' if set."
+				message: "NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION must be 'True' or 'False' if set."
+			})
+			.transform((value) => value && value.toLowerCase() === "true"),
+		NEXT_PUBLIC_CLIENT_SIDE_ENCRYPTION_ONLY: z
+			.string()
+			.optional()
+			.refine((value) => value === undefined || value.toLowerCase() === "true" || value.toLowerCase() === "false", {
+				message: "NEXT_PUBLIC_CLIENT_SIDE_ENCRYPTION_ONLY must be 'True' or 'False' if set."
 			})
 			.transform((value) => value && value.toLowerCase() === "true")
 	},
@@ -47,7 +54,8 @@ export const env = createEnv({
 		DATABASE_URL: process.env.DATABASE_URL,
 		OPENAI_API_KEY: process.env.OPENAI_API_KEY,
 		NEXT_PUBLIC_FRONTEND_URL: process.env.NEXT_PUBLIC_FRONTEND_URL,
-		NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION: process.env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION
+		NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION: process.env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION,
+		NEXT_PUBLIC_CLIENT_SIDE_ENCRYPTION_ONLY: process.env.NEXT_PUBLIC_CLIENT_SIDE_ENCRYPTION_ONLY
 	},
 	skipValidation: process.env.BUILD_TIME === "TRUE"
 })
