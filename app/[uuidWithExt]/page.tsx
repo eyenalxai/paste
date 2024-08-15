@@ -36,7 +36,7 @@ export async function generateMetadata({ params: { uuidWithExt }, searchParams: 
 		} satisfies Metadata
 	}
 
-	const title = getTitle(paste)
+	const title = getTitle({ paste })
 
 	if (!paste.ivClientBase64) {
 		if (!paste.ivServer) throw new Error("Paste is somehow not encrypted at client-side or server-side")
@@ -102,7 +102,7 @@ export default async function Page({ params: { uuidWithExt }, searchParams: { ke
 				syntax={paste.syntax}
 				decryptedContent={decryptedContent}
 				extension={extension}
-				key={keyBase64}
+				keyBase64={keyBase64}
 			/>
 		)
 	}

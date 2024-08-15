@@ -1,9 +1,16 @@
 import type { Paste } from "@/lib/schema"
 
-export const getTitle = (paste: Paste) => {
+type GetTitleProps = {
+	paste: Paste
+	uppercase?: boolean
+}
+
+export const getTitle = ({ paste, uppercase }: GetTitleProps) => {
 	if (paste.link) {
-		return paste.ivClientBase64 !== null ? "ENCRYPTED LINK" : "LINK"
+		const title = paste.ivClientBase64 !== null ? "Encrypted Link" : "Link"
+		return uppercase ? title.toUpperCase() : title
 	}
 
-	return paste.ivClientBase64 !== null ? "ENCRYPTED PASTE" : "PASTE"
+	const title = paste.ivClientBase64 !== null ? "Encrypted Paste" : "Paste"
+	return uppercase ? title.toUpperCase() : title
 }

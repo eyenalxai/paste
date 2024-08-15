@@ -28,7 +28,7 @@ export default async function Image({ params: { uuidWithExt }, searchParams: { k
 
 	if (!paste) return new NextResponse("paste not found", { status: 404 })
 
-	const title = getTitle(paste)
+	const title = getTitle({ paste, uppercase: true })
 
 	const fontData = await readFile(path.join(fileURLToPath(import.meta.url), "../../../public/Roboto-Mono-Regular.woff"))
 
