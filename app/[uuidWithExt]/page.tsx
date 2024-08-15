@@ -1,16 +1,12 @@
-import { PasteContainer } from "@/components/paste-container"
-import { PasteDisplay } from "@/components/paste-display"
+import { ClientPasteDisplay } from "@/components/paste-display/client-paste-display"
+import { ServerPasteDisplay } from "@/components/paste-display/server-paste-display"
 import { serverDecryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
 import { env } from "@/lib/env.mjs"
-import { wrapInMarkdown } from "@/lib/markdown"
 import { getPaste } from "@/lib/select"
 import { getTitle } from "@/lib/title"
 import { extractUuidAndExtension } from "@/lib/uuid-extension"
-import { all } from "lowlight"
 import type { Metadata } from "next"
-import { MDXRemote } from "next-mdx-remote/rsc"
 import { permanentRedirect } from "next/navigation"
-import rehypeHighlight from "rehype-highlight"
 
 export type PastePageProps = {
 	params: {
@@ -88,8 +84,10 @@ export default async function Page({ params: { uuidWithExt }, searchParams: { ke
 	if (!paste.ivClientBase64) {
 		if (!paste.ivServer) throw new Error("Paste is somehow not encrypted at client-side or server-side")
 
+		const keyBase64 = decodeURIComponent(key)
+
 		const decryptedContent = await serverDecryptPaste({
-			keyBase64: decodeURIComponent(key),
+			keyBase64: keyBase64,
 			ivServer: paste.ivServer,
 			encryptedBuffer: paste.content
 		})
@@ -98,31 +96,19 @@ export default async function Page({ params: { uuidWithExt }, searchParams: { ke
 			permanentRedirect(decryptedContent)
 		}
 
-		const wrapped = wrapInMarkdown({ syntax: paste.syntax, content: decryptedContent, extension })
-
 		return (
-			<PasteContainer content={decryptedContent} uuid={uuid} keyBase64={decodeURIComponent(key)} noWrap>
-				<MDXRemote
-					source={wrapped}
-					options={{
-						mdxOptions: {
-							rehypePlugins: [
-								[
-									rehypeHighlight,
-									{
-										languages: all
-									}
-								]
-							]
-						}
-					}}
-				/>
-			</PasteContainer>
+			<ServerPasteDisplay
+				uuid={uuid}
+				syntax={paste.syntax}
+				decryptedContent={decryptedContent}
+				extension={extension}
+				key={keyBase64}
+			/>
 		)
 	}
 
 	return (
-		<PasteDisplay
+		<ClientPasteDisplay
 			uuid={uuid}
 			ivClientBase64={paste.ivClientBase64}
 			clientEncryptedContent={paste.content.toString("utf-8")}

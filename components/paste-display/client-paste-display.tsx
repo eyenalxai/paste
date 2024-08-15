@@ -15,7 +15,7 @@ type PasteDisplayProps = {
 	extension: string | undefined
 }
 
-export const PasteDisplay = ({
+export const ClientPasteDisplay = ({
 	uuid,
 	ivClientBase64,
 	clientEncryptedContent,
