@@ -8,6 +8,8 @@ import { getTitle } from "@/lib/title"
 import { ImageResponse } from "next/og"
 import { NextResponse } from "next/server"
 
+export const dynamic = "force-static"
+
 const size = {
 	width: 1200,
 	height: 630
