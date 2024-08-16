@@ -5,6 +5,7 @@ import { buildPasteMetadata } from "@/lib/paste-metadata"
 import { getPaste } from "@/lib/select"
 import { extractUuidAndExtension } from "@/lib/uuid-extension"
 import { headers } from "next/headers"
+import { permanentRedirect } from "next/navigation"
 
 export type PastePageProps = {
 	params: {
@@ -29,13 +30,6 @@ export default async function Page({ params: { uuidWithExt }, searchParams: { ke
 
 	if (!paste) return <h1>Paste does not exist or has expired</h1>
 
-	const headersList = headers()
-
-	console.log("Headers:")
-	for (const [key, value] of headersList) {
-		console.log(`${key} = ${value}`)
-	}
-
 	if (!paste.ivClientBase64) {
 		if (!paste.ivServer) throw new Error("Paste is somehow not encrypted at client-side or server-side")
 		if (!key) throw new Error("key is required to decrypt server-side encrypted paste")
@@ -48,9 +42,11 @@ export default async function Page({ params: { uuidWithExt }, searchParams: { ke
 			encryptedBuffer: paste.content
 		})
 
-		// if (paste.link) {
-		// 	permanentRedirect(decryptedContent)
-		// }
+		if (paste.link) {
+			const headersList = headers()
+			const userAgent = headersList.get("user-agent")
+			if (!userAgent || !userAgent.toLowerCase().includes("bot")) permanentRedirect(decryptedContent)
+		}
 
 		return (
 			<ServerPasteDisplay
