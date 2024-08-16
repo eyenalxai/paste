@@ -1,8 +1,8 @@
 import { serverDecryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
-import { db } from "@/lib/database"
-import { deleteExpirePastes } from "@/lib/delete"
+import { db } from "@/lib/database/client"
+import { deleteExpirePastes } from "@/lib/database/delete"
+import { getPaste } from "@/lib/database/select"
 import { pastes } from "@/lib/schema"
-import { getPaste } from "@/lib/select"
 import { eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
 

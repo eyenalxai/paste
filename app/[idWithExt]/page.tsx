@@ -1,9 +1,9 @@
 import { ClientPasteDisplay } from "@/components/paste-display/client-paste-display"
 import { ServerPasteDisplay } from "@/components/paste-display/server-paste-display"
 import { serverDecryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
+import { getPaste } from "@/lib/database/select"
 import { extractIdAndExtension } from "@/lib/id-extension"
 import { buildPasteMetadata } from "@/lib/paste-metadata"
-import { getPaste } from "@/lib/select"
 import { headers } from "next/headers"
 import { permanentRedirect } from "next/navigation"
 

@@ -1,17 +1,7 @@
-import { db } from "@/lib/database"
+import { db } from "@/lib/database/client"
 import { generateRandomId } from "@/lib/random-id"
 import { type Paste, type PasteInsert, type PasteInsertNoId, pastes } from "@/lib/schema"
-import { and, eq, gt } from "drizzle-orm"
 import type { PostgresError } from "postgres"
-import { cache } from "react"
-
-export const getPaste = cache(
-	async (id: string) =>
-		await db
-			.select()
-			.from(pastes)
-			.where(and(eq(pastes.id, id), gt(pastes.expiresAt, new Date().toISOString())))
-)
 
 const insertPasteInternal = async (paste: PasteInsert): Promise<Paste> => {
 	const [insertedPaste] = await db.insert(pastes).values(paste).returning()
