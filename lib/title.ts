@@ -7,7 +7,7 @@ type GetTitleProps = {
 
 export const getTitle = ({ paste, uppercase }: GetTitleProps) => {
 	if (paste.link) {
-		const title = paste.ivClientBase64 !== null ? "Encrypted Link" : "Link"
+		const title = paste.ivClientBase64 !== null ? "Encrypted Redirect" : "Redirect"
 		return uppercase ? title.toUpperCase() : title
 	}
 
