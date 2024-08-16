@@ -1,4 +1,4 @@
-import { boolean, customType, pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core"
+import { boolean, customType, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core"
 
 const bytea = customType<{
 	data: Buffer
