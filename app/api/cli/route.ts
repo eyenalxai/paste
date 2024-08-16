@@ -3,6 +3,7 @@ import { serverEncryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
 import { db } from "@/lib/database"
 import { getExpiresAt } from "@/lib/date"
 import { env } from "@/lib/env.mjs"
+import { generateRandomUniqueId } from "@/lib/random-id"
 import { pastes } from "@/lib/schema"
 import { getPasteSyntax } from "@/lib/syntax/detect"
 import { buildPasteUrl } from "@/lib/url"
@@ -40,6 +41,7 @@ export const POST = async (request: Request) => {
 	const [insertedPaste] = await db
 		.insert(pastes)
 		.values({
+			id: await generateRandomUniqueId(),
 			content: encryptedBuffer,
 			syntax: "plaintext",
 			link: false,
@@ -51,7 +53,7 @@ export const POST = async (request: Request) => {
 		.returning()
 
 	const pasteUrl = buildPasteUrl({
-		uuid: insertedPaste.uuid,
+		id: insertedPaste.id,
 		keyBase64
 	})
 

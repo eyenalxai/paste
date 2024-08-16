@@ -4,8 +4,8 @@ const nextConfig = {
 		return {
 			beforeFiles: [
 				{
-					source: "/:uuid*/raw",
-					destination: "/api/paste/:uuid*/raw"
+					source: "/:id*/raw",
+					destination: "/api/paste/:id*/raw"
 				},
 				{
 					source: "/",

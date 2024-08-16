@@ -13,7 +13,7 @@ import remarkRehype from "remark-rehype"
 import { unified } from "unified"
 
 type UsePasteProps = {
-	uuid: string
+	id: string
 	ivClientBase64: string
 	clientEncryptedContent: string
 	link: boolean
@@ -21,7 +21,7 @@ type UsePasteProps = {
 	extension: string | undefined
 }
 
-export const usePaste = ({ uuid, ivClientBase64, clientEncryptedContent, link, syntax, extension }: UsePasteProps) => {
+export const usePaste = ({ id, ivClientBase64, clientEncryptedContent, link, syntax, extension }: UsePasteProps) => {
 	const [keyBase64] = useState(
 		typeof window !== "undefined" && window.location.hash ? window.location.hash.slice(1) : undefined
 	)
@@ -31,7 +31,7 @@ export const usePaste = ({ uuid, ivClientBase64, clientEncryptedContent, link, s
 		isLoading,
 		error
 	} = useQuery({
-		queryKey: ["paste", uuid],
+		queryKey: ["paste", id],
 		staleTime: Number.POSITIVE_INFINITY,
 		refetchOnWindowFocus: false,
 		refetchOnMount: false,

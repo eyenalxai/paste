@@ -8,26 +8,26 @@ import { NextResponse } from "next/server"
 
 export type RawPastePageProps = {
 	params: {
-		uuid: string
+		id: string
 	}
 }
 
-export const GET = async (request: Request, { params: { uuid } }: RawPastePageProps) => {
+export const GET = async (request: Request, { params: { id } }: RawPastePageProps) => {
 	await deleteExpirePastes()
 
-	if (!uuid) return new NextResponse("uuid is required", { status: 400 })
+	if (!id) return new NextResponse("id is required", { status: 400 })
 
 	const { searchParams } = new URL(request.url)
 	const key = searchParams.get("key")
 
 	if (!key) return new NextResponse("key is required", { status: 400 })
 
-	const [paste] = await getPaste(uuid)
+	const [paste] = await getPaste(id)
 
 	if (!paste) return new NextResponse("paste not found", { status: 404 })
 
 	if (paste.oneTime) {
-		await db.delete(pastes).where(eq(pastes.uuid, uuid))
+		await db.delete(pastes).where(eq(pastes.id, id))
 	}
 
 	if (!paste.ivClientBase64) {

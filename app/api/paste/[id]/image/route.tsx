@@ -15,14 +15,14 @@ const size = {
 
 export type ImagePastePageProps = {
 	params: {
-		uuid: string
+		id: string
 	}
 }
 
-export const GET = async (request: Request, { params: { uuid } }: ImagePastePageProps) => {
-	if (!uuid) return new NextResponse("uuid is required", { status: 400 })
+export const GET = async (request: Request, { params: { id } }: ImagePastePageProps) => {
+	if (!id) return new NextResponse("id is required", { status: 400 })
 
-	const [paste] = await getPaste(uuid)
+	const [paste] = await getPaste(id)
 
 	if (!paste) return new NextResponse("paste not found", { status: 404 })
 

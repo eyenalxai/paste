@@ -1,5 +1,5 @@
 {
-  "id": "e2db94ee-d7cb-430c-920a-68a86a8711b2",
+  "id": "4284b321-efb6-4782-a3a5-1dfaeef0adb0",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -8,12 +8,11 @@
       "name": "pastes",
       "schema": "",
       "columns": {
-        "uuid": {
-          "name": "uuid",
-          "type": "uuid",
+        "id": {
+          "name": "id",
+          "type": "varchar(5)",
           "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "content": {
           "name": "content",
@@ -37,7 +36,7 @@
           "name": "iv_server4",
           "type": "bytea",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "syntax": {
           "name": "syntax",

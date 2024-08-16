@@ -9,7 +9,9 @@ const bytea = customType<{
 })
 
 export const pastes = pgTable("pastes", {
-	uuid: uuid("uuid").primaryKey().defaultRandom(),
+	id: varchar("id", {
+		length: 5
+	}).primaryKey(),
 	content: bytea("content").notNull(),
 	oneTime: boolean("one_time"),
 	ivClientBase64: text("iv_client_base64"),

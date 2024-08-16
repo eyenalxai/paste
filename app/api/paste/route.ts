@@ -4,6 +4,7 @@ import { serverEncryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
 import { db } from "@/lib/database"
 import { getExpiresAt } from "@/lib/date"
 import { BackendSchema } from "@/lib/form"
+import { generateRandomUniqueId } from "@/lib/random-id"
 import { pastes } from "@/lib/schema"
 import { getPasteSyntax } from "@/lib/syntax/detect"
 import { buildPasteUrl } from "@/lib/url"
@@ -32,6 +33,7 @@ export const POST = async (request: Request) => {
 		const [insertedPaste] = await db
 			.insert(pastes)
 			.values({
+				id: await generateRandomUniqueId(),
 				content: encryptedBuffer,
 				syntax: pasteSyntax,
 				ivClientBase64: ivClient,
@@ -43,13 +45,14 @@ export const POST = async (request: Request) => {
 			.returning()
 
 		return NextResponse.json({
-			url: buildPasteUrl({ uuid: insertedPaste.uuid, keyBase64 })
+			url: buildPasteUrl({ id: insertedPaste.id, keyBase64 })
 		})
 	}
 
 	const [insertedPaste] = await db
 		.insert(pastes)
 		.values({
+			id: await generateRandomUniqueId(),
 			content: await serverFileToBuffer(contentBlob),
 			syntax: pasteSyntax,
 			ivClientBase64: ivClient,
@@ -61,6 +64,6 @@ export const POST = async (request: Request) => {
 		.returning()
 
 	return NextResponse.json({
-		url: buildPasteUrl({ uuid: insertedPaste.uuid })
+		url: buildPasteUrl({ id: insertedPaste.id })
 	})
 }

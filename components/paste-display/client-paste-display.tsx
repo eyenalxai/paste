@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 import { useEffect } from "react"
 
 type PasteDisplayProps = {
-	uuid: string
+	id: string
 	ivClientBase64: string
 	clientEncryptedContent: string
 	link: boolean
@@ -16,7 +16,7 @@ type PasteDisplayProps = {
 }
 
 export const ClientPasteDisplay = ({
-	uuid,
+	id,
 	ivClientBase64,
 	clientEncryptedContent,
 	link,
@@ -24,7 +24,7 @@ export const ClientPasteDisplay = ({
 	extension
 }: PasteDisplayProps) => {
 	const { paste, isLoading, error } = usePaste({
-		uuid,
+		id,
 		ivClientBase64,
 		clientEncryptedContent,
 		link,

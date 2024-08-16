@@ -1,1 +1,0 @@
-ALTER TABLE "pastes" ALTER COLUMN "iv_server4" DROP NOT NULL;

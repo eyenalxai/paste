@@ -1,32 +1,32 @@
 import { ClientPasteDisplay } from "@/components/paste-display/client-paste-display"
 import { ServerPasteDisplay } from "@/components/paste-display/server-paste-display"
 import { serverDecryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
+import { extractIdAndExtension } from "@/lib/id-extension"
 import { buildPasteMetadata } from "@/lib/paste-metadata"
 import { getPaste } from "@/lib/select"
-import { extractUuidAndExtension } from "@/lib/uuid-extension"
 import { headers } from "next/headers"
 import { permanentRedirect } from "next/navigation"
 
 export type PastePageProps = {
 	params: {
-		uuidWithExt: string
+		idWithExt: string
 	}
 	searchParams: {
 		key?: string
 	}
 }
 
-export async function generateMetadata({ params: { uuidWithExt }, searchParams: { key } }: PastePageProps) {
-	const [uuid] = extractUuidAndExtension(uuidWithExt)
-	const [paste] = await getPaste(uuid)
+export async function generateMetadata({ params: { idWithExt }, searchParams: { key } }: PastePageProps) {
+	const [id] = extractIdAndExtension(idWithExt)
+	const [paste] = await getPaste(id)
 
-	return await buildPasteMetadata({ uuid, paste, key })
+	return await buildPasteMetadata({ id, paste, key })
 }
 
-export default async function Page({ params: { uuidWithExt }, searchParams: { key } }: PastePageProps) {
-	const [uuid, extension] = extractUuidAndExtension(uuidWithExt)
+export default async function Page({ params: { idWithExt }, searchParams: { key } }: PastePageProps) {
+	const [id, extension] = extractIdAndExtension(idWithExt)
 
-	const [paste] = await getPaste(uuid)
+	const [paste] = await getPaste(id)
 
 	if (!paste) return <h1>Paste does not exist or has expired</h1>
 
@@ -50,7 +50,7 @@ export default async function Page({ params: { uuidWithExt }, searchParams: { ke
 
 		return (
 			<ServerPasteDisplay
-				uuid={uuid}
+				id={id}
 				syntax={paste.syntax}
 				decryptedContent={decryptedContent}
 				extension={extension}
@@ -61,7 +61,7 @@ export default async function Page({ params: { uuidWithExt }, searchParams: { ke
 
 	return (
 		<ClientPasteDisplay
-			uuid={uuid}
+			id={id}
 			ivClientBase64={paste.ivClientBase64}
 			clientEncryptedContent={paste.content.toString("utf-8")}
 			link={paste.link}

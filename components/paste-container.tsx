@@ -9,7 +9,7 @@ import type { VFile } from "vfile"
 type PasteContainerProps = {
 	loading?: boolean
 	content?: string
-	uuid?: string
+	id?: string
 	keyBase64?: string
 	noWrap?: boolean
 	children?: ReactNode
@@ -19,7 +19,7 @@ type PasteContainerProps = {
 export const PasteContainer = ({
 	loading,
 	content,
-	uuid,
+	id,
 	keyBase64,
 	noWrap,
 	children,
@@ -31,9 +31,9 @@ export const PasteContainer = ({
 			<Button variant={"outline"} asChild>
 				<Link href={"/"}>New paste</Link>
 			</Button>
-			{uuid && keyBase64 && (
+			{id && keyBase64 && (
 				<Button variant={"outline"} asChild>
-					<a target="_blank" rel="noopener noreferrer" href={`/${uuid}/raw/?key=${keyBase64}`}>
+					<a target="_blank" rel="noopener noreferrer" href={`/${id}/raw/?key=${keyBase64}`}>
 						Raw
 					</a>
 				</Button>
