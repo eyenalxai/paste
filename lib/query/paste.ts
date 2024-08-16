@@ -2,18 +2,17 @@
 
 import { clientDecryptPaste } from "@/lib/crypto/client/encrypt-decrypt"
 import { wrapInMarkdown } from "@/lib/markdown"
-import { useQuery } from "@tanstack/react-query"
 import { all } from "lowlight"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import rehypeHighlight from "rehype-highlight"
 import rehypeSanitize from "rehype-sanitize"
 import rehypeStringify from "rehype-stringify"
 import remarkParse from "remark-parse"
 import remarkRehype from "remark-rehype"
 import { unified } from "unified"
+import type { VFile } from "vfile"
 
 type UsePasteProps = {
-	id: string
 	ivClientBase64: string
 	clientEncryptedContent: string
 	link: boolean
@@ -21,49 +20,51 @@ type UsePasteProps = {
 	extension: string | undefined
 }
 
-export const usePaste = ({ id, ivClientBase64, clientEncryptedContent, link, syntax, extension }: UsePasteProps) => {
-	const [keyBase64] = useState(
-		typeof window !== "undefined" && window.location.hash ? window.location.hash.slice(1) : undefined
-	)
+type PasteData = {
+	markdownContent: VFile
+	rawContent: string
+	link: boolean
+}
 
-	const {
-		data: paste,
-		isLoading,
-		error
-	} = useQuery({
-		queryKey: ["paste", id],
-		staleTime: Number.POSITIVE_INFINITY,
-		refetchOnWindowFocus: false,
-		refetchOnMount: false,
-		refetchInterval: false,
-		refetchIntervalInBackground: false,
-		refetchOnReconnect: false,
-		queryFn: async () => {
-			if (!keyBase64) throw new Error("Missing encrypted payload")
+export const usePaste = ({ ivClientBase64, clientEncryptedContent, link, syntax, extension }: UsePasteProps) => {
+	const [paste, setPaste] = useState<PasteData | null>(null)
+	const [isLoading, setLoading] = useState(false)
+	const [error, setError] = useState<Error | null>(null)
 
-			const rawContent = await clientDecryptPaste({
-				keyBase64,
-				ivBase64: ivClientBase64,
-				encryptedContentBase64: clientEncryptedContent
-			})
+	useEffect(() => {
+		setLoading(true)
 
-			const markdownContent = await unified()
-				.use(remarkParse)
-				.use(remarkRehype)
-				.use(rehypeSanitize)
-				.use(rehypeStringify)
-				.use(rehypeHighlight, {
-					languages: all
-				})
-				.process(wrapInMarkdown({ syntax, extension, content: rawContent }))
+		const keyBase64 = window.location.hash ? window.location.hash.slice(1) : undefined
 
-			return {
-				markdownContent: markdownContent,
-				rawContent,
-				link: link
-			}
+		if (!keyBase64) {
+			setError(new Error("Missing encrypted payload"))
+			return
 		}
-	})
+
+		clientDecryptPaste({
+			keyBase64,
+			ivBase64: ivClientBase64,
+			encryptedContentBase64: clientEncryptedContent
+		})
+			.then(async (rawContent) => {
+				const markdownContent = await unified()
+					.use(remarkParse)
+					.use(remarkRehype)
+					.use(rehypeSanitize)
+					.use(rehypeStringify)
+					.use(rehypeHighlight, { languages: all })
+					.process(wrapInMarkdown({ syntax, extension, content: rawContent }))
+				setPaste({
+					markdownContent: markdownContent,
+					rawContent,
+					link
+				})
+			})
+			.catch((e) => {
+				setError(e instanceof Error ? e : new Error("An error occurred"))
+			})
+			.finally(() => setLoading(false))
+	}, [ivClientBase64, clientEncryptedContent, link, syntax, extension])
 
 	return { paste, isLoading, error }
 }

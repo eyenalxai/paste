@@ -88,7 +88,6 @@ export default async function Page({ params: { idWithExt }, searchParams: { key 
 
 	return (
 		<ClientPasteDisplay
-			id={id}
 			ivClientBase64={paste.ivClientBase64}
 			clientEncryptedContent={paste.content.toString("utf-8")}
 			link={paste.link}

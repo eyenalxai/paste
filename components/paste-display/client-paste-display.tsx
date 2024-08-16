@@ -2,13 +2,10 @@
 
 import { PasteError } from "@/components/error/paste-error"
 import { PasteContainer } from "@/components/paste-container"
-import { Alert } from "@/components/ui/alert"
 import { usePaste } from "@/lib/query/paste"
-import { cn } from "@/lib/utils"
 import { useEffect } from "react"
 
 type PasteDisplayProps = {
-	id: string
 	ivClientBase64: string
 	clientEncryptedContent: string
 	link: boolean
@@ -17,7 +14,6 @@ type PasteDisplayProps = {
 }
 
 export const ClientPasteDisplay = ({
-	id,
 	ivClientBase64,
 	clientEncryptedContent,
 	link,
@@ -25,7 +21,6 @@ export const ClientPasteDisplay = ({
 	extension
 }: PasteDisplayProps) => {
 	const { paste, isLoading, error } = usePaste({
-		id,
 		ivClientBase64,
 		clientEncryptedContent,
 		link,
