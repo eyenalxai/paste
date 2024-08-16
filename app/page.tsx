@@ -9,7 +9,7 @@ import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { env } from "@/lib/env.mjs"
 import { FrontendSchema, selectContentTypeOptions, selectExpiresAfterOptions } from "@/lib/form"
-import { savePaste } from "@/lib/paste/save-paste"
+import { savePasteForm } from "@/lib/paste/save-paste-form"
 import { type Syntax, selectSyntaxOptions } from "@/lib/syntax/select"
 import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -36,7 +36,7 @@ export default function Page() {
 
 	const onSubmit = async (formData: z.infer<typeof FrontendSchema>) => {
 		startTransition(() =>
-			savePaste(formData)
+			savePasteForm(formData)
 				.catch((error: Error) => {
 					toast.error(error.message)
 					return undefined

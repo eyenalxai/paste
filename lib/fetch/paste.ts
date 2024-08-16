@@ -8,7 +8,7 @@ export const SavePasteResponseSchema = z.object({
 	url: z.string().url()
 })
 
-export const insertPaste = (paste: z.infer<typeof BackendSchema>) => {
+export const savePaste = (paste: z.infer<typeof BackendSchema>) => {
 	const formData = new FormData()
 	for (const [key, value] of Object.entries(paste)) {
 		formData.append(key, typeof value === "boolean" ? value.toString() : value)
