@@ -30,7 +30,6 @@ export const POST = async (request: Request) => {
 	const { keyBase64, ivServer, encryptedBuffer } = await serverEncryptPaste(pasteContent)
 
 	const pasteSyntax = await getPasteSyntax({
-		// TODO: Use
 		encrypted: false,
 		syntax: undefined,
 		contentType: "auto",
@@ -39,7 +38,7 @@ export const POST = async (request: Request) => {
 
 	const insertedPaste = await insertPaste({
 		content: encryptedBuffer,
-		syntax: "plaintext",
+		syntax: pasteSyntax,
 		link: false,
 		oneTime: false,
 		ivClientBase64: undefined,
