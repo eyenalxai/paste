@@ -4,6 +4,7 @@ import { serverDecryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
 import { buildPasteMetadata } from "@/lib/paste-metadata"
 import { getPaste } from "@/lib/select"
 import { extractUuidAndExtension } from "@/lib/uuid-extension"
+import { headers } from "next/headers"
 
 export type PastePageProps = {
 	params: {
@@ -27,6 +28,12 @@ export default async function Page({ params: { uuidWithExt }, searchParams: { ke
 	const [paste] = await getPaste(uuid)
 
 	if (!paste) return <h1>Paste does not exist or has expired</h1>
+
+	const headersList = headers()
+
+	for (const [key, value] of headersList) {
+		console.log(`${key} = ${value}`)
+	}
 
 	if (!paste.ivClientBase64) {
 		if (!paste.ivServer) throw new Error("Paste is somehow not encrypted at client-side or server-side")
