@@ -37,7 +37,8 @@ export const buildPasteMetadata = async ({ uuid, paste, key }: BuildPasteMetadat
 			encryptedBuffer: paste.content
 		})
 
-		const description = decryptedContent.length > 64 ? `${decryptedContent.slice(0, 64)}...` : decryptedContent
+		const contentTrimmed = decryptedContent.length > 32 ? `${decryptedContent.slice(0, 32)}...` : decryptedContent
+		const description = paste.link ? undefined : contentTrimmed
 
 		return {
 			title: title,
@@ -60,7 +61,8 @@ export const buildPasteMetadata = async ({ uuid, paste, key }: BuildPasteMetadat
 		} satisfies Metadata
 	}
 
-	const description = "This paste is encrypted and cannot be previewed"
+	const description = paste.link ? undefined : "This paste is encrypted and cannot be previewed"
+
 	return {
 		title: title,
 		description: description,
