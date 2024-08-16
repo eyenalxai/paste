@@ -1,5 +1,5 @@
 import { db } from "@/lib/database"
-import { pastes } from "@/lib/schema"
+import { type PasteInsert, pastes } from "@/lib/schema"
 import { and, eq, gt, sql } from "drizzle-orm"
 import { cache } from "react"
 
@@ -17,4 +17,9 @@ export const pasteIdExists = async (id: string) => {
 	)
 
 	return exists as boolean
+}
+
+export const insertPaste = async (paste: PasteInsert) => {
+	const [insertedPaste] = await db.insert(pastes).values(paste).returning()
+	return insertedPaste
 }

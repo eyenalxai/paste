@@ -5,6 +5,7 @@ import { getExpiresAt } from "@/lib/date"
 import { env } from "@/lib/env.mjs"
 import { generateRandomUniqueId } from "@/lib/random-id"
 import { pastes } from "@/lib/schema"
+import { insertPaste } from "@/lib/select"
 import { getPasteSyntax } from "@/lib/syntax/detect"
 import { buildPasteUrl } from "@/lib/url"
 import { NextResponse } from "next/server"
@@ -32,25 +33,23 @@ export const POST = async (request: Request) => {
 	const { keyBase64, ivServer, encryptedBuffer } = await serverEncryptPaste(pasteContent)
 
 	const pasteSyntax = await getPasteSyntax({
+		// TODO: Use
 		encrypted: false,
 		syntax: undefined,
 		contentType: "auto",
 		content: pasteContent
 	})
 
-	const [insertedPaste] = await db
-		.insert(pastes)
-		.values({
-			id: await generateRandomUniqueId(),
-			content: encryptedBuffer,
-			syntax: "plaintext",
-			link: false,
-			oneTime: false,
-			ivClientBase64: undefined,
-			ivServer: ivServer,
-			expiresAt: getExpiresAt("1-day").toISOString()
-		})
-		.returning()
+	const insertedPaste = await insertPaste({
+		id: await generateRandomUniqueId(),
+		content: encryptedBuffer,
+		syntax: "plaintext",
+		link: false,
+		oneTime: false,
+		ivClientBase64: undefined,
+		ivServer: ivServer,
+		expiresAt: getExpiresAt("1-day").toISOString()
+	})
 
 	const pasteUrl = buildPasteUrl({
 		id: insertedPaste.id,
