@@ -23,3 +23,4 @@ export const pastes = pgTable("pastes", {
 
 export type Paste = typeof pastes.$inferSelect
 export type PasteInsert = typeof pastes.$inferInsert
+export type PasteInsertNoId = Omit<PasteInsert, "id">

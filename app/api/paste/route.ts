@@ -3,7 +3,6 @@ import { serverFileToBuffer } from "@/lib/crypto/server/encode-decode"
 import { serverEncryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
 import { getExpiresAt } from "@/lib/date"
 import { BackendSchema } from "@/lib/form"
-import { generateRandomUniqueId } from "@/lib/random-id"
 import { insertPaste } from "@/lib/select"
 import { getPasteSyntax } from "@/lib/syntax/detect"
 import { buildPasteUrl } from "@/lib/url"
@@ -30,7 +29,6 @@ export const POST = async (request: Request) => {
 		const { keyBase64, ivServer, encryptedBuffer } = await serverEncryptPaste(content)
 
 		const insertedPaste = await insertPaste({
-			id: await generateRandomUniqueId(),
 			content: encryptedBuffer,
 			syntax: pasteSyntax,
 			ivClientBase64: ivClient,
@@ -46,7 +44,6 @@ export const POST = async (request: Request) => {
 	}
 
 	const insertedPaste = await insertPaste({
-		id: await generateRandomUniqueId(),
 		content: await serverFileToBuffer(contentBlob),
 		syntax: pasteSyntax,
 		ivClientBase64: ivClient,

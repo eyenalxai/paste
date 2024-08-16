@@ -1,10 +1,7 @@
 import { contentLength } from "@/lib/content-length"
 import { serverEncryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
-import { db } from "@/lib/database"
 import { getExpiresAt } from "@/lib/date"
 import { env } from "@/lib/env.mjs"
-import { generateRandomUniqueId } from "@/lib/random-id"
-import { pastes } from "@/lib/schema"
 import { insertPaste } from "@/lib/select"
 import { getPasteSyntax } from "@/lib/syntax/detect"
 import { buildPasteUrl } from "@/lib/url"
@@ -41,7 +38,6 @@ export const POST = async (request: Request) => {
 	})
 
 	const insertedPaste = await insertPaste({
-		id: await generateRandomUniqueId(),
 		content: encryptedBuffer,
 		syntax: "plaintext",
 		link: false,
