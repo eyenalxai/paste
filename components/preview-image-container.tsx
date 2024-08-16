@@ -1,11 +1,9 @@
-import type { ReactNode } from "react"
-
 type PreviewImageContainerProps = {
-	children: ReactNode
 	title: string
+	text: string
 }
 
-export const PreviewImageContainer = ({ children, title }: PreviewImageContainerProps) => (
+export const PreviewImageContainer = ({ title, text }: PreviewImageContainerProps) => (
 	<div
 		style={{
 			fontSize: "2rem",
@@ -31,7 +29,7 @@ export const PreviewImageContainer = ({ children, title }: PreviewImageContainer
 				height: "100%"
 			}}
 		>
-			{children}
+			{text.length > 800 ? `${text.slice(0, 800)}...` : text}
 		</div>
 		<div
 			style={{

@@ -26,16 +26,32 @@ export const POST = async (request: Request) => {
 	})
 
 	if (!ivClient) {
+		if (contentType === "link") {
+			const insertedPaste = await insertPaste({
+				content: await serverFileToBuffer(contentBlob),
+				syntax: pasteSyntax,
+				ivClientBase64: null,
+				ivServer: null,
+				oneTime: oneTime,
+				expiresAt: getExpiresAt(expiresAfter).toISOString(),
+				link: true
+			})
+
+			return NextResponse.json({
+				url: buildPasteUrl({ id: insertedPaste.id })
+			})
+		}
+
 		const { keyBase64, ivServer, encryptedBuffer } = await serverEncryptPaste(content)
 
 		const insertedPaste = await insertPaste({
 			content: encryptedBuffer,
 			syntax: pasteSyntax,
-			ivClientBase64: ivClient,
+			ivClientBase64: null,
 			ivServer: ivServer,
 			oneTime: oneTime,
 			expiresAt: getExpiresAt(expiresAfter).toISOString(),
-			link: contentType === "link"
+			link: false
 		})
 
 		return NextResponse.json({

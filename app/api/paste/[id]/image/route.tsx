@@ -33,6 +33,20 @@ export const GET = async (request: Request, { params: { id } }: ImagePastePagePr
 	const fontData = await readFile(path.join(fileURLToPath(import.meta.url), "../../../public/Roboto-Mono-Regular.woff"))
 
 	if (!paste.ivClientBase64) {
+		if (paste.link) {
+			const content = paste.content.toString("utf-8")
+			return new ImageResponse(<PreviewImageContainer title={title} text={content} />, {
+				...size,
+				fonts: [
+					{
+						name: "Roboto Mono",
+						data: fontData,
+						style: "normal"
+					}
+				]
+			})
+		}
+
 		if (!paste.ivServer) throw new Error("Paste is somehow not encrypted at client-side or server-side")
 
 		const { searchParams } = new URL(request.url)
@@ -45,30 +59,7 @@ export const GET = async (request: Request, { params: { id } }: ImagePastePagePr
 			encryptedBuffer: paste.content
 		})
 
-		return new ImageResponse(
-			<PreviewImageContainer title={title}>
-				{decryptedContent.length > 800 ? `${decryptedContent.slice(0, 800)}...` : decryptedContent}
-			</PreviewImageContainer>,
-			{
-				...size,
-				fonts: [
-					{
-						name: "Roboto Mono",
-						data: fontData,
-						style: "normal"
-					}
-				]
-			}
-		)
-	}
-
-	const clientEncryptedContent = paste.content.toString("utf-8")
-
-	return new ImageResponse(
-		<PreviewImageContainer title={title}>
-			{clientEncryptedContent.length > 1400 ? `${clientEncryptedContent.slice(0, 1400)}...` : clientEncryptedContent}
-		</PreviewImageContainer>,
-		{
+		return new ImageResponse(<PreviewImageContainer title={title} text={decryptedContent} />, {
 			...size,
 			fonts: [
 				{
@@ -77,6 +68,19 @@ export const GET = async (request: Request, { params: { id } }: ImagePastePagePr
 					style: "normal"
 				}
 			]
-		}
-	)
+		})
+	}
+
+	const clientEncryptedContent = paste.content.toString("utf-8")
+
+	return new ImageResponse(<PreviewImageContainer title={title} text={clientEncryptedContent} />, {
+		...size,
+		fonts: [
+			{
+				name: "Roboto Mono",
+				data: fontData,
+				style: "normal"
+			}
+		]
+	})
 }

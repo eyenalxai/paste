@@ -31,6 +31,14 @@ export default async function Page({ params: { idWithExt }, searchParams: { key 
 	if (!paste) return <h1>Paste does not exist or has expired</h1>
 
 	if (!paste.ivClientBase64) {
+		if (paste.link) {
+			const headersList = headers()
+			const userAgent = headersList.get("user-agent")
+			if (!userAgent || !userAgent.toLowerCase().includes("bot")) {
+				permanentRedirect(paste.content.toString("utf-8"))
+			}
+		}
+
 		if (!paste.ivServer) throw new Error("Paste is somehow not encrypted at client-side or server-side")
 		if (!key) throw new Error("key is required to decrypt server-side encrypted paste")
 
@@ -41,12 +49,6 @@ export default async function Page({ params: { idWithExt }, searchParams: { key 
 			ivServer: paste.ivServer,
 			encryptedBuffer: paste.content
 		})
-
-		if (paste.link) {
-			const headersList = headers()
-			const userAgent = headersList.get("user-agent")
-			if (!userAgent || !userAgent.toLowerCase().includes("bot")) permanentRedirect(decryptedContent)
-		}
 
 		return (
 			<ServerPasteDisplay
