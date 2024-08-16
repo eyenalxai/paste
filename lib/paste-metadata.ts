@@ -79,8 +79,11 @@ export const buildPasteMetadata = async ({ id, paste, key }: BuildPasteMetadataP
 	if (!paste.ivClientBase64) {
 		if (paste.link) return buildPasteMetadataObject({ frontendUrl, id, title, withImage: true })
 
-		if (!paste.ivServer) throw new Error("Paste is somehow not encrypted at client-side or server-side")
-		if (!key) throw new Error("key is required to decrypt server-side encrypted paste")
+		if (!paste.ivServer) {
+			return buildPasteMetadataObject({ frontendUrl, id, title: "Failed to decrypt paste", withImage: true })
+		}
+
+		if (!key) return buildPasteMetadataObject({ frontendUrl, id, title: "Failed to decrypt paste", withImage: true })
 
 		const decryptedContent = await serverDecryptPaste({
 			keyBase64: key,

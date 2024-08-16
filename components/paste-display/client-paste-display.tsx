@@ -1,5 +1,6 @@
 "use client"
 
+import { PasteError } from "@/components/error/paste-error"
 import { PasteContainer } from "@/components/paste-container"
 import { Alert } from "@/components/ui/alert"
 import { usePaste } from "@/lib/query/paste"
@@ -41,19 +42,7 @@ export const ClientPasteDisplay = ({
 	}, [paste])
 
 	if (error) {
-		return (
-			<PasteContainer loading>
-				<div className={cn("w-full", "flex", "justify-start")}>
-					<Alert
-						variant="destructive"
-						title="Error"
-						className={cn("border", "border-red-500", "font-semibold", "text-lg", "w-fit")}
-					>
-						{error.message}
-					</Alert>
-				</div>
-			</PasteContainer>
-		)
+		return <PasteError title={"Something went wrong"} description={error.message} />
 	}
 
 	if (isLoading || !paste) return <PasteContainer loading />

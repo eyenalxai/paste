@@ -1,3 +1,4 @@
+import { PasteError } from "@/components/error/paste-error"
 import { ClientPasteDisplay } from "@/components/paste-display/client-paste-display"
 import { ServerPasteDisplay } from "@/components/paste-display/server-paste-display"
 import { serverDecryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
@@ -28,7 +29,14 @@ export default async function Page({ params: { idWithExt }, searchParams: { key 
 
 	const [paste] = await getPaste(id)
 
-	if (!paste) return <h1>Paste does not exist or has expired</h1>
+	if (!paste) {
+		return (
+			<PasteError
+				title={"Paste not found"}
+				description={"The paste you are looking for does not exist or has been deleted."}
+			/>
+		)
+	}
 
 	if (!paste.ivClientBase64) {
 		if (paste.link) {
@@ -43,8 +51,23 @@ export default async function Page({ params: { idWithExt }, searchParams: { key 
 			return `Placeholder for SEO bots: ${content}`
 		}
 
-		if (!paste.ivServer) throw new Error("Paste is somehow not encrypted at client-side or server-side")
-		if (!key) throw new Error("key is required to decrypt server-side encrypted paste")
+		if (!paste.ivServer) {
+			return (
+				<PasteError
+					title={"Failed to decrypt paste"}
+					description={"The paste is somehow not encrypted at client-side or server-side."}
+				/>
+			)
+		}
+
+		if (!key) {
+			return (
+				<PasteError
+					title={"Failed to decrypt paste"}
+					description={"Encryption key is required to decrypt server-side encrypted paste."}
+				/>
+			)
+		}
 
 		const decryptedContent = await serverDecryptPaste({
 			keyBase64: decodeURIComponent(key),

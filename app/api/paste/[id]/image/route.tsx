@@ -46,8 +46,7 @@ export const GET = async (request: Request, { params: { id } }: ImagePastePagePr
 				]
 			})
 		}
-
-		if (!paste.ivServer) throw new Error("Paste is somehow not encrypted at client-side or server-side")
+		if (!paste.ivServer) return new NextResponse("Failed to decrypt paste", { status: 400 })
 
 		const { searchParams } = new URL(request.url)
 		const key = searchParams.get("key")
