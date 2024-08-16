@@ -16,7 +16,7 @@ export const ServerPasteDisplay = ({ id, syntax, decryptedContent, extension, ke
 	const wrapped = wrapInMarkdown({ syntax: syntax, content: decryptedContent, extension })
 
 	return (
-		<PasteContainer content={decryptedContent} id={id} keyBase64={decodeURIComponent(keyBase64)} noWrap>
+		<PasteContainer content={decryptedContent} id={id} keyBase64={keyBase64} noWrap>
 			<MDXRemote
 				source={wrapped}
 				options={{

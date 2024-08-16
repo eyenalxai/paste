@@ -46,10 +46,8 @@ export default async function Page({ params: { idWithExt }, searchParams: { key 
 		if (!paste.ivServer) throw new Error("Paste is somehow not encrypted at client-side or server-side")
 		if (!key) throw new Error("key is required to decrypt server-side encrypted paste")
 
-		const keyBase64 = decodeURIComponent(key)
-
 		const decryptedContent = await serverDecryptPaste({
-			keyBase64: keyBase64,
+			keyBase64: decodeURIComponent(key),
 			ivServer: paste.ivServer,
 			encryptedBuffer: paste.content
 		})
@@ -60,7 +58,7 @@ export default async function Page({ params: { idWithExt }, searchParams: { key 
 				syntax={paste.syntax}
 				decryptedContent={decryptedContent}
 				extension={extension}
-				keyBase64={keyBase64}
+				keyBase64={key}
 			/>
 		)
 	}

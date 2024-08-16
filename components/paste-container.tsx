@@ -33,7 +33,7 @@ export const PasteContainer = ({
 			</Button>
 			{id && keyBase64 && (
 				<Button variant={"outline"} asChild>
-					<a target="_blank" rel="noopener noreferrer" href={`/${id}/raw/?key=${keyBase64}`}>
+					<a target="_blank" rel="noopener noreferrer" href={`/${id}/raw/?key=${encodeURIComponent(keyBase64)}`}>
 						Raw
 					</a>
 				</Button>
