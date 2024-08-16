@@ -36,7 +36,7 @@ export const POST = async (request: Request) => {
 		content: pasteContent
 	})
 
-	const insertedPaste = await insertPaste({
+	const [insertedPaste] = await insertPaste({
 		content: encryptedBuffer,
 		syntax: pasteSyntax,
 		link: false,

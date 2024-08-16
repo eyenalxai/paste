@@ -27,7 +27,7 @@ export const POST = async (request: Request) => {
 
 	if (!ivClient) {
 		if (contentType === "link") {
-			const insertedPaste = await insertPaste({
+			const [insertedPaste] = await insertPaste({
 				content: await serverFileToBuffer(contentBlob),
 				syntax: pasteSyntax,
 				ivClientBase64: null,
@@ -44,7 +44,7 @@ export const POST = async (request: Request) => {
 
 		const { keyBase64, ivServer, encryptedBuffer } = await serverEncryptPaste(content)
 
-		const insertedPaste = await insertPaste({
+		const [insertedPaste] = await insertPaste({
 			content: encryptedBuffer,
 			syntax: pasteSyntax,
 			ivClientBase64: null,
@@ -59,7 +59,7 @@ export const POST = async (request: Request) => {
 		})
 	}
 
-	const insertedPaste = await insertPaste({
+	const [insertedPaste] = await insertPaste({
 		content: await serverFileToBuffer(contentBlob),
 		syntax: pasteSyntax,
 		ivClientBase64: ivClient,

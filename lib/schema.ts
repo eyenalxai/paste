@@ -1,4 +1,5 @@
-import { boolean, customType, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core"
+import { sql } from "drizzle-orm"
+import { boolean, customType, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 
 const bytea = customType<{
 	data: Buffer
@@ -9,14 +10,12 @@ const bytea = customType<{
 })
 
 export const pastes = pgTable("pastes", {
-	id: varchar("id", {
-		length: 5
-	}).primaryKey(),
+	id: text("id").primaryKey().default(sql`auto_increment_alphanumeric(NEXTVAL('paste_id_seq'))`),
 	content: bytea("content").notNull(),
 	oneTime: boolean("one_time"),
 	ivClientBase64: text("iv_client_base64"),
 	ivServer: bytea("iv_server4"),
-	syntax: varchar("syntax").notNull(),
+	syntax: text("syntax").notNull(),
 	link: boolean("link").notNull(),
 	expiresAt: timestamp("expires_at", { mode: "string", withTimezone: true }).notNull()
 })

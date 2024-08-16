@@ -1,5 +1,5 @@
 {
-  "id": "4284b321-efb6-4782-a3a5-1dfaeef0adb0",
+  "id": "5b819a0f-a891-458b-8d52-815269b304ec",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -10,9 +10,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(5)",
+          "type": "text",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "auto_increment_alphanumeric(NEXTVAL('paste_id_seq'))"
         },
         "content": {
           "name": "content",
@@ -40,7 +41,7 @@
         },
         "syntax": {
           "name": "syntax",
-          "type": "varchar",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
