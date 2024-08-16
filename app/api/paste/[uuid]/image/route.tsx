@@ -47,7 +47,7 @@ export const GET = async (request: Request, { params: { uuid } }: ImagePastePage
 
 		return new ImageResponse(
 			<PreviewImageContainer title={title}>
-				{decryptedContent.length > 1400 ? `${decryptedContent.slice(0, 1400)}...` : decryptedContent}
+				{decryptedContent.length > 800 ? `${decryptedContent.slice(0, 800)}...` : decryptedContent}
 			</PreviewImageContainer>,
 			{
 				...size,

@@ -8,7 +8,7 @@ type PreviewImageContainerProps = {
 export const PreviewImageContainer = ({ children, title }: PreviewImageContainerProps) => (
 	<div
 		style={{
-			fontSize: "1.5rem",
+			fontSize: "2rem",
 			fontFamily: "monospace",
 			backgroundColor: "#020817",
 			color: "#f8fafc",
