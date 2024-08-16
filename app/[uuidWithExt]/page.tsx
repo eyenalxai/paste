@@ -31,6 +31,7 @@ export default async function Page({ params: { uuidWithExt }, searchParams: { ke
 
 	const headersList = headers()
 
+	console.log("Headers:")
 	for (const [key, value] of headersList) {
 		console.log(`${key} = ${value}`)
 	}
