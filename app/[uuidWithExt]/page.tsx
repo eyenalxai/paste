@@ -4,7 +4,6 @@ import { serverDecryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
 import { buildPasteMetadata } from "@/lib/paste-metadata"
 import { getPaste } from "@/lib/select"
 import { extractUuidAndExtension } from "@/lib/uuid-extension"
-import { permanentRedirect } from "next/navigation"
 
 export type PastePageProps = {
 	params: {
@@ -41,9 +40,9 @@ export default async function Page({ params: { uuidWithExt }, searchParams: { ke
 			encryptedBuffer: paste.content
 		})
 
-		if (paste.link) {
-			permanentRedirect(decryptedContent)
-		}
+		// if (paste.link) {
+		// 	permanentRedirect(decryptedContent)
+		// }
 
 		return (
 			<ServerPasteDisplay
