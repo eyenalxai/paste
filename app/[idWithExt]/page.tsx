@@ -32,11 +32,15 @@ export default async function Page({ params: { idWithExt }, searchParams: { key 
 
 	if (!paste.ivClientBase64) {
 		if (paste.link) {
+			const content = paste.content.toString("utf-8")
+
 			const headersList = headers()
 			const userAgent = headersList.get("user-agent")
 			if (!userAgent || !userAgent.toLowerCase().includes("bot")) {
-				permanentRedirect(paste.content.toString("utf-8"))
+				permanentRedirect(content)
 			}
+
+			return `Placeholder for SEO bots: ${content}`
 		}
 
 		if (!paste.ivServer) throw new Error("Paste is somehow not encrypted at client-side or server-side")
