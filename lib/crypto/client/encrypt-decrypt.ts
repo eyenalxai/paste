@@ -90,8 +90,6 @@ export const clientDecryptData = (encryptedData: ArrayBuffer, iv: Uint8Array, ke
 				encryptedData
 			)
 			.then((decryptedData) => new TextDecoder().decode(decryptedData)),
-		(e) => {
-			return e instanceof Error && e.message !== "" ? e.message : "Failed to decrypt paste data"
-		}
+		(e) => (e instanceof Error && e.message !== "" ? e.message : "Failed to decrypt paste data")
 	)
 }
