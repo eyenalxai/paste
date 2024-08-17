@@ -8,7 +8,7 @@ import type { z } from "zod"
 
 export const savePasteForm = (paste: z.infer<typeof FrontendSchema>) => {
 	if (paste.encrypted) {
-		clientEncryptPaste(paste.content).andThen(({ keyBase64, ivBase64, encryptedContentBase64 }) =>
+		return clientEncryptPaste(paste.content).andThen(({ keyBase64, ivBase64, encryptedContentBase64 }) =>
 			createFile(encryptedContentBase64, "paste-encrypted").asyncAndThen((contentBlob) =>
 				savePaste({
 					contentBlob: contentBlob,
