@@ -6,6 +6,7 @@ import {
 	clientKeyToBase64
 } from "@/lib/crypto/client/encode-decode"
 import { KEY_USAGES } from "@/lib/crypto/key"
+import { getErrorMessage } from "@/lib/error-message"
 import { ResultAsync, errAsync, ok } from "neverthrow"
 
 export const clientGenerateKey = () => {
@@ -18,14 +19,14 @@ export const clientGenerateKey = () => {
 			true,
 			KEY_USAGES
 		),
-		(e) => (e instanceof Error && e.message !== "" ? e.message : "Failed to generate encryption key")
+		(e) => getErrorMessage(e, "Failed to generate encryption key")
 	)
 }
 
 const clientImportKey = (keyData: BufferSource) => {
 	return ResultAsync.fromPromise(
 		window.crypto.subtle.importKey("raw", keyData, { name: "AES-GCM", length: 256 }, true, KEY_USAGES),
-		(e) => (e instanceof Error && e.message !== "" ? e.message : "Failed to import decryption key")
+		(e) => getErrorMessage(e, "Failed to import encryption key")
 	)
 }
 
@@ -45,12 +46,10 @@ export const clientEncryptData = (secretData: string, key: CryptoKey) => {
 					encodedData
 				)
 				.then((encryptedData) => ({ encryptedData, iv })),
-			(e) => (e instanceof Error && e.message !== "" ? e.message : "Failed to encrypt paste data")
+			(e) => getErrorMessage(e, "Failed to encrypt paste data")
 		)
 	} catch (e) {
-		const errorMessage =
-			e instanceof Error && e.message !== "" ? e.message : "An unknown error occurred during encryption setup"
-		return errAsync(errorMessage)
+		return errAsync(getErrorMessage(e, "An unknown error occurred during encryption setup"))
 	}
 }
 
@@ -84,7 +83,7 @@ export const clientDecryptData = (encryptedData: ArrayBuffer, iv: Uint8Array, ke
 				encryptedData
 			)
 			.then((decryptedData) => new TextDecoder().decode(decryptedData)),
-		(e) => (e instanceof Error && e.message !== "" ? e.message : "Failed to decrypt paste data")
+		(e) => getErrorMessage(e, "Failed to decrypt paste data")
 	)
 }
 
