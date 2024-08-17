@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils"
 import type { Metadata, Viewport } from "next"
 import type { ReactNode } from "react"
 
-const TITLE = "Paste"
-const DESCRIPTION = "Share text"
+const TITLE = "Paste Service"
+const DESCRIPTION = "Share text stuff"
 
 export const metadata: Metadata = {
 	metadataBase: new URL(env.NEXT_PUBLIC_FRONTEND_URL),
