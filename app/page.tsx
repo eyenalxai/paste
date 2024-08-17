@@ -7,6 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
+import { copyToClipboard } from "@/lib/clipboard"
 import { env } from "@/lib/env.mjs"
 import { FrontendSchema, selectContentTypeOptions, selectExpiresAfterOptions } from "@/lib/form"
 import { savePasteForm } from "@/lib/paste/save-paste-form"
@@ -35,49 +36,41 @@ export default function Page() {
 	})
 
 	const onSubmit = async (formData: z.infer<typeof FrontendSchema>) => {
-		startTransition(() =>
-			savePasteForm(formData)
-				.catch((error: Error) => {
-					toast.error(error.message)
-					return undefined
-				})
-				.then((pasteUrl) => {
-					if (!pasteUrl) return
-
-					if (navigator.clipboard?.writeText === undefined) {
-						toast.error("Clipboard API not available, probably because connection is not secure")
-						return
-					}
-
-					return navigator.clipboard.writeText(pasteUrl).then(() => {
-						toast.info(
-							<div className={cn("flex", "flex-row", "gap-4", "justify-between", "items-center", "w-full")}>
-								<div>URL copied to clipboard</div>
-								{!formData.encrypted && (
-									<Button asChild variant={"outline"} className={cn("h-8")}>
-										<a target={"_blank"} rel="noopener noreferrer" href={pasteUrl}>
-											Open
-										</a>
-									</Button>
-								)}
-							</div>
-						)
-						return pasteUrl
-					})
-				})
-				.then((pasteUrl) => {
-					if (!pasteUrl) return
-
-					form.reset({
-						content: "",
-						oneTime: formData.oneTime,
-						encrypted: formData.encrypted,
-						contentType: formData.contentType,
-						syntax: formData.syntax,
-						expiresAfter: "1-hour"
-					})
-				})
-		)
+		startTransition(async () => {
+			await savePasteForm(formData).match(
+				(url) =>
+					copyToClipboard(url).match(
+						() => {
+							toast.info(
+								<div className={cn("flex", "flex-row", "gap-4", "justify-between", "items-center", "w-full")}>
+									<div>URL copied to clipboard</div>
+									{!formData.encrypted && (
+										<Button asChild variant={"outline"} className={cn("h-8")}>
+											<a target={"_blank"} rel="noopener noreferrer" href={url}>
+												Open
+											</a>
+										</Button>
+									)}
+								</div>
+							)
+							form.reset({
+								content: "",
+								oneTime: formData.oneTime,
+								encrypted: formData.encrypted,
+								contentType: formData.contentType,
+								syntax: formData.syntax,
+								expiresAfter: "1-hour"
+							})
+						},
+						(error) => {
+							toast.error(error)
+						}
+					),
+				(error) => {
+					toast.error(error)
+				}
+			)
+		})
 	}
 
 	const contentType = form.watch("contentType")

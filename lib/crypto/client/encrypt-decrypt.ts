@@ -6,39 +6,45 @@ import {
 	clientKeyToBase64
 } from "@/lib/crypto/client/encode-decode"
 import { KEY_USAGES } from "@/lib/crypto/key"
-import { ResultAsync } from "neverthrow"
+import { ResultAsync, errAsync, ok } from "neverthrow"
 
-export const clientGenerateKey = async () => {
-	return window.crypto.subtle.generateKey(
-		{
-			name: "AES-GCM",
-			length: 256
-		},
-		true,
-		KEY_USAGES
+export const clientGenerateKey = () => {
+	return ResultAsync.fromPromise(
+		window.crypto.subtle.generateKey(
+			{
+				name: "AES-GCM",
+				length: 256
+			},
+			true,
+			KEY_USAGES
+		),
+		(e) => (e instanceof Error && e.message !== "" ? e.message : "Failed to generate encryption key")
 	)
 }
 
 const clientImportKey = (keyData: BufferSource) => {
 	return ResultAsync.fromPromise(
 		window.crypto.subtle.importKey("raw", keyData, { name: "AES-GCM", length: 256 }, true, KEY_USAGES),
-		(e) => (e instanceof Error ? e.message : "Failed to import key")
+		(e) => (e instanceof Error && e.message !== "" ? e.message : "Failed to import decryption key")
 	)
 }
 
-export const clientEncryptPaste = async (pasteContent: string) => {
-	const key = await clientGenerateKey()
-	const { encryptedData, iv } = await clientEncryptData(pasteContent, key)
-
-	const encryptedContentBase64 = clientArrayBufferToBase64(encryptedData)
-	const keyBase64 = await clientKeyToBase64(key)
-	const ivBase64 = clientArrayBufferToBase64(iv)
-
-	return {
-		keyBase64,
-		ivBase64,
-		encryptedContentBase64
-	}
+export const clientEncryptPaste = (pasteContent: string) => {
+	return clientGenerateKey().andThen((key) =>
+		clientEncryptData(pasteContent, key).andThen(({ encryptedData, iv }) =>
+			clientArrayBufferToBase64(encryptedData).asyncAndThen((encryptedContentBase64) =>
+				clientKeyToBase64(key).andThen((keyBase64) =>
+					clientArrayBufferToBase64(iv).andThen((ivBase64) =>
+						ok({
+							keyBase64,
+							ivBase64,
+							encryptedContentBase64
+						})
+					)
+				)
+			)
+		)
+	)
 }
 
 type DecryptPasteProps = {
@@ -59,22 +65,28 @@ export const clientDecryptPaste = ({ keyBase64, ivBase64, encryptedContentBase64
 		)
 }
 
-export const clientEncryptData = async (secretData: string, key: CryptoKey) => {
-	const iv = window.crypto.getRandomValues(new Uint8Array(12))
-	const encodedData = new TextEncoder().encode(secretData)
+export const clientEncryptData = (secretData: string, key: CryptoKey) => {
+	try {
+		const iv = window.crypto.getRandomValues(new Uint8Array(12))
+		const encodedData = new TextEncoder().encode(secretData)
 
-	const encryptedData = await window.crypto.subtle.encrypt(
-		{
-			name: "AES-GCM",
-			iv: iv
-		},
-		key,
-		encodedData
-	)
-
-	return {
-		encryptedData,
-		iv
+		return ResultAsync.fromPromise(
+			window.crypto.subtle
+				.encrypt(
+					{
+						name: "AES-GCM",
+						iv: iv
+					},
+					key,
+					encodedData
+				)
+				.then((encryptedData) => ({ encryptedData, iv })),
+			(e) => (e instanceof Error && e.message !== "" ? e.message : "Failed to encrypt paste data")
+		)
+	} catch (e) {
+		const errorMessage =
+			e instanceof Error && e.message !== "" ? e.message : "An unknown error occurred during encryption setup"
+		return errAsync(errorMessage)
 	}
 }
 
