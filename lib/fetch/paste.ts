@@ -1,6 +1,6 @@
 "use client"
 
-import type { BackendSchema } from "@/lib/form"
+import type { BackendSchema } from "@/lib/zod/form/backend"
 import ky from "ky"
 import { ResultAsync } from "neverthrow"
 import { z } from "zod"

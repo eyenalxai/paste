@@ -3,9 +3,9 @@ import { serverFileToBuffer } from "@/lib/crypto/server/encode-decode"
 import { serverEncryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
 import { insertPaste } from "@/lib/database/insert"
 import { getExpiresAt } from "@/lib/date"
-import { BackendSchema } from "@/lib/form"
 import { getPasteSyntax } from "@/lib/syntax/detect"
 import { buildPasteUrl } from "@/lib/url"
+import { BackendSchema } from "@/lib/zod/form/backend"
 import { NextResponse } from "next/server"
 
 export const POST = async (request: Request) => {

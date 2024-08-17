@@ -1,5 +1,5 @@
-import type { ExpiresAfter } from "@/lib/form"
 import { exhaustiveCheck } from "@/lib/utils"
+import type { ExpiresAfter } from "@/lib/zod/form/common"
 import type { z } from "zod"
 
 export const getExpiresAt = (expiresAfter: z.infer<typeof ExpiresAfter>) => {

@@ -1,7 +1,7 @@
 import { clientEncryptPaste } from "@/lib/crypto/client/encrypt-decrypt"
 import { SavePasteResponseSchema, savePaste } from "@/lib/fetch/paste"
 import { createFile } from "@/lib/file"
-import type { FrontendSchema } from "@/lib/form"
+import type { FrontendSchema } from "@/lib/zod/form/frontend"
 import { parseZodSchema } from "@/lib/zod/parse"
 import { ok } from "neverthrow"
 import type { z } from "zod"

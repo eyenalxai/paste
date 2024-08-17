@@ -1,5 +1,5 @@
 import { env } from "@/lib/env.mjs"
-import type { ContentType } from "@/lib/form"
+import type { ContentType } from "@/lib/zod/form/common"
 import OpenAI from "openai"
 import { zodResponseFormat } from "openai/helpers/zod"
 import { z } from "zod"
