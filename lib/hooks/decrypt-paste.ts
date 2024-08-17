@@ -37,7 +37,7 @@ type PasteData = {
 	link: boolean
 }
 
-export const usePaste = ({
+export const useDecryptPaste = ({
 	ivClientBase64,
 	clientEncryptedContent,
 	link,

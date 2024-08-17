@@ -2,7 +2,7 @@
 
 import { PasteError } from "@/components/error/paste-error"
 import { PasteContainer } from "@/components/paste-container"
-import { usePaste } from "@/lib/query/paste"
+import { useDecryptPaste } from "@/lib/hooks/decrypt-paste"
 import { useEffect } from "react"
 
 type PasteDisplayProps = {
@@ -20,7 +20,7 @@ export const ClientPasteDisplay = ({
 	syntax,
 	extension
 }: PasteDisplayProps) => {
-	const { result, isLoading } = usePaste({
+	const { result, isLoading } = useDecryptPaste({
 		ivClientBase64,
 		clientEncryptedContent,
 		link,
