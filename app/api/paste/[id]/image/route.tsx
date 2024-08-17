@@ -52,22 +52,27 @@ export const GET = async (request: Request, { params: { id } }: ImagePastePagePr
 		const key = searchParams.get("key")
 		if (!key) return new NextResponse("key is required", { status: 400 })
 
-		const decryptedContent = await serverDecryptPaste({
+		return await serverDecryptPaste({
 			keyBase64: key,
 			ivServer: paste.ivServer,
 			encryptedBuffer: paste.content
-		})
+		}).match(
+			(decryptedContent) => {
+				const contentTrimmed = decryptedContent.length > 32 ? `${decryptedContent.slice(0, 32)}...` : decryptedContent
 
-		return new ImageResponse(<PreviewImageContainer title={title} text={decryptedContent} />, {
-			...size,
-			fonts: [
-				{
-					name: "Roboto Mono",
-					data: fontData,
-					style: "normal"
-				}
-			]
-		})
+				return new ImageResponse(<PreviewImageContainer title={title} text={decryptedContent} />, {
+					...size,
+					fonts: [
+						{
+							name: "Roboto Mono",
+							data: fontData,
+							style: "normal"
+						}
+					]
+				})
+			},
+			() => new NextResponse("Failed to decrypt paste", { status: 400 })
+		)
 	}
 
 	const clientEncryptedContent = paste.content.toString("utf-8")

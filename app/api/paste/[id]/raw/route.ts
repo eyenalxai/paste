@@ -33,13 +33,14 @@ export const GET = async (request: Request, { params: { id } }: RawPastePageProp
 	if (!paste.ivClientBase64) {
 		if (!paste.ivServer) throw new Error("Paste is somehow not encrypted at client-side or server-side")
 
-		const decryptedContent = await serverDecryptPaste({
+		return await serverDecryptPaste({
 			keyBase64: decodeURIComponent(key),
 			ivServer: paste.ivServer,
 			encryptedBuffer: paste.content
-		})
-
-		return new NextResponse(decryptedContent, { status: 200 })
+		}).match(
+			(decryptedContent) => new NextResponse(decryptedContent, { status: 200 }),
+			() => new NextResponse("Failed to decrypt paste", { status: 400 })
+		)
 	}
 
 	return new NextResponse("paste is encrypted", { status: 400 })

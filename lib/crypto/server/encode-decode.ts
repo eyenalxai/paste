@@ -1,22 +1,40 @@
-"use server"
+import "server-only"
 
-export const serverKeyToBase64 = async (key: CryptoKey): Promise<string> => {
-	const exportedKey = await crypto.subtle.exportKey("raw", key)
-	return serverArrayBufferToBase64(exportedKey)
+import { getErrorMessage } from "@/lib/error-message"
+import { Result, ResultAsync } from "neverthrow"
+
+export const serverKeyToBase64 = (key: CryptoKey) => {
+	return ResultAsync.fromPromise(
+		crypto.subtle.exportKey("raw", key).then((exportedKey) => serverArrayBufferToBase64(exportedKey)),
+		(e) => getErrorMessage(e, "Failed to export server encryption key")
+	).andThen((keyBase64) => keyBase64)
 }
 
-export const serverArrayBufferToBase64 = async (buffer: ArrayBuffer) =>
-	btoa(new Uint8Array(buffer).reduce((acc, byte) => acc + String.fromCharCode(byte), ""))
+export const serverArrayBufferToBase64 = Result.fromThrowable(
+	(buffer: ArrayBuffer) => btoa(new Uint8Array(buffer).reduce((acc, byte) => acc + String.fromCharCode(byte), "")),
+	(e) => getErrorMessage(e, "Failed to encode array buffer to base64")
+)
 
-export const serverBase64ToArrayBuffer = async (base64: string) =>
-	Uint8Array.from(atob(base64), (c) => c.charCodeAt(0)).buffer
+export const serverBase64ToArrayBuffer = Result.fromThrowable(
+	(base64: string) => Uint8Array.from(atob(base64), (c) => c.charCodeAt(0)).buffer,
+	(e) => getErrorMessage(e, "Failed to decode array buffer from base64")
+)
 
-export const serverArrayBufferToBuffer = async (arrBuffer: ArrayBuffer) => Buffer.from(arrBuffer)
+export const serverArrayBufferToBuffer = Result.fromThrowable(
+	(arrBuffer: ArrayBuffer) => Buffer.from(arrBuffer),
+	(e) => getErrorMessage(e, "Failed to convert array buffer to buffer")
+)
 
-export const serverBufferToArrayBuffer = async (buffer: Buffer) =>
-	buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)
+export const serverBufferToArrayBuffer = Result.fromThrowable(
+	(buffer: Buffer) => buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength),
+	(e) => getErrorMessage(e, "Failed to convert buffer to array buffer")
+)
 
-export const serverFileToBuffer = async (file: File) => {
-	const arrayBuffer = await file.arrayBuffer()
-	return Buffer.from(arrayBuffer)
-}
+const serverFileToArrayBuffer = (file: File) =>
+	ResultAsync.fromPromise(file.arrayBuffer(), (e) => getErrorMessage(e, "Failed to convert file to array buffer"))
+
+export const serverFileToBuffer = (file: File) =>
+	ResultAsync.fromPromise(
+		serverFileToArrayBuffer(file).andThen((arrBuffer) => serverArrayBufferToBuffer(arrBuffer)),
+		(e) => getErrorMessage(e, "Failed to convert file to buffer")
+	).andThen((buffer) => buffer)

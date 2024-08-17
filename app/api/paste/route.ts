@@ -27,49 +27,68 @@ export const POST = async (request: Request) => {
 
 	if (!ivClient) {
 		if (contentType === "link") {
-			const [insertedPaste] = await insertPaste({
-				content: await serverFileToBuffer(contentBlob),
+			return serverFileToBuffer(contentBlob)
+				.andThen((buffer) =>
+					insertPaste({
+						content: buffer,
+						syntax: pasteSyntax,
+						ivClientBase64: null,
+						ivServer: null,
+						oneTime: oneTime,
+						expiresAt: getExpiresAt(expiresAfter).toISOString(),
+						link: true
+					})
+				)
+				.match(
+					(insertedPaste) =>
+						NextResponse.json({
+							url: buildPasteUrl({ id: insertedPaste.id })
+						}),
+					(error) => new NextResponse(error, { status: 500 })
+				)
+		}
+
+		return serverEncryptPaste(content)
+			.andThen(({ keyBase64, ivServer, encryptedBuffer }) =>
+				insertPaste({
+					content: encryptedBuffer,
+					syntax: pasteSyntax,
+					ivClientBase64: null,
+					ivServer: ivServer,
+					oneTime: oneTime,
+					expiresAt: getExpiresAt(expiresAfter).toISOString(),
+					link: false
+				}).map((insertedPaste) => ({
+					insertedPaste,
+					keyBase64
+				}))
+			)
+			.match(
+				({ insertedPaste, keyBase64 }) =>
+					NextResponse.json({
+						url: buildPasteUrl({ id: insertedPaste.id, keyBase64 })
+					}),
+				(error) => new NextResponse(error, { status: 500 })
+			)
+	}
+
+	return serverFileToBuffer(contentBlob)
+		.andThen((buffer) =>
+			insertPaste({
+				content: buffer,
 				syntax: pasteSyntax,
-				ivClientBase64: null,
+				ivClientBase64: ivClient,
 				ivServer: null,
 				oneTime: oneTime,
 				expiresAt: getExpiresAt(expiresAfter).toISOString(),
-				link: true
+				link: contentType === "link"
 			})
-
-			return NextResponse.json({
-				url: buildPasteUrl({ id: insertedPaste.id })
-			})
-		}
-
-		const { keyBase64, ivServer, encryptedBuffer } = await serverEncryptPaste(content)
-
-		const [insertedPaste] = await insertPaste({
-			content: encryptedBuffer,
-			syntax: pasteSyntax,
-			ivClientBase64: null,
-			ivServer: ivServer,
-			oneTime: oneTime,
-			expiresAt: getExpiresAt(expiresAfter).toISOString(),
-			link: false
-		})
-
-		return NextResponse.json({
-			url: buildPasteUrl({ id: insertedPaste.id, keyBase64 })
-		})
-	}
-
-	const [insertedPaste] = await insertPaste({
-		content: await serverFileToBuffer(contentBlob),
-		syntax: pasteSyntax,
-		ivClientBase64: ivClient,
-		ivServer: null,
-		oneTime: oneTime,
-		expiresAt: getExpiresAt(expiresAfter).toISOString(),
-		link: contentType === "link"
-	})
-
-	return NextResponse.json({
-		url: buildPasteUrl({ id: insertedPaste.id })
-	})
+		)
+		.match(
+			(insertedPaste) =>
+				NextResponse.json({
+					url: buildPasteUrl({ id: insertedPaste.id })
+				}),
+			(error) => new NextResponse(error, { status: 500 })
+		)
 }

@@ -85,16 +85,19 @@ export const buildPasteMetadata = async ({ id, paste, key }: BuildPasteMetadataP
 
 		if (!key) return buildPasteMetadataObject({ frontendUrl, id, title: "Failed to decrypt paste", withImage: true })
 
-		const decryptedContent = await serverDecryptPaste({
+		return await serverDecryptPaste({
 			keyBase64: key,
 			ivServer: paste.ivServer,
 			encryptedBuffer: paste.content
-		})
+		}).match(
+			(decryptedContent) => {
+				const contentTrimmed = decryptedContent.length > 32 ? `${decryptedContent.slice(0, 32)}...` : decryptedContent
+				const description = paste.link ? undefined : contentTrimmed
 
-		const contentTrimmed = decryptedContent.length > 32 ? `${decryptedContent.slice(0, 32)}...` : decryptedContent
-		const description = paste.link ? undefined : contentTrimmed
-
-		return buildPasteMetadataObject({ frontendUrl, id, title, description, key, withImage: true })
+				return buildPasteMetadataObject({ frontendUrl, id, title, description, key, withImage: true })
+			},
+			() => buildPasteMetadataObject({ frontendUrl, id, title: "Failed to decrypt paste", withImage: false })
+		)
 	}
 
 	const description = paste.link ? undefined : "This paste is encrypted and cannot be previewed"

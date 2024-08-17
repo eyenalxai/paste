@@ -69,20 +69,21 @@ export default async function Page({ params: { idWithExt }, searchParams: { key 
 			)
 		}
 
-		const decryptedContent = await serverDecryptPaste({
+		return await serverDecryptPaste({
 			keyBase64: decodeURIComponent(key),
 			ivServer: paste.ivServer,
 			encryptedBuffer: paste.content
-		})
-
-		return (
-			<ServerPasteDisplay
-				id={id}
-				syntax={paste.syntax}
-				decryptedContent={decryptedContent}
-				extension={extension}
-				keyBase64={key}
-			/>
+		}).match(
+			(decryptedContent) => (
+				<ServerPasteDisplay
+					id={id}
+					syntax={paste.syntax}
+					decryptedContent={decryptedContent}
+					extension={extension}
+					keyBase64={key}
+				/>
+			),
+			(error) => <PasteError title={"Failed to decrypt paste"} description={error} />
 		)
 	}
 

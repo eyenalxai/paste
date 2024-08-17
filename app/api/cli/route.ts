@@ -27,8 +27,6 @@ export const POST = async (request: Request) => {
 		return new NextResponse("paste field must be a string", { status: 400 })
 	}
 
-	const { keyBase64, ivServer, encryptedBuffer } = await serverEncryptPaste(pasteContent)
-
 	const pasteSyntax = await getPasteSyntax({
 		encrypted: false,
 		syntax: undefined,
@@ -36,24 +34,33 @@ export const POST = async (request: Request) => {
 		content: pasteContent
 	})
 
-	const [insertedPaste] = await insertPaste({
-		content: encryptedBuffer,
-		syntax: pasteSyntax,
-		link: false,
-		oneTime: false,
-		ivClientBase64: undefined,
-		ivServer: ivServer,
-		expiresAt: getExpiresAt("1-day").toISOString()
-	})
-
-	const pasteUrl = buildPasteUrl({
-		id: insertedPaste.id,
-		keyBase64
-	})
-
-	return new Response(`${pasteUrl}\n`, {
-		headers: {
-			"content-type": "text/plain"
-		}
-	})
+	return await serverEncryptPaste(pasteContent)
+		.andThen(({ keyBase64, ivServer, encryptedBuffer }) =>
+			insertPaste({
+				content: encryptedBuffer,
+				syntax: pasteSyntax,
+				link: false,
+				oneTime: false,
+				ivClientBase64: undefined,
+				ivServer: ivServer,
+				expiresAt: getExpiresAt("1-day").toISOString()
+			}).map((insertedPaste) => ({
+				insertedPaste,
+				keyBase64
+			}))
+		)
+		.match(
+			({ insertedPaste, keyBase64 }) => {
+				const pasteUrl = buildPasteUrl({
+					id: insertedPaste.id,
+					keyBase64
+				})
+				return new Response(`${pasteUrl}\n`, {
+					headers: {
+						"content-type": "text/plain"
+					}
+				})
+			},
+			(error) => new NextResponse(error, { status: 500 })
+		)
 }
