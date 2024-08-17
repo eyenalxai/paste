@@ -20,7 +20,7 @@ export const ClientPasteDisplay = ({
 	syntax,
 	extension
 }: PasteDisplayProps) => {
-	const { paste, isLoading, error } = usePaste({
+	const { result, isLoading } = usePaste({
 		ivClientBase64,
 		clientEncryptedContent,
 		link,
@@ -29,18 +29,22 @@ export const ClientPasteDisplay = ({
 	})
 
 	useEffect(() => {
-		if (!paste) return
+		if (!result) return
 
-		if (paste.link) {
-			window.location.href = paste.rawContent
-		}
-	}, [paste])
+		result.match(
+			(paste) => {
+				if (paste.link) {
+					window.location.href = paste.rawContent
+				}
+			},
+			() => null
+		)
+	}, [result])
 
-	if (error) {
-		return <PasteError title={"Something went wrong"} description={error.message} />
-	}
+	if (isLoading) return <PasteContainer loading />
 
-	if (isLoading || !paste) return <PasteContainer loading />
-
-	return <PasteContainer noWrap content={paste.rawContent} markdown={paste.markdownContent} />
+	return result.match(
+		(paste) => <PasteContainer noWrap content={paste.rawContent} markdown={paste.markdownContent} />,
+		(error) => <PasteError title={"Something went wrong"} description={error} />
+	)
 }

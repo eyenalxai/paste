@@ -3,6 +3,7 @@
 import { clientDecryptPaste } from "@/lib/crypto/client/encrypt-decrypt"
 import { wrapInMarkdown } from "@/lib/markdown"
 import { all } from "lowlight"
+import { type Result, err, ok } from "neverthrow"
 import { useEffect, useState } from "react"
 import rehypeHighlight from "rehype-highlight"
 import rehypeSanitize from "rehype-sanitize"
@@ -11,6 +12,16 @@ import remarkParse from "remark-parse"
 import remarkRehype from "remark-rehype"
 import { unified } from "unified"
 import type { VFile } from "vfile"
+
+type UsePasteReturn =
+	| {
+			result: Result<PasteData, string>
+			isLoading: false
+	  }
+	| {
+			result: null
+			isLoading: true
+	  }
 
 type UsePasteProps = {
 	ivClientBase64: string
@@ -26,18 +37,20 @@ type PasteData = {
 	link: boolean
 }
 
-export const usePaste = ({ ivClientBase64, clientEncryptedContent, link, syntax, extension }: UsePasteProps) => {
-	const [paste, setPaste] = useState<PasteData | null>(null)
-	const [isLoading, setLoading] = useState(false)
-	const [error, setError] = useState<Error | null>(null)
+export const usePaste = ({
+	ivClientBase64,
+	clientEncryptedContent,
+	link,
+	syntax,
+	extension
+}: UsePasteProps): UsePasteReturn => {
+	const [result, setResult] = useState<Result<PasteData, string> | null>(null)
 
 	useEffect(() => {
-		setLoading(true)
-
 		const keyBase64 = window.location.hash ? window.location.hash.slice(1) : undefined
 
 		if (!keyBase64) {
-			setError(new Error("Missing encrypted payload"))
+			setResult(err("Missing encrypted payload"))
 			return
 		}
 
@@ -46,25 +59,24 @@ export const usePaste = ({ ivClientBase64, clientEncryptedContent, link, syntax,
 			ivBase64: ivClientBase64,
 			encryptedContentBase64: clientEncryptedContent
 		})
-			.then(async (rawContent) => {
-				const markdownContent = await unified()
-					.use(remarkParse)
-					.use(remarkRehype)
-					.use(rehypeSanitize)
-					.use(rehypeStringify)
-					.use(rehypeHighlight, { languages: all })
-					.process(wrapInMarkdown({ syntax, extension, content: rawContent }))
-				setPaste({
-					markdownContent: markdownContent,
-					rawContent,
-					link
-				})
-			})
-			.catch((e) => {
-				setError(e instanceof Error ? e : new Error("An error occurred"))
-			})
-			.finally(() => setLoading(false))
+			.then(async (rawContent) =>
+				setResult(
+					ok({
+						markdownContent: await unified()
+							.use(remarkParse)
+							.use(remarkRehype)
+							.use(rehypeSanitize)
+							.use(rehypeStringify)
+							.use(rehypeHighlight, { languages: all })
+							.process(wrapInMarkdown({ syntax, extension, content: rawContent })),
+						rawContent,
+						link
+					})
+				)
+			)
+			.catch((e) => (e instanceof Error ? setResult(err(e.message)) : setResult(err("Unknown error occurred"))))
 	}, [ivClientBase64, clientEncryptedContent, link, syntax, extension])
 
-	return { paste, isLoading, error }
+	if (!result) return { result: null, isLoading: true }
+	return { result, isLoading: false }
 }
