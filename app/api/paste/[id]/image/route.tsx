@@ -46,6 +46,7 @@ export const GET = async (request: Request, { params: { id } }: ImagePastePagePr
 				]
 			})
 		}
+
 		if (!paste.ivServer) return new NextResponse("Failed to decrypt paste", { status: 400 })
 
 		const { searchParams } = new URL(request.url)
@@ -58,8 +59,6 @@ export const GET = async (request: Request, { params: { id } }: ImagePastePagePr
 			encryptedBuffer: paste.content
 		}).match(
 			(decryptedContent) => {
-				const contentTrimmed = decryptedContent.length > 32 ? `${decryptedContent.slice(0, 32)}...` : decryptedContent
-
 				return new ImageResponse(<PreviewImageContainer title={title} text={decryptedContent} />, {
 					...size,
 					fonts: [
