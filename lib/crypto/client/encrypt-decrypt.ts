@@ -6,6 +6,7 @@ import {
 	clientKeyToBase64
 } from "@/lib/crypto/client/encode-decode"
 import { KEY_USAGES } from "@/lib/crypto/key"
+import { ResultAsync } from "neverthrow"
 
 export const clientGenerateKey = async () => {
 	return window.crypto.subtle.generateKey(
@@ -15,6 +16,13 @@ export const clientGenerateKey = async () => {
 		},
 		true,
 		KEY_USAGES
+	)
+}
+
+const clientImportKey = (keyData: BufferSource) => {
+	return ResultAsync.fromPromise(
+		window.crypto.subtle.importKey("raw", keyData, { name: "AES-GCM", length: 256 }, true, KEY_USAGES),
+		(e) => (e instanceof Error ? e.message : "Failed to import key")
 	)
 }
 
@@ -39,15 +47,16 @@ type DecryptPasteProps = {
 	encryptedContentBase64: string
 }
 
-export const clientDecryptPaste = async ({ keyBase64, ivBase64, encryptedContentBase64 }: DecryptPasteProps) => {
-	const keyBuffer = clientBase64ToArrayBuffer(keyBase64)
-	const iv = clientBase64ToArrayBuffer(ivBase64)
-
-	const key = await window.crypto.subtle.importKey("raw", keyBuffer, { name: "AES-GCM", length: 256 }, true, KEY_USAGES)
-
-	const encryptedContentArrayBuffer = clientBase64ToArrayBuffer(encryptedContentBase64)
-
-	return await clientDecryptData(encryptedContentArrayBuffer, new Uint8Array(iv), key)
+export const clientDecryptPaste = ({ keyBase64, ivBase64, encryptedContentBase64 }: DecryptPasteProps) => {
+	return clientBase64ToArrayBuffer(keyBase64)
+		.asyncAndThen((keyBuffer) => clientImportKey(keyBuffer))
+		.andThen((key) =>
+			clientBase64ToArrayBuffer(ivBase64).asyncAndThen((ivBuffer) =>
+				clientBase64ToArrayBuffer(encryptedContentBase64).asyncAndThen((encryptedContentArrayBuffer) =>
+					clientDecryptData(encryptedContentArrayBuffer, new Uint8Array(ivBuffer), key)
+				)
+			)
+		)
 }
 
 export const clientEncryptData = async (secretData: string, key: CryptoKey) => {
@@ -69,15 +78,20 @@ export const clientEncryptData = async (secretData: string, key: CryptoKey) => {
 	}
 }
 
-export const clientDecryptData = async (encryptedData: ArrayBuffer, iv: Uint8Array, key: CryptoKey) => {
-	const decryptedData = await window.crypto.subtle.decrypt(
-		{
-			name: "AES-GCM",
-			iv: iv
-		},
-		key,
-		encryptedData
+export const clientDecryptData = (encryptedData: ArrayBuffer, iv: Uint8Array, key: CryptoKey) => {
+	return ResultAsync.fromPromise(
+		window.crypto.subtle
+			.decrypt(
+				{
+					name: "AES-GCM",
+					iv: iv
+				},
+				key,
+				encryptedData
+			)
+			.then((decryptedData) => new TextDecoder().decode(decryptedData)),
+		(e) => {
+			return e instanceof Error && e.message !== "" ? e.message : "Failed to decrypt paste data"
+		}
 	)
-
-	return new TextDecoder().decode(decryptedData)
 }

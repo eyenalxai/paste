@@ -50,7 +50,7 @@ export const usePaste = ({
 		const keyBase64 = window.location.hash ? window.location.hash.slice(1) : undefined
 
 		if (!keyBase64) {
-			setResult(err("Missing encrypted payload"))
+			setResult(err("Missing decryption key in hash (#) part of URL"))
 			return
 		}
 
@@ -58,23 +58,22 @@ export const usePaste = ({
 			keyBase64,
 			ivBase64: ivClientBase64,
 			encryptedContentBase64: clientEncryptedContent
-		})
-			.then(async (rawContent) =>
-				setResult(
-					ok({
-						markdownContent: await unified()
-							.use(remarkParse)
-							.use(remarkRehype)
-							.use(rehypeSanitize)
-							.use(rehypeStringify)
-							.use(rehypeHighlight, { languages: all })
-							.process(wrapInMarkdown({ syntax, extension, content: rawContent })),
-						rawContent,
-						link
-					})
-				)
+		}).then((rawContentResult) => {
+			rawContentResult.match(
+				(rawContent) =>
+					unified()
+						.use(remarkParse)
+						.use(remarkRehype)
+						.use(rehypeSanitize)
+						.use(rehypeStringify)
+						.use(rehypeHighlight, { languages: all })
+						.process(wrapInMarkdown({ syntax, extension, content: rawContent }))
+						.then((markdownContent) => {
+							setResult(ok({ markdownContent, rawContent, link }))
+						}),
+				(error) => setResult(err(error))
 			)
-			.catch((e) => (e instanceof Error ? setResult(err(e.message)) : setResult(err("Unknown error occurred"))))
+		})
 	}, [ivClientBase64, clientEncryptedContent, link, syntax, extension])
 
 	if (!result) return { result: null, isLoading: true }
