@@ -5,7 +5,7 @@ import { type Result, ResultAsync, err, ok } from "neverthrow"
 export const clientKeyToBase64 = (key: CryptoKey) => {
 	return ResultAsync.fromPromise(
 		window.crypto.subtle.exportKey("raw", key).then((exportedKey) => clientArrayBufferToBase64(exportedKey)),
-		(e) => (e instanceof Error && e.message !== "" ? e.message : "Failed to export encryption key")
+		(e) => (e instanceof Error && e.message !== "" ? e.message : "Failed to export client encryption key")
 	).andThen((keyBase64) => keyBase64)
 }
 
