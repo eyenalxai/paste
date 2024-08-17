@@ -1,7 +1,7 @@
 "use client"
 
 import type { BackendSchema } from "@/lib/zod/form/backend"
-import ky from "ky"
+import ky, { HTTPError } from "ky"
 import { ResultAsync } from "neverthrow"
 import { z } from "zod"
 
@@ -21,6 +21,11 @@ export const savePaste = (paste: z.infer<typeof BackendSchema>) => {
 				body: formData
 			})
 			.json<z.infer<typeof SavePasteResponseSchema>>(),
-		(e) => (e instanceof Error && e.message !== "" ? e.message : "Failed to save paste")
+		(e: unknown | HTTPError) => {
+			if (e instanceof HTTPError) {
+				return e.response.text()
+			}
+			return e instanceof Error && e.message !== "" ? e.message : "Failed to save paste"
+		}
 	)
 }
