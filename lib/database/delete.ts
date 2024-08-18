@@ -1,6 +1,6 @@
 import { db } from "@/lib/database/client"
 import { pastes } from "@/lib/schema"
-import { lt } from "drizzle-orm"
+import { eq, lt } from "drizzle-orm"
 
 export const deleteExpirePastes = async () => {
 	const deleted = await db.delete(pastes).where(lt(pastes.expiresAt, new Date().toISOString())).returning()
@@ -9,3 +9,5 @@ export const deleteExpirePastes = async () => {
 		console.info(`Deleted ${deleted.length} expired pastes`)
 	}
 }
+
+export const deletePaste = async (id: string) => await db.delete(pastes).where(eq(pastes.id, id))

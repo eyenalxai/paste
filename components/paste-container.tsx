@@ -9,6 +9,7 @@ import type { VFile } from "vfile"
 type PasteContainerProps = {
 	loading?: boolean
 	error?: ReactNode
+	oneTime?: boolean
 	content?: string
 	id?: string
 	keyBase64?: string
@@ -20,6 +21,7 @@ type PasteContainerProps = {
 export const PasteContainer = ({
 	loading,
 	error,
+	oneTime,
 	content,
 	id,
 	keyBase64,
@@ -33,7 +35,7 @@ export const PasteContainer = ({
 			<Button variant={"outline"} asChild>
 				<Link href={"/"}>New paste</Link>
 			</Button>
-			{id && keyBase64 && (
+			{id && keyBase64 && !oneTime && (
 				<Button variant={"outline"} asChild>
 					<a target="_blank" rel="noopener noreferrer" href={`/${id}/raw/?key=${encodeURIComponent(keyBase64)}`}>
 						Raw

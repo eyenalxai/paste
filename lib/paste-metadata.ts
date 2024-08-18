@@ -76,6 +76,9 @@ export const buildPasteMetadata = async ({ id, paste, key }: BuildPasteMetadataP
 
 	const title = getTitle({ paste })
 
+	if (paste.oneTime)
+		return buildPasteMetadataObject({ frontendUrl, description: "This paste will be deleted after viewing", id, title })
+
 	if (!paste.ivClientBase64) {
 		if (paste.link) return buildPasteMetadataObject({ frontendUrl, id, title, withImage: true })
 

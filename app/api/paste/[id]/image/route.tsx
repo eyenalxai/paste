@@ -22,7 +22,7 @@ export type ImagePastePageProps = {
 export const GET = async (request: Request, { params: { id } }: ImagePastePageProps) => {
 	if (!id) return new NextResponse("id is required", { status: 400 })
 
-	const [paste] = await getPaste(id)
+	const paste = await getPaste(id)
 
 	if (!paste) return new NextResponse("paste not found", { status: 404 })
 

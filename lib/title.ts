@@ -6,6 +6,11 @@ type GetTitleProps = {
 }
 
 export const getTitle = ({ paste, uppercase }: GetTitleProps) => {
+	if (paste.oneTime) {
+		const title = paste.ivClientBase64 !== null ? "Encrypted One-Time Paste" : "One-Time Paste"
+		return uppercase ? title.toUpperCase() : title
+	}
+
 	if (paste.link) {
 		const title = paste.ivClientBase64 !== null ? "Encrypted Link" : "Link"
 		return uppercase ? title.toUpperCase() : title

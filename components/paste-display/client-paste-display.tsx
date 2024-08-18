@@ -9,6 +9,7 @@ type PasteDisplayProps = {
 	ivClientBase64: string
 	clientEncryptedContent: string
 	link: boolean
+	oneTime: boolean
 	syntax: string
 	extension: string | undefined
 }
@@ -17,6 +18,7 @@ export const ClientPasteDisplay = ({
 	ivClientBase64,
 	clientEncryptedContent,
 	link,
+	oneTime,
 	syntax,
 	extension
 }: PasteDisplayProps) => {
@@ -44,7 +46,7 @@ export const ClientPasteDisplay = ({
 	if (isLoading) return <PasteContainer loading />
 
 	return result.match(
-		(paste) => <PasteContainer noWrap content={paste.rawContent} markdown={paste.markdownContent} />,
+		(paste) => <PasteContainer noWrap content={paste.rawContent} oneTime={oneTime} markdown={paste.markdownContent} />,
 		(error) => <PasteError title={"Something went wrong"} description={error} />
 	)
 }
