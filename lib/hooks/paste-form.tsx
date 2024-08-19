@@ -1,5 +1,6 @@
 "use client"
 
+import { ToastPasteSaved } from "@/components/toast-paste-saved"
 import { Button } from "@/components/ui/button"
 import { copyToClipboard } from "@/lib/clipboard"
 import { env } from "@/lib/env.mjs"
@@ -36,18 +37,7 @@ export const usePasteForm = () => {
 					(url) => {
 						!formData.oneTime
 							? window.open(url, "_blank")
-							: toast.info(
-									<div className={cn("flex", "flex-row", "gap-4", "justify-between", "items-center", "w-full")}>
-										<div>URL copied to clipboard</div>
-										{!formData.encrypted && !formData.oneTime && (
-											<Button asChild variant={"outline"} className={cn("h-8")}>
-												<a target={"_blank"} rel="noopener noreferrer" href={url}>
-													Open
-												</a>
-											</Button>
-										)}
-									</div>
-								)
+							: toast.info(<ToastPasteSaved url={url} encrypted={formData.encrypted} oneTime={formData.oneTime} />)
 
 						methods.reset({
 							content: "",
