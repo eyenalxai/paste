@@ -3,10 +3,10 @@ import { SavePasteResponseSchema, savePaste } from "@/lib/fetch/paste"
 import { createFile } from "@/lib/file"
 import type { FrontendSchema } from "@/lib/zod/form/frontend"
 import { parseZodSchema } from "@/lib/zod/parse"
-import { ok } from "neverthrow"
+import { type ResultAsync, ok } from "neverthrow"
 import type { z } from "zod"
 
-export const savePasteForm = (paste: z.infer<typeof FrontendSchema>) => {
+export const savePasteForm = (paste: z.infer<typeof FrontendSchema>): ResultAsync<string, string> => {
 	if (paste.encrypted) {
 		return clientEncryptPaste(paste.content).andThen(({ keyBase64, ivBase64, encryptedContentBase64 }) =>
 			createFile(encryptedContentBase64, "paste-encrypted").asyncAndThen((contentBlob) =>
