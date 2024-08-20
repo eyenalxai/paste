@@ -1,3 +1,13 @@
+import { getErrorMessage } from "@/lib/error-message"
+import { all } from "lowlight"
+import { ResultAsync } from "neverthrow"
+import rehypeHighlight from "rehype-highlight"
+import rehypeSanitize from "rehype-sanitize"
+import rehypeStringify from "rehype-stringify"
+import remarkParse from "remark-parse"
+import remarkRehype from "remark-rehype"
+import { unified } from "unified"
+
 type WrapProps = {
 	syntax: string
 	extension: string | undefined
@@ -14,4 +24,23 @@ export const wrapInMarkdown = ({ syntax, extension, content }: WrapProps) => {
 	}
 
 	return `\`\`\`${syntax}\n${content}\n\`\`\``
+}
+
+type toMarkdownProps = {
+	syntax: string
+	extension?: string
+	rawContent: string
+}
+
+export const toMarkdown = ({ syntax, extension, rawContent }: toMarkdownProps) => {
+	return ResultAsync.fromPromise(
+		unified()
+			.use(remarkParse)
+			.use(remarkRehype)
+			.use(rehypeSanitize)
+			.use(rehypeStringify)
+			.use(rehypeHighlight, { languages: all })
+			.process(wrapInMarkdown({ syntax, extension, content: rawContent })),
+		(e) => getErrorMessage(e, "Failed to convert to markdown")
+	)
 }

@@ -1,7 +1,7 @@
 "use client"
 
 import { clientDecryptPaste } from "@/lib/crypto/client/encrypt-decrypt"
-import { wrapInMarkdown } from "@/lib/markdown"
+import { toMarkdown, wrapInMarkdown } from "@/lib/markdown"
 import { all } from "lowlight"
 import { type Result, err, ok } from "neverthrow"
 import { useEffect, useState } from "react"
@@ -58,22 +58,13 @@ export const useDecryptPaste = ({
 			keyBase64,
 			ivBase64: ivClientBase64,
 			encryptedContentBase64: clientEncryptedContent
-		}).then((rawContentResult) => {
-			rawContentResult.match(
-				(rawContent) =>
-					unified()
-						.use(remarkParse)
-						.use(remarkRehype)
-						.use(rehypeSanitize)
-						.use(rehypeStringify)
-						.use(rehypeHighlight, { languages: all })
-						.process(wrapInMarkdown({ syntax, extension, content: rawContent }))
-						.then((markdownContent) => {
-							setResult(ok({ markdownContent, rawContent, link }))
-						}),
-				(error) => setResult(err(error))
-			)
 		})
+			.andThen((rawContent) =>
+				toMarkdown({ syntax, extension, rawContent }).map((markdownContent) =>
+					setResult(ok({ markdownContent, rawContent, link }))
+				)
+			)
+			.mapErr((error) => setResult(err(error)))
 	}, [ivClientBase64, clientEncryptedContent, link, syntax, extension])
 
 	if (!result) return { result: null, isLoading: true }
