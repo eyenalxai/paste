@@ -12,6 +12,7 @@ export default function Page() {
 		return (
 			<PasteContainer
 				noWrap
+				preview
 				resetFn={() => setSubmittedPaste(null)}
 				id={submittedPaste.id}
 				content={submittedPaste.rawContent}

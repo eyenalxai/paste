@@ -1,4 +1,3 @@
-import { PasteAlert } from "@/components/error/paste-alert"
 import { PasteContainer } from "@/components/paste-container"
 
 type PasteErrorProps = {
@@ -7,5 +6,10 @@ type PasteErrorProps = {
 }
 
 export const PasteError = ({ title, description }: PasteErrorProps) => (
-	<PasteContainer error={<PasteAlert title={title} description={description} />} />
+	<PasteContainer
+		error={{
+			title,
+			description
+		}}
+	/>
 )

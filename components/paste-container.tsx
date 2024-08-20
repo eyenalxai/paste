@@ -1,4 +1,5 @@
 import { CopyContentButton } from "@/components/copy-content-button"
+import { PasteAlert } from "@/components/error/paste-alert"
 import { DangerousMarkdownDisplay, MarkdownDisplay } from "@/components/markdown"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -8,8 +9,12 @@ import type { VFile } from "vfile"
 
 type PasteContainerProps = {
 	loading?: boolean
-	error?: ReactNode
+	error?: {
+		title: string
+		description: string
+	}
 	oneTime?: boolean
+	preview?: boolean
 	content?: string
 	id?: string
 	serverKeyBase64?: string
@@ -23,6 +28,7 @@ export const PasteContainer = ({
 	loading,
 	error,
 	oneTime,
+	preview,
 	content,
 	id,
 	serverKeyBase64,
@@ -45,7 +51,10 @@ export const PasteContainer = ({
 				</Button>
 			)}
 		</div>
-		{error && error}
+		{oneTime && !preview && (
+			<PasteAlert variant={"warning"} title={"One-time paste"} description={"This paste can only be viewed once"} />
+		)}
+		{error && <PasteAlert variant={"destructive"} title={error.title} description={error.description} />}
 		{!loading && !error && (
 			<div className={cn(["border", "p-4"], "rounded", "font-mono", !noWrap && "whitespace-pre-wrap", "text-sm")}>
 				{children && <MarkdownDisplay>{children}</MarkdownDisplay>}
