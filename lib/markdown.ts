@@ -9,7 +9,7 @@ import remarkRehype from "remark-rehype"
 import { unified } from "unified"
 
 type WrapProps = {
-	syntax: string
+	syntax: string | undefined
 	extension: string | undefined
 	content: string
 }
@@ -23,13 +23,17 @@ export const wrapInMarkdown = ({ syntax, extension, content }: WrapProps) => {
 		return content
 	}
 
+	if (syntax === undefined) {
+		return `\`\`\`plaintext\n${content}\n\`\`\``
+	}
+
 	return `\`\`\`${syntax}\n${content}\n\`\`\``
 }
 
 type toMarkdownProps = {
-	syntax: string
-	extension?: string
 	rawContent: string
+	syntax?: string
+	extension?: string
 }
 
 export const toMarkdown = ({ syntax, extension, rawContent }: toMarkdownProps) => {

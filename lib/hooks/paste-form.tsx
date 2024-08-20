@@ -1,18 +1,26 @@
 "use client"
 
-import { ToastPasteSaved } from "@/components/toast-paste-saved"
-import { copyToClipboard } from "@/lib/clipboard"
 import { env } from "@/lib/env.mjs"
+import { toMarkdown } from "@/lib/markdown"
 import { savePasteForm } from "@/lib/paste/save-paste-form"
 import { FrontendSchema } from "@/lib/zod/form/frontend"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ok } from "neverthrow"
-import { useEffect, useTransition } from "react"
+import { okAsync } from "neverthrow"
+import { useEffect, useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
+import type { VFile } from "vfile"
 import type { z } from "zod"
 
 export const usePasteForm = () => {
+	const [submittedPaste, setSubmittedPaste] = useState<{
+		id: string
+		url: string
+		serverKeyBase64: string | undefined
+		rawContent: string
+		syntax: string | undefined
+		markdownContent: VFile
+	} | null>(null)
 	const [isSubmitting, startTransition] = useTransition()
 
 	const methods = useForm<z.infer<typeof FrontendSchema>>({
@@ -30,25 +38,33 @@ export const usePasteForm = () => {
 	const onSubmit = async (formData: z.infer<typeof FrontendSchema>) => {
 		startTransition(async () => {
 			await savePasteForm(formData)
-				.andThen((url) => copyToClipboard(url).andThen(() => ok(url)))
-				.match(
-					(url) => {
-						!formData.oneTime
-							? window.open(url, "_blank")
-							: toast.info(<ToastPasteSaved url={url} encrypted={formData.encrypted} oneTime={formData.oneTime} />)
+				.andThen((data) => {
+					if (formData.contentType === "link") return okAsync({ markdownContent: undefined, data })
 
-						methods.reset({
-							content: "",
-							oneTime: formData.oneTime,
-							encrypted: formData.encrypted,
-							contentType: formData.contentType,
-							syntax: formData.syntax,
-							expiresAfter: "1-hour"
-						})
+					return toMarkdown({
+						rawContent: formData.content,
+						syntax: formData.contentType === "markdown" ? "markdown" : formData.syntax
+					}).map((markdownContent) => ({
+						markdownContent,
+						data
+					}))
+				})
+				.match(
+					({ markdownContent, data }) => {
+						if (markdownContent !== undefined) {
+							setSubmittedPaste({
+								id: data.id,
+								url: data.url,
+								serverKeyBase64: data.serverKeyBase64,
+								rawContent: formData.content,
+								syntax: formData.syntax,
+								markdownContent
+							})
+						}
+
+						history.pushState(null, "", data.url)
 					},
-					(error) => {
-						toast.error(error)
-					}
+					(error) => toast.error(error)
 				)
 		})
 	}
@@ -75,5 +91,5 @@ export const usePasteForm = () => {
 		}
 	}, [methods.formState.errors, methods])
 
-	return { methods, onSubmit, isSubmitting, encrypted, contentType }
+	return { methods, onSubmit, isSubmitting, encrypted, contentType, submittedPaste, setSubmittedPaste }
 }

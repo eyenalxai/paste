@@ -2,13 +2,10 @@
 
 import { getErrorMessage } from "@/lib/error-message"
 import type { BackendSchema } from "@/lib/zod/form/backend"
+import type { SavePasteResponseSchema } from "@/lib/zod/form/common"
 import ky, { HTTPError } from "ky"
 import { ResultAsync } from "neverthrow"
-import { z } from "zod"
-
-export const SavePasteResponseSchema = z.object({
-	url: z.string().url()
-})
+import type { z } from "zod"
 
 export const savePaste = (
 	paste: z.infer<typeof BackendSchema>

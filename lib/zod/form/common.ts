@@ -19,3 +19,9 @@ export const SyntaxOptional = z
 
 export const ExpiresAfter = z.enum(["5-minutes", "30-minutes", "1-hour", "6-hours", "1-day", "1-week", "1-month"])
 export const ContentType = z.enum(["auto", "link", "markdown", "source", "plaintext"])
+
+export const SavePasteResponseSchema = z.object({
+	id: z.string(),
+	url: z.string().url(),
+	serverKeyBase64: z.string().optional()
+})

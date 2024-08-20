@@ -6,7 +6,8 @@ import { getExpiresAt } from "@/lib/date"
 import { getPasteSyntax } from "@/lib/syntax/detect"
 import { buildPasteUrl } from "@/lib/url"
 import { BackendSchema } from "@/lib/zod/form/backend"
-import { parseZodFormDataSchema } from "@/lib/zod/parse"
+import { SavePasteResponseSchema } from "@/lib/zod/form/common"
+import { parseZodFormDataSchema, parseZodSchema } from "@/lib/zod/parse"
 import { NextResponse } from "next/server"
 import type { z } from "zod"
 
@@ -42,12 +43,15 @@ export const POST = async (request: Request) => {
 						link: true
 					})
 				)
+				.andThen((insertedPaste) =>
+					parseZodSchema(SavePasteResponseSchema, {
+						id: insertedPaste.id,
+						url: buildPasteUrl({ id: insertedPaste.id })
+					})
+				)
 				.match(
-					(insertedPaste) =>
-						NextResponse.json({
-							url: buildPasteUrl({ id: insertedPaste.id })
-						}),
-					(error) => new NextResponse(error, { status: 500 })
+					(saveResponse) => NextResponse.json(saveResponse),
+					(e) => new NextResponse(e, { status: 500 })
 				)
 		}
 
@@ -66,12 +70,16 @@ export const POST = async (request: Request) => {
 					keyBase64
 				}))
 			)
+			.andThen(({ insertedPaste, keyBase64 }) =>
+				parseZodSchema(SavePasteResponseSchema, {
+					id: insertedPaste.id,
+					url: buildPasteUrl({ id: insertedPaste.id, keyBase64 }),
+					serverKeyBase64: keyBase64
+				})
+			)
 			.match(
-				({ insertedPaste, keyBase64 }) =>
-					NextResponse.json({
-						url: buildPasteUrl({ id: insertedPaste.id, keyBase64 })
-					}),
-				(error) => new NextResponse(error, { status: 500 })
+				(saveResponse) => NextResponse.json(saveResponse),
+				(e) => new NextResponse(e, { status: 500 })
 			)
 	}
 
@@ -87,11 +95,14 @@ export const POST = async (request: Request) => {
 				link: contentType === "link"
 			})
 		)
+		.andThen((insertedPaste) =>
+			parseZodSchema(SavePasteResponseSchema, {
+				id: insertedPaste.id,
+				url: buildPasteUrl({ id: insertedPaste.id })
+			})
+		)
 		.match(
-			(insertedPaste) =>
-				NextResponse.json({
-					url: buildPasteUrl({ id: insertedPaste.id })
-				}),
-			(error) => new NextResponse(error, { status: 500 })
+			(saveResponse) => NextResponse.json(saveResponse),
+			(e) => new NextResponse(e, { status: 500 })
 		)
 }

@@ -12,8 +12,9 @@ type PasteContainerProps = {
 	oneTime?: boolean
 	content?: string
 	id?: string
-	keyBase64?: string
+	serverKeyBase64?: string
 	noWrap?: boolean
+	resetFn?: () => void
 	children?: ReactNode
 	markdown?: VFile
 }
@@ -24,20 +25,21 @@ export const PasteContainer = ({
 	oneTime,
 	content,
 	id,
-	keyBase64,
+	serverKeyBase64,
 	noWrap,
+	resetFn,
 	children,
 	markdown
 }: PasteContainerProps) => (
 	<div className={cn("flex", "flex-col", "gap-4")}>
 		<div className={cn("flex", "flex-row", "flex-wrap", "gap-4", "justify-start", "items-center")}>
 			{!error && <CopyContentButton loading={loading} content={content} />}
-			<Button variant={"outline"} asChild>
+			<Button onClick={resetFn} variant={"outline"} asChild>
 				<Link href={"/"}>New paste</Link>
 			</Button>
-			{id && keyBase64 && !oneTime && (
+			{id && serverKeyBase64 && !oneTime && (
 				<Button variant={"outline"} asChild>
-					<a target="_blank" rel="noopener noreferrer" href={`/${id}/raw/?key=${encodeURIComponent(keyBase64)}`}>
+					<a target="_blank" rel="noopener noreferrer" href={`/${id}/raw/?key=${encodeURIComponent(serverKeyBase64)}`}>
 						Raw
 					</a>
 				</Button>
