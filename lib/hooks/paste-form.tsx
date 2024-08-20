@@ -1,5 +1,6 @@
 "use client"
 
+import { FailedToCopyUrl } from "@/components/failed-to-copy-url"
 import { copyToClipboard } from "@/lib/clipboard"
 import { env } from "@/lib/env.mjs"
 import { toMarkdown } from "@/lib/markdown"
@@ -20,6 +21,7 @@ export const usePasteForm = () => {
 		serverKeyBase64: string | undefined
 		rawContent: string
 		syntax: string | undefined
+		oneTime: boolean
 		markdownContent: VFile
 	} | null>(null)
 	const [isSubmitting, startTransition] = useTransition()
@@ -59,6 +61,7 @@ export const usePasteForm = () => {
 								serverKeyBase64: data.serverKeyBase64,
 								rawContent: formData.content,
 								syntax: formData.syntax,
+								oneTime: formData.oneTime,
 								markdownContent
 							})
 						}
@@ -66,8 +69,8 @@ export const usePasteForm = () => {
 						history.pushState(null, "", data.url)
 
 						copyToClipboard(data.url).match(
-							() => toast.success("URL copied to clipboard"),
-							(error) => toast.error(error)
+							() => toast.info("URL copied to clipboard"),
+							() => toast.error(<FailedToCopyUrl url={data.url} />)
 						)
 					},
 					(error) => toast.error(error)

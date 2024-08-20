@@ -15,7 +15,7 @@ export default function Page() {
 				resetFn={() => setSubmittedPaste(null)}
 				id={submittedPaste.id}
 				content={submittedPaste.rawContent}
-				oneTime={false}
+				oneTime={submittedPaste.oneTime}
 				markdown={submittedPaste.markdownContent}
 				serverKeyBase64={submittedPaste.serverKeyBase64}
 			/>
