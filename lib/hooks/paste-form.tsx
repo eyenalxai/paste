@@ -1,11 +1,9 @@
 "use client"
 
 import { ToastPasteSaved } from "@/components/toast-paste-saved"
-import { Button } from "@/components/ui/button"
 import { copyToClipboard } from "@/lib/clipboard"
 import { env } from "@/lib/env.mjs"
 import { savePasteForm } from "@/lib/paste/save-paste-form"
-import { cn } from "@/lib/utils"
 import { FrontendSchema } from "@/lib/zod/form/frontend"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ok } from "neverthrow"
