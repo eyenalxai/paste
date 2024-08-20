@@ -1,5 +1,5 @@
 "use client"
-import { isDesktop, isMobile } from "react-device-detect"
+import { isDesktop } from "react-device-detect"
 
 import { FailedToCopyUrl } from "@/components/failed-to-copy-url"
 import { copyToClipboard } from "@/lib/clipboard"
@@ -39,45 +39,57 @@ export const usePasteForm = () => {
 		}
 	})
 
-	const onSubmit = useCallback(async (formData: z.infer<typeof FrontendSchema>) => {
-		startTransition(async () => {
-			await savePasteForm(formData)
-				.andThen((data) => {
-					if (formData.contentType === "link") return okAsync({ markdownContent: undefined, data })
+	const onSubmit = useCallback(
+		async (formData: z.infer<typeof FrontendSchema>) => {
+			startTransition(async () => {
+				await savePasteForm(formData)
+					.andThen((data) => {
+						if (formData.contentType === "link") return okAsync({ markdownContent: undefined, data })
 
-					return toMarkdown({
-						rawContent: formData.content,
-						syntax: formData.contentType === "markdown" ? "markdown" : formData.syntax
-					}).map((markdownContent) => ({
-						markdownContent,
-						data
-					}))
-				})
-				.match(
-					({ markdownContent, data }) => {
-						if (markdownContent !== undefined) {
-							setSubmittedPaste({
-								id: data.id,
-								url: data.url,
-								serverKeyBase64: data.serverKeyBase64,
-								rawContent: formData.content,
-								syntax: formData.syntax,
+						return toMarkdown({
+							rawContent: formData.content,
+							syntax: formData.contentType === "markdown" ? "markdown" : formData.syntax
+						}).map((markdownContent) => ({
+							markdownContent,
+							data
+						}))
+					})
+					.match(
+						({ markdownContent, data }) => {
+							if (markdownContent !== undefined) {
+								setSubmittedPaste({
+									id: data.id,
+									url: data.url,
+									serverKeyBase64: data.serverKeyBase64,
+									rawContent: formData.content,
+									syntax: formData.syntax,
+									oneTime: formData.oneTime,
+									markdownContent
+								})
+							}
+
+							history.pushState(null, "", data.url)
+
+							copyToClipboard(data.url).match(
+								() => toast.info("URL copied to clipboard"),
+								() => toast.error(isDesktop ? <FailedToCopyUrl url={data.url} /> : "Failed to copy URL")
+							)
+
+							methods.reset({
+								content: "",
 								oneTime: formData.oneTime,
-								markdownContent
+								encrypted: formData.encrypted,
+								contentType: formData.contentType,
+								syntax: formData.syntax,
+								expiresAfter: formData.expiresAfter
 							})
-						}
-
-						history.pushState(null, "", data.url)
-
-						copyToClipboard(data.url).match(
-							() => toast.info("URL copied to clipboard"),
-							() => toast.error(isDesktop ? <FailedToCopyUrl url={data.url} /> : "Failed to copy URL")
-						)
-					},
-					(error) => toast.error(error)
-				)
-		})
-	}, [])
+						},
+						(error) => toast.error(error)
+					)
+			})
+		},
+		[methods.reset]
+	)
 
 	const contentType = methods.watch("contentType")
 	const encrypted = methods.watch("encrypted")
