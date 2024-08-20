@@ -1,6 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { getErrorMessage } from "@/lib/error-message"
 import { cn } from "@/lib/utils"
 import { Copy } from "lucide-react"
 import { toast } from "sonner"
@@ -18,7 +19,7 @@ export const CopyContentButton = ({ loading, content }: CopyContentButtonProps) 
 			navigator.clipboard
 				.writeText(content)
 				.then(() => toast.info("Copied to clipboard"))
-				.catch((error: Error) => toast.error(error.message))
+				.catch((error) => toast.error(getErrorMessage(error, "Failed to copy to clipboard")))
 		}
 		className={cn("w-fit")}
 	>
