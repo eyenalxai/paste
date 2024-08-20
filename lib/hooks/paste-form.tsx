@@ -68,7 +68,9 @@ export const usePasteForm = () => {
 								})
 							}
 
-							history.pushState(null, "", data.url)
+							if (formData.contentType !== "link") {
+								history.pushState(null, "", data.url)
+							}
 
 							copyToClipboard(data.url).match(
 								() => toast.info("URL copied to clipboard"),
