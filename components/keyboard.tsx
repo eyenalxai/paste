@@ -1,31 +1,17 @@
+import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
+import { Command } from "lucide-react"
 
 type KeyboardProps = {
 	text: string
+	isMacOS?: boolean
 }
 
-export const Keyboard = ({ text }: KeyboardProps) => {
+export const Keyboard = ({ text, isMacOS }: KeyboardProps) => {
 	return (
-		<kbd
-			className={cn(
-				"pointer-events-none",
-				"inline-flex",
-				"h-5",
-				"select-none",
-				"items-center",
-				"gap-1",
-				"rounded",
-				"border",
-				"bg-muted",
-				"px-1.5",
-				"font-mono",
-				"text-[10px]",
-				"font-medium",
-				"text-muted-foreground",
-				"opacity-100"
-			)}
-		>
+		<Badge className={cn("select-none", "rounded", "text-sm")}>
+			{isMacOS && <Command className={cn("size-3.5")} />}
 			{text}
-		</kbd>
+		</Badge>
 	)
 }

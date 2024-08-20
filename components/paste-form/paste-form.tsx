@@ -2,14 +2,13 @@ import { SelectContentType } from "@/components/paste-form/select-content-type"
 import { SelectExpiresAfter } from "@/components/paste-form/select-expires-after"
 import { SelectOnetime } from "@/components/paste-form/select-onetime"
 import { SelectSyntax } from "@/components/paste-form/select-syntax"
+import { SubmitButton } from "@/components/paste-form/submit-button"
 import { SwitchEncrypted } from "@/components/paste-form/switch-encrypted"
-import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
 import type { ContentType } from "@/lib/zod/form/common"
 import type { FrontendSchema } from "@/lib/zod/form/frontend"
-import { Copy, Loader } from "lucide-react"
 import { useFormContext } from "react-hook-form"
 import type { z } from "zod"
 
@@ -44,18 +43,7 @@ export const PasteForm = ({ onSubmit, isSubmitting, encrypted, contentType }: Pa
 						</FormItem>
 					)}
 				/>
-				<Button disabled={isSubmitting} type="submit" className={cn("w-32")}>
-					<div className={cn("flex", "flex-row", "gap-x-2", "items-center")}>
-						{isSubmitting ? (
-							<Loader className={cn("animate-spin")} />
-						) : (
-							<>
-								<Copy />
-								<div className={cn("font-semibold")}>Copy URL</div>
-							</>
-						)}
-					</div>
-				</Button>
+				<SubmitButton isSubmitting={isSubmitting} />
 			</form>
 		</Form>
 	)
