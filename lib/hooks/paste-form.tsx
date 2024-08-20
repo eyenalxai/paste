@@ -66,9 +66,7 @@ export const usePasteForm = () => {
 									oneTime: formData.oneTime,
 									markdownContent
 								})
-							}
 
-							if (formData.contentType !== "link") {
 								history.pushState(null, "", data.url)
 							}
 
