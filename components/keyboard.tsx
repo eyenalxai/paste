@@ -9,7 +9,9 @@ type KeyboardProps = {
 
 export const Keyboard = ({ text }: KeyboardProps) => {
 	return (
-		<Badge className={cn("select-none", "rounded", "text-sm", "text-muted-foreground", "bg-muted")}>
+		<Badge
+			className={cn("select-none", "pointer-events-none", "rounded", "text-sm", "text-muted-foreground", "bg-muted")}
+		>
 			{isMacOs && <Command className={cn("size-3.5")} />}
 			{text}
 		</Badge>

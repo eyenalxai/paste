@@ -1,5 +1,5 @@
 "use client"
-import { isMobile } from "react-device-detect"
+import { isDesktop, isMobile } from "react-device-detect"
 
 import { FailedToCopyUrl } from "@/components/failed-to-copy-url"
 import { copyToClipboard } from "@/lib/clipboard"
@@ -71,7 +71,7 @@ export const usePasteForm = () => {
 
 						copyToClipboard(data.url).match(
 							() => toast.info("URL copied to clipboard"),
-							() => toast.error(!isMobile ? "Failed to copy URL" : <FailedToCopyUrl url={data.url} />)
+							() => toast.error(isDesktop ? <FailedToCopyUrl url={data.url} /> : "Failed to copy URL")
 						)
 					},
 					(error) => toast.error(error)
