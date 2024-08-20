@@ -38,7 +38,7 @@ export const PasteForm = ({ onSubmit, isSubmitting, encrypted, contentType }: Pa
 					render={({ field }) => (
 						<FormItem>
 							<FormControl>
-								<Textarea className={cn("min-h-[80vh]", "font-mono")} autoResize {...field} />
+								<Textarea autoFocus className={cn("min-h-[80vh]", "font-mono")} autoResize {...field} />
 							</FormControl>
 						</FormItem>
 					)}
