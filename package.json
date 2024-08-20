@@ -32,6 +32,7 @@
 		"openai": "^4.56.0",
 		"postgres": "^3.4.4",
 		"react": "18.3.1",
+		"react-device-detect": "^2.2.3",
 		"react-dom": "18.3.1",
 		"react-hook-form": "^7.52.2",
 		"rehype-highlight": "^7.0.0",
