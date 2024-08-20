@@ -67,3 +67,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+html {
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
