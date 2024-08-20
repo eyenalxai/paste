@@ -9,7 +9,7 @@ import { savePasteForm } from "@/lib/paste/save-paste-form"
 import { FrontendSchema } from "@/lib/zod/form/frontend"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { okAsync } from "neverthrow"
-import { useEffect, useState, useTransition } from "react"
+import { useCallback, useEffect, useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import type { VFile } from "vfile"
@@ -39,7 +39,7 @@ export const usePasteForm = () => {
 		}
 	})
 
-	const onSubmit = async (formData: z.infer<typeof FrontendSchema>) => {
+	const onSubmit = useCallback(async (formData: z.infer<typeof FrontendSchema>) => {
 		startTransition(async () => {
 			await savePasteForm(formData)
 				.andThen((data) => {
@@ -77,7 +77,7 @@ export const usePasteForm = () => {
 					(error) => toast.error(error)
 				)
 		})
-	}
+	}, [])
 
 	const contentType = methods.watch("contentType")
 	const encrypted = methods.watch("encrypted")
@@ -100,6 +100,21 @@ export const usePasteForm = () => {
 			}
 		}
 	}, [methods.formState.errors, methods])
+
+	useEffect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+				e.preventDefault()
+				methods.handleSubmit(onSubmit)()
+			}
+		}
+
+		window.addEventListener("keydown", handleKeyDown)
+
+		return () => {
+			window.removeEventListener("keydown", handleKeyDown)
+		}
+	}, [methods.handleSubmit, onSubmit, methods])
 
 	return { methods, onSubmit, isSubmitting, encrypted, contentType, submittedPaste, setSubmittedPaste }
 }
