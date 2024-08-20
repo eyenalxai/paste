@@ -1,5 +1,6 @@
 "use client"
 
+import { copyToClipboard } from "@/lib/clipboard"
 import { env } from "@/lib/env.mjs"
 import { toMarkdown } from "@/lib/markdown"
 import { savePasteForm } from "@/lib/paste/save-paste-form"
@@ -63,6 +64,11 @@ export const usePasteForm = () => {
 						}
 
 						history.pushState(null, "", data.url)
+
+						copyToClipboard(data.url).match(
+							() => toast.success("URL copied to clipboard"),
+							(error) => toast.error(error)
+						)
 					},
 					(error) => toast.error(error)
 				)
