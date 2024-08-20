@@ -1,9 +1,9 @@
 import { Keyboard } from "@/components/keyboard"
 import { Button } from "@/components/ui/button"
-import { getSaveShortcut } from "@/lib/keyboard-shorcut"
+import { getKeyboardShortcut } from "@/lib/keyboard-shorcut"
 import { cn } from "@/lib/utils"
 import { Copy, Loader } from "lucide-react"
-import { isDesktop, isMacOs } from "react-device-detect"
+import { isDesktop } from "react-device-detect"
 
 type SubmitButtonProps = {
 	isSubmitting: boolean
@@ -26,7 +26,7 @@ export const SubmitButton = ({ isSubmitting }: SubmitButtonProps) => {
 			</Button>
 			{isDesktop && (
 				<div className={cn(isSubmitting ? "opacity-50" : "opacity-100")}>
-					<Keyboard text={getSaveShortcut()} isMacOS={isMacOs} />
+					<Keyboard text={getKeyboardShortcut("save")} />
 				</div>
 			)}
 		</div>

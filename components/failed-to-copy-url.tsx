@@ -1,4 +1,5 @@
 import { Keyboard } from "@/components/keyboard"
+import { getKeyboardShortcut } from "@/lib/keyboard-shorcut"
 import { cn } from "@/lib/utils"
 import { CircleAlert } from "lucide-react"
 import { useEffect, useRef } from "react"
@@ -24,7 +25,7 @@ export const FailedToCopyUrl = ({ url }: FailedToCopyUrlProps) => {
 					<div className={cn("font-semibold")}>Failed to copy the URL</div>
 					<div className={cn("flex", "flex-row", "gap-2")}>
 						<div>Press</div>
-						<Keyboard text={"Ctrl+C"} />
+						<Keyboard text={getKeyboardShortcut("copy")} />
 						<div>to copy the URL manually</div>
 					</div>
 					<textarea
