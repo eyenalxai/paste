@@ -40,11 +40,11 @@ export const PasteContainer = ({
 	<div className={cn("flex", "flex-col", "gap-4")}>
 		<div className={cn("flex", "flex-row", "flex-wrap", "gap-4", "justify-start", "items-center")}>
 			{!error && <CopyContentButton loading={loading} content={content} />}
-			<Button onClick={resetFn} variant={"outline"} asChild>
+			<Button className={cn("select-none")} onClick={resetFn} variant={"outline"} asChild>
 				<Link href={"/"}>New paste</Link>
 			</Button>
 			{id && serverKeyBase64 && !oneTime && (
-				<Button variant={"outline"} asChild>
+				<Button className={cn("select-none")} variant={"outline"} asChild>
 					<a target="_blank" rel="noopener noreferrer" href={`/${id}/raw/?key=${encodeURIComponent(serverKeyBase64)}`}>
 						Raw
 					</a>
