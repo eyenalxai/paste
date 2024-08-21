@@ -24,13 +24,16 @@ export const PasteForm = ({ onSubmit, isSubmitting, encrypted, contentType }: Pa
 
 	return (
 		<Form {...methods}>
-			<form onSubmit={methods.handleSubmit(onSubmit)} className={cn("space-y-4")}>
-				<div className={cn("flex", "flex-row", "flex-wrap", "gap-4", "justify-start", "items-center")}>
-					<SwitchEncrypted />
-					<SelectOnetime />
-					<SelectExpiresAfter />
-					<SelectContentType encrypted={encrypted} />
-					<SelectSyntax contentType={contentType} />
+			<form onSubmit={methods.handleSubmit(onSubmit)} className={cn("space-y-4", "mb-16")}>
+				<div className={cn("flex", "flex-row", "flex-wrap", "gap-4", "justify-between", "items-center")}>
+					<div className={cn("flex", "flex-row", "flex-wrap", "gap-4", "justify-start", "items-center")}>
+						<SwitchEncrypted />
+						<SelectOnetime />
+						<SelectExpiresAfter />
+						<SelectContentType encrypted={encrypted} />
+						<SelectSyntax contentType={contentType} />
+					</div>
+					<SubmitButton isSubmitting={isSubmitting} />
 				</div>
 				<FormField
 					control={methods.control}
@@ -38,12 +41,16 @@ export const PasteForm = ({ onSubmit, isSubmitting, encrypted, contentType }: Pa
 					render={({ field }) => (
 						<FormItem>
 							<FormControl>
-								<Textarea autoFocus className={cn("min-h-[80vh]", "font-mono")} autoResize {...field} />
+								<Textarea
+									autoFocus
+									className={cn(["min-h-[50vh]", "lg:min-h-[80vh]"], "font-mono")}
+									autoResize
+									{...field}
+								/>
 							</FormControl>
 						</FormItem>
 					)}
 				/>
-				<SubmitButton isSubmitting={isSubmitting} />
 			</form>
 		</Form>
 	)
