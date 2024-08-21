@@ -17,6 +17,16 @@ const nextConfig = {
 							value: "multipart/form-data.*"
 						}
 					]
+				},
+				{
+					source: "/(.*)",
+					destination: "https://:1",
+					has: [
+						{
+							type: "host",
+							value: "http://(.*)"
+						}
+					]
 				}
 			]
 		}
