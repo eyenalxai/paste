@@ -3,12 +3,13 @@ import {
 	serverArrayBufferToBuffer,
 	serverBase64ToArrayBuffer,
 	serverBufferToArrayBuffer,
+	serverBufferToUint8Array,
 	serverKeyToBase64
 } from "@/lib/crypto/server/encode-decode"
 import { getErrorMessage } from "@/lib/error-message"
-import { Result, ResultAsync, errAsync, ok } from "neverthrow"
+import { ResultAsync, errAsync, ok } from "neverthrow"
 
-export const serverGenerateKey = () => {
+const serverGenerateKey = () => {
 	return ResultAsync.fromPromise(
 		crypto.subtle.generateKey(
 			{
@@ -22,7 +23,14 @@ export const serverGenerateKey = () => {
 	)
 }
 
-export const serverEncryptData = (secretData: string, key: CryptoKey) => {
+const serverImportKey = (keyData: BufferSource) => {
+	return ResultAsync.fromPromise(
+		crypto.subtle.importKey("raw", keyData, { name: "AES-GCM", length: 256 }, true, ["decrypt"]),
+		(e) => getErrorMessage(e, "Failed to import decryption key")
+	)
+}
+
+const serverEncryptData = (secretData: string, key: CryptoKey) => {
 	try {
 		const iv = crypto.getRandomValues(new Uint8Array(12))
 		const encodedData = new TextEncoder().encode(secretData)
@@ -63,7 +71,7 @@ export const serverEncryptPaste = (pasteContent: string) => {
 	)
 }
 
-export const serverDecryptData = (encryptedData: ArrayBuffer, iv: Uint8Array, key: CryptoKey) => {
+const serverDecryptData = (encryptedData: ArrayBuffer, iv: Uint8Array, key: CryptoKey) => {
 	return ResultAsync.fromPromise(
 		crypto.subtle
 			.decrypt(
@@ -79,23 +87,11 @@ export const serverDecryptData = (encryptedData: ArrayBuffer, iv: Uint8Array, ke
 	)
 }
 
-const serverImportKey = (keyData: BufferSource) => {
-	return ResultAsync.fromPromise(
-		crypto.subtle.importKey("raw", keyData, { name: "AES-GCM", length: 256 }, true, ["decrypt"]),
-		(e) => getErrorMessage(e, "Failed to import decryption key")
-	)
-}
-
 type DecryptPasteProps = {
 	keyBase64: string
 	ivServer: Buffer
 	encryptedBuffer: Buffer
 }
-
-const serverBufferToUint8Array = Result.fromThrowable(
-	(buffer: Buffer) => new Uint8Array(buffer),
-	(e) => getErrorMessage(e, "Failed to convert buffer to Uint8Array")
-)
 
 export const serverDecryptPaste = ({ keyBase64, ivServer, encryptedBuffer }: DecryptPasteProps) => {
 	return serverBase64ToArrayBuffer(keyBase64)

@@ -8,7 +8,7 @@ import {
 import { getErrorMessage } from "@/lib/error-message"
 import { ResultAsync, errAsync, ok } from "neverthrow"
 
-export const clientGenerateKey = () => {
+const clientGenerateKey = () => {
 	return ResultAsync.fromPromise(
 		window.crypto.subtle.generateKey(
 			{
@@ -29,7 +29,7 @@ const clientImportKey = (keyData: BufferSource) => {
 	)
 }
 
-export const clientEncryptData = (secretData: string, key: CryptoKey) => {
+const clientEncryptData = (secretData: string, key: CryptoKey) => {
 	try {
 		const iv = window.crypto.getRandomValues(new Uint8Array(12))
 		const encodedData = new TextEncoder().encode(secretData)
@@ -70,7 +70,7 @@ export const clientEncryptPaste = (pasteContent: string) => {
 	)
 }
 
-export const clientDecryptData = (encryptedData: ArrayBuffer, iv: Uint8Array, key: CryptoKey) => {
+const clientDecryptData = (encryptedData: ArrayBuffer, iv: Uint8Array, key: CryptoKey) => {
 	return ResultAsync.fromPromise(
 		window.crypto.subtle
 			.decrypt(
