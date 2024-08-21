@@ -27,8 +27,6 @@ Run the container
 docker run --name paste -p 3000:3000 -d paste:latest
 ```
 
-Port can be changed with `PORT` environment variable
-
 ### Docker
 
 #### Without compose
