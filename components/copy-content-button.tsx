@@ -17,7 +17,7 @@ export const CopyContentButton = ({ loading, content }: CopyContentButtonProps) 
 		onClick={() =>
 			content &&
 			copyToClipboard(content).match(
-				() => toast.info("Copied to clipboard"),
+				() => toast.info(<div className={cn("select-none")}>Copied to clipboard</div>),
 				(error) => toast.error(error)
 			)
 		}
