@@ -5,7 +5,6 @@ export function useNotAtTop() {
 
 	useEffect(() => {
 		const handleScroll = () => {
-			console.log(window.scrollY)
 			setIsNotAtTop(window.scrollY > 128)
 		}
 
