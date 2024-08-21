@@ -1,7 +1,9 @@
 .git
 .next
+.idea
 node_modules
 .dockerignore
+.Dockerfile
 .env*
 .eslintrc.json
 .gitignore
