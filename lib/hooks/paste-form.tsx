@@ -52,7 +52,7 @@ export const usePasteForm = () => {
 
 						return toMarkdown({
 							rawContent: formData.content,
-							syntax: formData.contentType === "markdown" ? "markdown" : formData.syntax
+							syntax: data.syntax
 						}).map((markdownContent) => ({
 							markdownContent,
 							data
@@ -66,7 +66,7 @@ export const usePasteForm = () => {
 									url: data.url,
 									serverKeyBase64: data.serverKeyBase64,
 									rawContent: formData.content,
-									syntax: formData.syntax,
+									syntax: data.syntax,
 									oneTime: formData.oneTime,
 									markdownContent
 								})

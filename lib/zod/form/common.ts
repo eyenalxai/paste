@@ -23,5 +23,6 @@ export const ContentType = z.enum(["auto", "link", "markdown", "source", "plaint
 export const SavePasteResponseSchema = z.object({
 	id: z.string(),
 	url: z.string().url(),
+	syntax: z.string(),
 	serverKeyBase64: z.string().optional()
 })

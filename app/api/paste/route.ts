@@ -46,7 +46,8 @@ export const POST = async (request: Request) => {
 				.andThen((insertedPaste) =>
 					parseZodSchema(SavePasteResponseSchema, {
 						id: insertedPaste.id,
-						url: buildPasteUrl({ id: insertedPaste.id })
+						url: buildPasteUrl({ id: insertedPaste.id }),
+						syntax: pasteSyntax
 					})
 				)
 				.match(
@@ -70,13 +71,14 @@ export const POST = async (request: Request) => {
 					keyBase64
 				}))
 			)
-			.andThen(({ insertedPaste, keyBase64 }) =>
-				parseZodSchema(SavePasteResponseSchema, {
+			.andThen(({ insertedPaste, keyBase64 }) => {
+				return parseZodSchema(SavePasteResponseSchema, {
 					id: insertedPaste.id,
 					url: buildPasteUrl({ id: insertedPaste.id, keyBase64 }),
+					syntax: pasteSyntax,
 					serverKeyBase64: keyBase64
 				})
-			)
+			})
 			.match(
 				(saveResponse) => NextResponse.json(saveResponse),
 				(e) => new NextResponse(e, { status: 500 })
@@ -98,7 +100,8 @@ export const POST = async (request: Request) => {
 		.andThen((insertedPaste) =>
 			parseZodSchema(SavePasteResponseSchema, {
 				id: insertedPaste.id,
-				url: buildPasteUrl({ id: insertedPaste.id })
+				url: buildPasteUrl({ id: insertedPaste.id }),
+				syntax: pasteSyntax
 			})
 		)
 		.match(
