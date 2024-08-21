@@ -7,6 +7,7 @@ import { env } from "@/lib/env.mjs"
 import { toMarkdown } from "@/lib/markdown"
 import { savePasteForm } from "@/lib/paste/save-paste-form"
 import { userAgent } from "@/lib/user-agent"
+import { cn } from "@/lib/utils"
 import { FrontendSchema } from "@/lib/zod/form/frontend"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { okAsync } from "neverthrow"
@@ -74,7 +75,7 @@ export const usePasteForm = () => {
 							}
 
 							copyToClipboard(data.url).match(
-								() => toast.info("URL copied to clipboard"),
+								() => toast.info(<div className={cn("select-none")}>URL copied to clipboard</div>),
 								() => toast.error(isDesktop ? <FailedToCopyUrl url={data.url} /> : "Failed to copy URL")
 							)
 
