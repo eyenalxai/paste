@@ -51,5 +51,5 @@ export const env = createEnv({
 		NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION: process.env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION,
 		NEXT_PUBLIC_CLIENT_SIDE_ENCRYPTION_ONLY: process.env.NEXT_PUBLIC_CLIENT_SIDE_ENCRYPTION_ONLY
 	},
-	skipValidation: process.env.BUILD_TIME === "TRUE"
+	skipValidation: process.env.BUILD_TIME?.toLowerCase() === "true"
 })
