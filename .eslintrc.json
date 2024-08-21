@@ -5,7 +5,7 @@
 	"plugins": ["tailwindcss"],
 	"rules": {
 		"tailwindcss/no-custom-classname": "off",
-		"react-hooks/ exhaustive-deps": "off"
+		"react-hooks/exhaustive-deps": "off"
 	},
 	"settings": {
 		"tailwindcss": {
