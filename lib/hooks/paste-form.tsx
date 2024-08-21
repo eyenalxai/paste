@@ -1,11 +1,12 @@
 "use client"
-import { isDesktop } from "react-device-detect"
+import { getSelectorsByUserAgent } from "react-device-detect"
 
 import { FailedToCopyUrl } from "@/components/failed-to-copy-url"
 import { copyToClipboard } from "@/lib/clipboard"
 import { env } from "@/lib/env.mjs"
 import { toMarkdown } from "@/lib/markdown"
 import { savePasteForm } from "@/lib/paste/save-paste-form"
+import { userAgent } from "@/lib/user-agent"
 import { FrontendSchema } from "@/lib/zod/form/frontend"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { okAsync } from "neverthrow"
@@ -38,6 +39,8 @@ export const usePasteForm = () => {
 			syntax: ""
 		}
 	})
+
+	const { isDesktop } = getSelectorsByUserAgent(userAgent())
 
 	const onSubmit = useCallback(
 		async (formData: z.infer<typeof FrontendSchema>) => {
@@ -88,7 +91,7 @@ export const usePasteForm = () => {
 					)
 			})
 		},
-		[methods.reset]
+		[methods.reset, isDesktop]
 	)
 
 	const contentType = methods.watch("contentType")

@@ -1,7 +1,10 @@
+import { userAgent } from "@/lib/user-agent"
 import { exhaustiveCheck } from "@/lib/utils"
-import { isMacOs } from "react-device-detect"
+import { getSelectorsByUserAgent } from "react-device-detect"
 
 export const getKeyboardShortcut = (type: "copy" | "save"): string => {
+	const { isMacOs } = getSelectorsByUserAgent(userAgent())
+
 	if (type === "copy") {
 		if (isMacOs) return "C"
 		return "Ctrl+C"

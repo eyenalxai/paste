@@ -1,15 +1,18 @@
 import { Keyboard } from "@/components/keyboard"
 import { Button } from "@/components/ui/button"
 import { getKeyboardShortcut } from "@/lib/keyboard-shorcut"
+import { userAgent } from "@/lib/user-agent"
 import { cn } from "@/lib/utils"
 import { Copy, Loader } from "lucide-react"
-import { isDesktop } from "react-device-detect"
+import { getSelectorsByUserAgent } from "react-device-detect"
 
 type SubmitButtonProps = {
 	isSubmitting: boolean
 }
 
 export const SubmitButton = ({ isSubmitting }: SubmitButtonProps) => {
+	const { isDesktop } = getSelectorsByUserAgent(userAgent())
+
 	return (
 		<div className={cn("flex", "flex-row", "items-center", "justify-start", "gap-2")}>
 			<Button disabled={isSubmitting} type="submit" className={cn("w-24")}>
