@@ -1,6 +1,4 @@
 import "server-only"
-
-import { KEY_USAGES } from "@/lib/crypto/key"
 import {
 	serverArrayBufferToBuffer,
 	serverBase64ToArrayBuffer,
@@ -18,7 +16,7 @@ export const serverGenerateKey = () => {
 				length: 256
 			},
 			true,
-			KEY_USAGES
+			["encrypt"]
 		),
 		(e) => getErrorMessage(e, "Failed to generate encryption key")
 	)
@@ -83,7 +81,7 @@ export const serverDecryptData = (encryptedData: ArrayBuffer, iv: Uint8Array, ke
 
 const serverImportKey = (keyData: BufferSource) => {
 	return ResultAsync.fromPromise(
-		crypto.subtle.importKey("raw", keyData, { name: "AES-GCM", length: 256 }, true, KEY_USAGES),
+		crypto.subtle.importKey("raw", keyData, { name: "AES-GCM", length: 256 }, true, ["decrypt"]),
 		(e) => getErrorMessage(e, "Failed to import decryption key")
 	)
 }

@@ -5,7 +5,6 @@ import {
 	clientBase64ToArrayBuffer,
 	clientKeyToBase64
 } from "@/lib/crypto/client/encode-decode"
-import { KEY_USAGES } from "@/lib/crypto/key"
 import { getErrorMessage } from "@/lib/error-message"
 import { ResultAsync, errAsync, ok } from "neverthrow"
 
@@ -17,7 +16,7 @@ export const clientGenerateKey = () => {
 				length: 256
 			},
 			true,
-			KEY_USAGES
+			["encrypt"]
 		),
 		(e) => getErrorMessage(e, "Failed to generate encryption key")
 	)
@@ -25,7 +24,7 @@ export const clientGenerateKey = () => {
 
 const clientImportKey = (keyData: BufferSource) => {
 	return ResultAsync.fromPromise(
-		window.crypto.subtle.importKey("raw", keyData, { name: "AES-GCM", length: 256 }, true, KEY_USAGES),
+		window.crypto.subtle.importKey("raw", keyData, { name: "AES-GCM", length: 256 }, true, ["decrypt"]),
 		(e) => getErrorMessage(e, "Failed to import encryption key")
 	)
 }
