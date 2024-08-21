@@ -1,5 +1,6 @@
 "use client"
 
+import { FailedToCopyUrl } from "@/components/failed-to-copy-url"
 import { Button } from "@/components/ui/button"
 import { copyToClipboard } from "@/lib/clipboard"
 import { cn } from "@/lib/utils"
@@ -18,7 +19,7 @@ export const CopyContentButton = ({ loading, content }: CopyContentButtonProps) 
 			content &&
 			copyToClipboard(content).match(
 				() => toast.info(<div className={cn("select-none")}>Copied to clipboard</div>),
-				(error) => toast.error(error)
+				(error) => toast.error(<FailedToCopyUrl error={error} content={content} />)
 			)
 		}
 		className={cn("w-fit", "select-none")}

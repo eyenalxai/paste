@@ -76,7 +76,8 @@ export const usePasteForm = () => {
 
 							copyToClipboard(data.url).match(
 								() => toast.info(<div className={cn("select-none")}>URL copied to clipboard</div>),
-								() => toast.error(isDesktop ? <FailedToCopyUrl url={data.url} /> : "Failed to copy URL")
+								(error) =>
+									toast.error(isDesktop ? <FailedToCopyUrl error={error} content={data.url} /> : "Failed to copy URL")
 							)
 
 							methods.reset({
