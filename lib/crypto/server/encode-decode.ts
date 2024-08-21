@@ -3,17 +3,17 @@ import "server-only"
 import { getErrorMessage } from "@/lib/error-message"
 import { Result, ResultAsync } from "neverthrow"
 
+const serverArrayBufferToBase64 = Result.fromThrowable(
+	(buffer: ArrayBuffer) => btoa(new Uint8Array(buffer).reduce((acc, byte) => acc + String.fromCharCode(byte), "")),
+	(e) => getErrorMessage(e, "Failed to encode array buffer to base64")
+)
+
 export const serverKeyToBase64 = (key: CryptoKey) => {
 	return ResultAsync.fromPromise(
 		crypto.subtle.exportKey("raw", key).then((exportedKey) => serverArrayBufferToBase64(exportedKey)),
 		(e) => getErrorMessage(e, "Failed to export server encryption key")
 	).andThen((keyBase64) => keyBase64)
 }
-
-export const serverArrayBufferToBase64 = Result.fromThrowable(
-	(buffer: ArrayBuffer) => btoa(new Uint8Array(buffer).reduce((acc, byte) => acc + String.fromCharCode(byte), "")),
-	(e) => getErrorMessage(e, "Failed to encode array buffer to base64")
-)
 
 export const serverBase64ToArrayBuffer = Result.fromThrowable(
 	(base64: string) => Uint8Array.from(atob(base64), (c) => c.charCodeAt(0)).buffer,
@@ -38,3 +38,8 @@ export const serverFileToBuffer = (file: File) =>
 		serverFileToArrayBuffer(file).andThen((arrBuffer) => serverArrayBufferToBuffer(arrBuffer)),
 		(e) => getErrorMessage(e, "Failed to convert file to buffer")
 	).andThen((buffer) => buffer)
+
+export const serverBufferToUint8Array = Result.fromThrowable(
+	(buffer: Buffer) => new Uint8Array(buffer),
+	(e) => getErrorMessage(e, "Failed to convert buffer to Uint8Array")
+)
