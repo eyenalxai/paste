@@ -8,10 +8,7 @@ WORKDIR /usr/src/app
 
 FROM base AS install
 
-RUN <<EOR
-apk add --no-cache yarn
-mkdir -p /temp/install
-EOR
+RUN apk add --no-cache yarn && mkdir -p /temp/install
 
 COPY package.json yarn.lock .yarnrc.yml /temp/install/
 COPY .yarn/releases/yarn-${YARN_VERSION}.cjs /temp/install/.yarn/releases/yarn-${YARN_VERSION}.cjs
@@ -32,8 +29,10 @@ ENV BUILD_TIME=True
 RUN yarn run build
 
 FROM base AS runnder
+
 COPY --from=build /usr/src/app/.next ./.next
 COPY . .
+
 RUN yarn workspaces focus --production
 
 USER node
