@@ -17,7 +17,7 @@ const nextConfig = {
 						value: "multipart/form-data"
 					}
 				],
-				permanent: true
+				permanent: false
 			}
 		]
 	}
