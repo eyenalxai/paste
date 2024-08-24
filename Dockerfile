@@ -4,12 +4,12 @@ ENV NODE_ENV=production
 # Uncomment the following line in case you want to disable telemetry
 # ENV NEXT_TELEMETRY_DISABLED 1
 
+RUN apk add --no-cache yarn
+
 WORKDIR /usr/src/app
 
-USER node
-
 FROM base AS install-build
-RUN apk add --no-cache yarn && mkdir -p /temp/install-build
+RUN mkdir -p /temp/install-build
 
 COPY package.json yarn.lock .yarnrc.yml /temp/install-build/
 COPY .yarn/releases/yarn-${YARN_VERSION}.cjs /temp/install-build/.yarn/releases/yarn-${YARN_VERSION}.cjs
@@ -35,11 +35,15 @@ ENV BUILD_TIME=True
 RUN yarn run build
 
 FROM base AS run
-COPY --from=build /usr/src/app/.next ./.next
-COPY --from=install-run /temp/install-run/node_modules node_modules
-COPY . .
 
-USER node
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+COPY --from=build --chown=nextjs:nodejs /usr/src/app/.next ./.next
+COPY --from=install-run --chown=nextjs:nodejs /temp/install-run/node_modules node_modules
+COPY --chown=nextjs:nodejs . .
+
+USER nextjs
 
 ENV HOST=0.0.0.0
 
