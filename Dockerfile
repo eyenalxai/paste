@@ -6,6 +6,8 @@ ENV NODE_ENV=production
 
 WORKDIR /usr/src/app
 
+USER node
+
 FROM base AS install-build
 RUN apk add --no-cache yarn && mkdir -p /temp/install-build
 
@@ -33,9 +35,9 @@ ENV BUILD_TIME=True
 RUN yarn run build
 
 FROM base AS run
-COPY --from=build --chown=node:node /usr/src/app/.next ./.next
-COPY --from=install-run --chown=node:node /temp/install-run/node_modules node_modules
-COPY --chown=node:node . .
+COPY --from=build /usr/src/app/.next ./.next
+COPY --from=install-run /temp/install-run/node_modules node_modules
+COPY . .
 
 USER node
 
