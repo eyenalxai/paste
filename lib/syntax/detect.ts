@@ -21,7 +21,7 @@ export const getPasteSyntax = async ({ encrypted, syntax, contentType, content }
 	return "plaintext"
 }
 
-export const SyntaxSchema = z.object({
+const SyntaxSchema = z.object({
 	syntax: z.string()
 })
 
@@ -33,7 +33,7 @@ export const detectContentSyntax = async (content: string) => {
 	const chatCompletion = await openaiClient.chat.completions.create({
 		messages: [{ role: "user", content: content }],
 		model: "gpt-4o-mini",
-		response_format: zodResponseFormat(SyntaxSchema, "syntax")
+		response_format: zodResponseFormat(SyntaxSchema, "s")
 	})
 
 	return "plaintext"
