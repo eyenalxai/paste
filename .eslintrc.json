@@ -1,18 +1,11 @@
 {
 	"$schema": "https://json.schemastore.org/eslintrc",
 	"root": true,
-	"extends": ["next/core-web-vitals", "plugin:tailwindcss/recommended"],
-	"plugins": ["tailwindcss"],
+	"extends": ["next/core-web-vitals"],
 	"rules": {
-		"tailwindcss/no-custom-classname": "off",
 		"react-hooks/exhaustive-deps": "off"
 	},
-	"settings": {
-		"tailwindcss": {
-			"callees": ["cn", "cva"],
-			"config": "tailwind.config.js"
-		}
-	},
+	"settings": {},
 	"overrides": [
 		{
 			"files": ["*.ts", "*.tsx"],
