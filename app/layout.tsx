@@ -1,5 +1,6 @@
 import "./globals.css"
 import "./code-style.css"
+import "katex/dist/katex.min.css"
 import "@fontsource-variable/inter"
 import "@fontsource-variable/roboto-mono"
 import { Providers } from "@/components/providers"
