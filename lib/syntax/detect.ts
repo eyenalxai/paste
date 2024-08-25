@@ -31,8 +31,8 @@ export const detectContentSyntax = async (content: string) => {
 		apiKey: "s"
 	})
 
-	// const what = ooofs // Terser error
-	const what = "what" // No error
+	const what = ooofs // Terser error
+	// const what = "what" // No error
 
 	const chatCompletion = await openaiClient.chat.completions.create({
 		messages: [{ role: "user", content: content }],
