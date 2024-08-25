@@ -1,3 +1,4 @@
+import { ooofs } from "@/lib/ext"
 import type { ContentType } from "@/lib/zod/form/common"
 import OpenAI from "openai"
 import { zodResponseFormat } from "openai/helpers/zod"
@@ -30,10 +31,13 @@ export const detectContentSyntax = async (content: string) => {
 		apiKey: "s"
 	})
 
+	// const what = ooofs // Terser error
+	const what = "what" // No error
+
 	const chatCompletion = await openaiClient.chat.completions.create({
 		messages: [{ role: "user", content: content }],
 		model: "gpt-4o-mini",
-		response_format: zodResponseFormat(SyntaxSchema, "s")
+		response_format: zodResponseFormat(SyntaxSchema, what)
 	})
 
 	return "plaintext"

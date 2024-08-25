@@ -13,12 +13,6 @@ export const env = createEnv({
 		DATABASE_URL: z.string().url()
 	},
 	client: {
-		NEXT_PUBLIC_FRONTEND_URL: z
-			.string()
-			.url()
-			.refine((url) => new URL(url).protocol === "https:", {
-				message: "HTTPS is required"
-			}),
 		NEXT_PUBLIC_MAX_PAYLOAD_SIZE: z
 			.string()
 			.optional()
@@ -33,7 +27,6 @@ export const env = createEnv({
 	runtimeEnv: {
 		NEXT_PUBLIC_MAX_PAYLOAD_SIZE: process.env.NEXT_PUBLIC_MAX_PAYLOAD_SIZE,
 		DATABASE_URL: process.env.DATABASE_URL,
-		NEXT_PUBLIC_FRONTEND_URL: process.env.NEXT_PUBLIC_FRONTEND_URL,
 		NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION: process.env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION,
 		NEXT_PUBLIC_CLIENT_SIDE_ENCRYPTION_ONLY: process.env.NEXT_PUBLIC_CLIENT_SIDE_ENCRYPTION_ONLY
 	},
