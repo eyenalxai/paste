@@ -5,6 +5,7 @@ import { serverDecryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
 import { deleteExpirePastes, deletePaste } from "@/lib/database/delete"
 import { getPaste } from "@/lib/database/select"
 import { extractIdAndExtension } from "@/lib/id-extension"
+import { toMarkdown } from "@/lib/markdown"
 import { buildPasteMetadata } from "@/lib/paste-metadata"
 import { headers } from "next/headers"
 import { permanentRedirect } from "next/navigation"
@@ -82,19 +83,25 @@ export default async function Page({ params: { idWithExt }, searchParams: { key 
 			keyBase64: decodeURIComponent(key),
 			ivServer: paste.ivServer,
 			encryptedBuffer: paste.content
-		}).match(
-			(decryptedContent) => (
-				<ServerPasteDisplay
-					id={id}
-					syntax={paste.syntax}
-					oneTime={paste.oneTime ?? false}
-					decryptedContent={decryptedContent}
-					extension={extension}
-					keyBase64={key}
-				/>
-			),
-			(error) => <PasteError title={"Failed to decrypt paste"} description={error} />
-		)
+		})
+			.andThen((decryptedContent) =>
+				toMarkdown({ syntax: paste.syntax, extension, rawContent: decryptedContent }).map((markdown) => ({
+					markdown,
+					decryptedContent
+				}))
+			)
+			.match(
+				({ markdown, decryptedContent }) => (
+					<ServerPasteDisplay
+						id={id}
+						markdown={markdown}
+						decryptedContent={decryptedContent}
+						oneTime={paste.oneTime ?? false}
+						keyBase64={key}
+					/>
+				),
+				(error) => <PasteError title={"Failed to decrypt paste"} description={error} />
+			)
 	}
 
 	return (

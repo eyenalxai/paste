@@ -1,46 +1,24 @@
 import { PasteContainer } from "@/components/paste-container"
-import { wrapInMarkdown } from "@/lib/markdown"
-import { all } from "lowlight"
-import { MDXRemote } from "next-mdx-remote/rsc"
-import rehypeHighlight from "rehype-highlight"
+
+import type { VFile } from "vfile"
 
 type ServerPasteDisplayProps = {
 	id: string
-	syntax: string
+	markdown: VFile
 	oneTime: boolean
-
 	decryptedContent: string
-	extension: string | undefined
 	keyBase64: string
 }
 
-export const ServerPasteDisplay = ({
-	id,
-	syntax,
-	oneTime,
-	decryptedContent,
-	extension,
-	keyBase64
-}: ServerPasteDisplayProps) => {
-	const wrapped = wrapInMarkdown({ syntax: syntax, content: decryptedContent, extension })
-
+export const ServerPasteDisplay = ({ id, markdown, oneTime, decryptedContent, keyBase64 }: ServerPasteDisplayProps) => {
 	return (
-		<PasteContainer content={decryptedContent} oneTime={oneTime} id={id} serverKeyBase64={keyBase64} noWrap>
-			<MDXRemote
-				source={wrapped}
-				options={{
-					mdxOptions: {
-						rehypePlugins: [
-							[
-								rehypeHighlight,
-								{
-									languages: all
-								}
-							]
-						]
-					}
-				}}
-			/>
-		</PasteContainer>
+		<PasteContainer
+			markdown={markdown}
+			content={decryptedContent}
+			oneTime={oneTime}
+			id={id}
+			serverKeyBase64={keyBase64}
+			noWrap
+		/>
 	)
 }

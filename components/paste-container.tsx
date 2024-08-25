@@ -1,6 +1,6 @@
 import { CopyContentButton } from "@/components/copy-content-button"
 import { PasteAlert } from "@/components/error/paste-alert"
-import { DangerousMarkdownDisplay, MarkdownDisplay } from "@/components/markdown"
+import { DangerousMarkdownDisplay } from "@/components/markdown"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -34,7 +34,6 @@ export const PasteContainer = ({
 	serverKeyBase64,
 	noWrap,
 	resetFn,
-	children,
 	markdown
 }: PasteContainerProps) => (
 	<div className={cn("flex", "flex-col", "gap-4")}>
@@ -57,7 +56,6 @@ export const PasteContainer = ({
 		{error && <PasteAlert variant={"destructive"} title={error.title} description={error.description} />}
 		{!loading && !error && (
 			<div className={cn(["border", "p-4"], "rounded", "font-mono", !noWrap && "whitespace-pre-wrap", "text-sm")}>
-				{children && <MarkdownDisplay>{children}</MarkdownDisplay>}
 				{markdown && <DangerousMarkdownDisplay markdown={markdown} />}
 			</div>
 		)}
