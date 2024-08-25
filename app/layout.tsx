@@ -1,9 +1,10 @@
 import "./globals.css"
 import "./code-style.css"
+import "@fontsource-variable/inter"
+import "@fontsource-variable/roboto-mono"
 import { Providers } from "@/components/providers"
 import { ScrollAnchor } from "@/components/ui/scroll-anchor"
 import { env } from "@/lib/env.mjs"
-import { fontMono, fontSans } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import type { Metadata, Viewport } from "next"
 import type { ReactNode } from "react"
@@ -37,7 +38,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: ReactNode }) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<body className={cn("font-sans", "antialiased", fontSans.variable, fontMono.variable)}>
+			<body className={cn("font-sans", "antialiased")}>
 				<Providers attribute="class" defaultTheme="system" enableSystem>
 					<main className={cn("container", "mx-auto", "p-4")}>{children}</main>
 					<ScrollAnchor />
