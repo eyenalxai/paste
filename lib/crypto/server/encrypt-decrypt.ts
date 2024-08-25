@@ -1,11 +1,5 @@
 import "server-only"
-import {
-	serverArrayBufferToBuffer,
-	serverBase64ToArrayBuffer,
-	serverBufferToArrayBuffer,
-	serverBufferToUint8Array,
-	serverKeyToBase64
-} from "@/lib/crypto/server/encode-decode"
+import { serverArrayBufferToBuffer, serverKeyToBase64 } from "@/lib/crypto/server/encode-decode"
 import { getErrorMessage } from "@/lib/error-message"
 import { ResultAsync, errAsync, ok } from "neverthrow"
 
@@ -20,13 +14,6 @@ const serverGenerateKey = () => {
 			["encrypt"]
 		),
 		(e) => getErrorMessage(e, "Failed to generate encryption key")
-	)
-}
-
-const serverImportKey = (keyData: BufferSource) => {
-	return ResultAsync.fromPromise(
-		crypto.subtle.importKey("raw", keyData, { name: "AES-GCM", length: 256 }, true, ["decrypt"]),
-		(e) => getErrorMessage(e, "Failed to import decryption key")
 	)
 }
 
@@ -69,38 +56,4 @@ export const serverEncryptPaste = (pasteContent: string) => {
 			)
 		)
 	)
-}
-
-const serverDecryptData = (encryptedData: ArrayBuffer, iv: Uint8Array, key: CryptoKey) => {
-	return ResultAsync.fromPromise(
-		crypto.subtle
-			.decrypt(
-				{
-					name: "AES-GCM",
-					iv: iv
-				},
-				key,
-				encryptedData
-			)
-			.then((decryptedData) => new TextDecoder().decode(decryptedData)),
-		(e) => (e instanceof Error && e.message !== "" ? e.message : "Failed to decrypt paste data")
-	)
-}
-
-type DecryptPasteProps = {
-	keyBase64: string
-	ivServer: Buffer
-	encryptedBuffer: Buffer
-}
-
-export const serverDecryptPaste = ({ keyBase64, ivServer, encryptedBuffer }: DecryptPasteProps) => {
-	return serverBase64ToArrayBuffer(keyBase64)
-		.asyncAndThen((keyBuffer) => serverImportKey(keyBuffer))
-		.andThen((key) =>
-			serverBufferToUint8Array(ivServer).asyncAndThen((iv) =>
-				serverBufferToArrayBuffer(encryptedBuffer).asyncAndThen((encryptedContentArrayBuffer) =>
-					serverDecryptData(encryptedContentArrayBuffer, iv, key)
-				)
-			)
-		)
 }

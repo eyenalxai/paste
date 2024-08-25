@@ -9,8 +9,8 @@ export const BackendSchema = zfd
 			.string()
 			.optional()
 			.transform((value) => (value === "" || value === "undefined" ? undefined : value)),
-		contentBlob: zfd.file().refine((value) => value.size <= env.NEXT_PUBLIC_MAX_PAYLOAD_SIZE, {
-			message: `Paste size exceeds ${env.NEXT_PUBLIC_MAX_PAYLOAD_SIZE / 1024 / 1024} MiB`
+		contentBlob: zfd.file().refine((value) => value.size <= 10, {
+			message: `Paste size exceeds ${env.NEXT_PUBLIC_MAX_PAYLOAD_SIZE / 1024 / 1024} MiB` // CULPRIT
 		}),
 		oneTime: StringBoolean,
 		expiresAfter: ExpiresAfter,
@@ -22,7 +22,4 @@ export const BackendSchema = zfd
 	})
 	.refine(({ ivClient }) => ivClient !== undefined || !env.NEXT_PUBLIC_CLIENT_SIDE_ENCRYPTION_ONLY, {
 		message: "Server-side encryption is disabled"
-	})
-	.refine(({ contentType, syntax }) => !(contentType !== "source" && syntax !== undefined), {
-		message: "Syntax selection is only allowed for source content type"
 	})

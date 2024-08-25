@@ -1,30 +1,20 @@
 "use client"
 
-import { PasteContainer } from "@/components/paste-container"
-import { PasteForm } from "@/components/paste-form/paste-form"
-import { usePasteForm } from "@/lib/hooks/paste-form"
-import { FormProvider } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+
+const TestSchema = z.object({
+	oof: z.string()
+})
 
 export default function Page() {
-	const { methods, onSubmit, isSubmitting, encrypted, contentType, submittedPaste, setSubmittedPaste } = usePasteForm()
+	const methods = useForm<z.infer<typeof TestSchema>>({
+		resolver: zodResolver(TestSchema),
+		defaultValues: {
+			oof: ""
+		}
+	})
 
-	if (submittedPaste !== null)
-		return (
-			<PasteContainer
-				noWrap
-				preview
-				resetFn={() => setSubmittedPaste(null)}
-				id={submittedPaste.id}
-				content={submittedPaste.rawContent}
-				oneTime={submittedPaste.oneTime}
-				markdown={submittedPaste.markdownContent}
-				serverKeyBase64={submittedPaste.serverKeyBase64}
-			/>
-		)
-
-	return (
-		<FormProvider {...methods}>
-			<PasteForm onSubmit={onSubmit} isSubmitting={isSubmitting} encrypted={encrypted} contentType={contentType} />
-		</FormProvider>
-	)
+	return "sss"
 }

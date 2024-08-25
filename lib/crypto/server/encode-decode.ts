@@ -15,19 +15,9 @@ export const serverKeyToBase64 = (key: CryptoKey) => {
 	).andThen((keyBase64) => keyBase64)
 }
 
-export const serverBase64ToArrayBuffer = Result.fromThrowable(
-	(base64: string) => Uint8Array.from(atob(base64), (c) => c.charCodeAt(0)).buffer,
-	(e) => getErrorMessage(e, "Failed to decode array buffer from base64")
-)
-
 export const serverArrayBufferToBuffer = Result.fromThrowable(
 	(arrBuffer: ArrayBuffer) => Buffer.from(arrBuffer),
 	(e) => getErrorMessage(e, "Failed to convert array buffer to buffer")
-)
-
-export const serverBufferToArrayBuffer = Result.fromThrowable(
-	(buffer: Buffer) => buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength),
-	(e) => getErrorMessage(e, "Failed to convert buffer to array buffer")
 )
 
 const serverFileToArrayBuffer = (file: File) =>
@@ -38,8 +28,3 @@ export const serverFileToBuffer = (file: File) =>
 		serverFileToArrayBuffer(file).andThen((arrBuffer) => serverArrayBufferToBuffer(arrBuffer)),
 		(e) => getErrorMessage(e, "Failed to convert file to buffer")
 	).andThen((buffer) => buffer)
-
-export const serverBufferToUint8Array = Result.fromThrowable(
-	(buffer: Buffer) => new Uint8Array(buffer),
-	(e) => getErrorMessage(e, "Failed to convert buffer to Uint8Array")
-)

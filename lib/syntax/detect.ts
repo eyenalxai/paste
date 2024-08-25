@@ -1,4 +1,3 @@
-import { env } from "@/lib/env.mjs"
 import type { ContentType } from "@/lib/zod/form/common"
 import OpenAI from "openai"
 import { zodResponseFormat } from "openai/helpers/zod"
@@ -17,7 +16,7 @@ export const getPasteSyntax = async ({ encrypted, syntax, contentType, content }
 	if (contentType === "plaintext") return "plaintext"
 	if (encrypted) return "plaintext"
 
-	if (contentType === "auto" && env.NEXT_PUBLIC_OPENAI_SYNTAX_DETECTION) return await detectContentSyntax(content)
+	if (contentType === "auto") return await detectContentSyntax(content)
 
 	return "plaintext"
 }
@@ -30,7 +29,7 @@ export const detectContentSyntax = async (content: string) => {
 	const truncatedContent = content.length > 512 ? `${content.slice(0, 512)}...` : content
 
 	const openaiClient = new OpenAI({
-		apiKey: env.OPENAI_API_KEY
+		apiKey: "s"
 	})
 
 	const chatCompletion = await openaiClient.chat.completions.create({
