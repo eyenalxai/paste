@@ -1,5 +1,4 @@
-FROM node:22-alpine AS base
-ENV YARN_VERSION=4.4.0
+FROM node:20-alpine AS base
 ENV NODE_ENV=production
 # Uncomment the following line in case you want to disable telemetry
 # ENV NEXT_TELEMETRY_DISABLED 1
@@ -12,7 +11,7 @@ FROM base AS install-build
 RUN mkdir -p /temp/install-build
 
 COPY package.json yarn.lock .yarnrc.yml /temp/install-build/
-COPY .yarn/releases/yarn-${YARN_VERSION}.cjs /temp/install-build/.yarn/releases/yarn-${YARN_VERSION}.cjs
+COPY .yarn/releases/yarn-*.cjs /temp/install-build/.yarn/releases/
 
 RUN cd /temp/install-build && yarn install --immutable
 
@@ -20,7 +19,7 @@ FROM base AS install-run
 RUN mkdir -p /temp/install-run
 
 COPY package.json yarn.lock .yarnrc.yml /temp/install-run/
-COPY .yarn/releases/yarn-${YARN_VERSION}.cjs /temp/install-run/.yarn/releases/yarn-${YARN_VERSION}.cjs
+COPY .yarn/releases/yarn-*.cjs /temp/install-run/.yarn/releases/
 
 RUN cd /temp/install-run && yarn workspaces focus --production
 
