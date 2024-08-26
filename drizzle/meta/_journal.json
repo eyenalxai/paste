@@ -8,6 +8,13 @@
       "when": 1723812137309,
       "tag": "0000_curvy_ultimo",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1724686115022,
+      "tag": "0001_broken_scarlet_witch",
+      "breakpoints": true
     }
   ]
 }

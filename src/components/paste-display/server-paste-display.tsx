@@ -7,18 +7,8 @@ type ServerPasteDisplayProps = {
 	markdown: VFile
 	oneTime: boolean
 	decryptedContent: string
-	keyBase64: string
 }
 
-export const ServerPasteDisplay = ({ id, markdown, oneTime, decryptedContent, keyBase64 }: ServerPasteDisplayProps) => {
-	return (
-		<PasteContainer
-			markdown={markdown}
-			content={decryptedContent}
-			oneTime={oneTime}
-			id={id}
-			serverKeyBase64={keyBase64}
-			noWrap
-		/>
-	)
+export const ServerPasteDisplay = ({ id, markdown, oneTime, decryptedContent }: ServerPasteDisplayProps) => {
+	return <PasteContainer markdown={markdown} content={decryptedContent} oneTime={oneTime} id={id} noWrap />
 }

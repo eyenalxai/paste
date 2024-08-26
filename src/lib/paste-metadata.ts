@@ -1,4 +1,3 @@
-import { serverDecryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
 import { env } from "@/lib/env.mjs"
 import type { Paste } from "@/lib/schema"
 import { getTitle } from "@/lib/title"
@@ -7,16 +6,13 @@ import type { Metadata } from "next"
 type BuildUrlProps = {
 	frontendUrl: string
 	id: string
-	key?: string
 }
 
-const buildPasteUrl = ({ frontendUrl, id, key }: BuildUrlProps) => {
-	if (key) return new URL(`${frontendUrl}/${id}?key=${encodeURIComponent(key)}`)
+const buildPasteUrl = ({ frontendUrl, id }: BuildUrlProps) => {
 	return new URL(`${frontendUrl}/${id}`)
 }
 
-const buildPasteImageUrl = ({ frontendUrl, id, key }: BuildUrlProps) => {
-	if (key) return new URL(`/api/paste/${id}/image?key=${encodeURIComponent(key)}`, frontendUrl)
+const buildPasteImageUrl = ({ frontendUrl, id }: BuildUrlProps) => {
 	return new URL(`/api/paste/${id}/image`, frontendUrl)
 }
 
@@ -25,7 +21,6 @@ type BuildPasteMetadataObjectProps = {
 	id: string
 	title: string
 	description?: string
-	key?: string
 	withImage?: boolean
 }
 
@@ -34,7 +29,6 @@ const buildPasteMetadataObject = ({
 	id,
 	title,
 	description,
-	key,
 	withImage
 }: BuildPasteMetadataObjectProps) => {
 	return {
@@ -43,12 +37,12 @@ const buildPasteMetadataObject = ({
 		openGraph: {
 			title: title,
 			description: description,
-			url: buildPasteUrl({ frontendUrl, id, key }),
+			url: buildPasteUrl({ frontendUrl, id }),
 			type: "website",
 			images: withImage
 				? [
 						{
-							url: buildPasteImageUrl({ frontendUrl, id, key }),
+							url: buildPasteImageUrl({ frontendUrl, id }),
 							width: 1200,
 							height: 630,
 							alt: title,
@@ -63,10 +57,9 @@ const buildPasteMetadataObject = ({
 type BuildPasteMetadataProps = {
 	id: string
 	paste: Paste
-	key: string | undefined
 }
 
-export const buildPasteMetadata = async ({ id, paste, key }: BuildPasteMetadataProps) => {
+export const buildPasteMetadata = async ({ id, paste }: BuildPasteMetadataProps) => {
 	const frontendUrl = env.NEXT_PUBLIC_FRONTEND_URL
 
 	if (!paste) {
@@ -82,28 +75,15 @@ export const buildPasteMetadata = async ({ id, paste, key }: BuildPasteMetadataP
 	if (!paste.ivClientBase64) {
 		if (paste.link) return buildPasteMetadataObject({ frontendUrl, id, title, withImage: true })
 
-		if (!paste.ivServer) {
-			return buildPasteMetadataObject({ frontendUrl, id, title: "Failed to decrypt paste", withImage: true })
-		}
+		const content = paste.content.toString("utf-8")
 
-		if (!key) return buildPasteMetadataObject({ frontendUrl, id, title: "Failed to decrypt paste", withImage: true })
+		const contentTrimmed = content.length > 32 ? `${content.slice(0, 32)}...` : content
+		const description = paste.link ? undefined : contentTrimmed
 
-		return await serverDecryptPaste({
-			keyBase64: key,
-			ivServer: paste.ivServer,
-			encryptedBuffer: paste.content
-		}).match(
-			(decryptedContent) => {
-				const contentTrimmed = decryptedContent.length > 32 ? `${decryptedContent.slice(0, 32)}...` : decryptedContent
-				const description = paste.link ? undefined : contentTrimmed
-
-				return buildPasteMetadataObject({ frontendUrl, id, title, description, key, withImage: true })
-			},
-			() => buildPasteMetadataObject({ frontendUrl, id, title: "Failed to decrypt paste", withImage: false })
-		)
+		return buildPasteMetadataObject({ frontendUrl, id, title, description, withImage: true })
 	}
 
 	const description = paste.link ? undefined : "This paste is encrypted and cannot be previewed"
 
-	return buildPasteMetadataObject({ frontendUrl, id, title, description, key, withImage: true })
+	return buildPasteMetadataObject({ frontendUrl, id, title, description, withImage: true })
 }

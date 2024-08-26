@@ -17,7 +17,6 @@ type PasteContainerProps = {
 	preview?: boolean
 	content?: string
 	id?: string
-	serverKeyBase64?: string
 	noWrap?: boolean
 	resetFn?: () => void
 	children?: ReactNode
@@ -31,7 +30,6 @@ export const PasteContainer = ({
 	preview,
 	content,
 	id,
-	serverKeyBase64,
 	noWrap,
 	resetFn,
 	markdown
@@ -42,9 +40,9 @@ export const PasteContainer = ({
 			<Button className={cn("select-none")} onClick={resetFn} variant={"outline"} asChild>
 				<Link href={"/"}>New paste</Link>
 			</Button>
-			{id && serverKeyBase64 && !oneTime && (
+			{id && !oneTime && (
 				<Button className={cn("select-none")} variant={"outline"} asChild>
-					<a target="_blank" rel="noopener noreferrer" href={`/${id}/raw/?key=${encodeURIComponent(serverKeyBase64)}`}>
+					<a target="_blank" rel="noopener noreferrer" href={`/${id}/raw`}>
 						Raw
 					</a>
 				</Button>

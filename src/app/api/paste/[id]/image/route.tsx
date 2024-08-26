@@ -2,7 +2,6 @@ import { readFile } from "node:fs/promises"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 import { PreviewImageContainer } from "@/components/preview-image-container"
-import { serverDecryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
 import { getPaste } from "@/lib/database/select"
 import { getTitle } from "@/lib/title"
 import { ImageResponse } from "next/og"
@@ -19,7 +18,7 @@ export type ImagePastePageProps = {
 	}
 }
 
-export const GET = async (request: Request, { params: { id } }: ImagePastePageProps) => {
+export const GET = async (_request: Request, { params: { id } }: ImagePastePageProps) => {
 	if (!id) return new NextResponse("id is required", { status: 400 })
 
 	const paste = await getPaste(id)
@@ -32,9 +31,10 @@ export const GET = async (request: Request, { params: { id } }: ImagePastePagePr
 
 	const fontData = await readFile(path.join(fileURLToPath(import.meta.url), "../../../public/Roboto-Mono-Regular.woff"))
 
+	const content = paste.content.toString("utf-8")
+
 	if (!paste.ivClientBase64) {
 		if (paste.link) {
-			const content = paste.content.toString("utf-8")
 			return new ImageResponse(<PreviewImageContainer title={title} text={content} />, {
 				...size,
 				fonts: [
@@ -47,36 +47,19 @@ export const GET = async (request: Request, { params: { id } }: ImagePastePagePr
 			})
 		}
 
-		if (!paste.ivServer) return new NextResponse("Failed to decrypt paste", { status: 400 })
-
-		const { searchParams } = new URL(request.url)
-		const key = searchParams.get("key")
-		if (!key) return new NextResponse("key is required", { status: 400 })
-
-		return await serverDecryptPaste({
-			keyBase64: key,
-			ivServer: paste.ivServer,
-			encryptedBuffer: paste.content
-		}).match(
-			(decryptedContent) => {
-				return new ImageResponse(<PreviewImageContainer title={title} text={decryptedContent} />, {
-					...size,
-					fonts: [
-						{
-							name: "Roboto Mono",
-							data: fontData,
-							style: "normal"
-						}
-					]
-				})
-			},
-			() => new NextResponse("Failed to decrypt paste", { status: 400 })
-		)
+		return new ImageResponse(<PreviewImageContainer title={title} text={content} />, {
+			...size,
+			fonts: [
+				{
+					name: "Roboto Mono",
+					data: fontData,
+					style: "normal"
+				}
+			]
+		})
 	}
 
-	const clientEncryptedContent = paste.content.toString("utf-8")
-
-	return new ImageResponse(<PreviewImageContainer title={title} text={clientEncryptedContent} />, {
+	return new ImageResponse(<PreviewImageContainer title={title} text={content} />, {
 		...size,
 		fonts: [
 			{

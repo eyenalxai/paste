@@ -1,7 +1,6 @@
 import { PasteError } from "@/components/error/paste-error"
 import { ClientPasteDisplay } from "@/components/paste-display/client-paste-display"
 import { ServerPasteDisplay } from "@/components/paste-display/server-paste-display"
-import { serverDecryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
 import { deleteExpirePastes, deletePaste } from "@/lib/database/delete"
 import { getPaste } from "@/lib/database/select"
 import { extractIdAndExtension } from "@/lib/id-extension"
@@ -14,19 +13,16 @@ export type PastePageProps = {
 	params: {
 		idWithExt: string
 	}
-	searchParams: {
-		key?: string
-	}
 }
 
-export async function generateMetadata({ params: { idWithExt }, searchParams: { key } }: PastePageProps) {
+export async function generateMetadata({ params: { idWithExt } }: PastePageProps) {
 	const [id] = extractIdAndExtension(idWithExt)
 	const paste = await getPaste(id)
 
-	return await buildPasteMetadata({ id, paste, key })
+	return await buildPasteMetadata({ id, paste })
 }
 
-export default async function Page({ params: { idWithExt }, searchParams: { key } }: PastePageProps) {
+export default async function Page({ params: { idWithExt } }: PastePageProps) {
 	await deleteExpirePastes()
 
 	const [id, extension] = extractIdAndExtension(idWithExt)
@@ -50,10 +46,10 @@ export default async function Page({ params: { idWithExt }, searchParams: { key 
 		await deletePaste(paste.id)
 	}
 
+	const content = paste.content.toString("utf-8")
+
 	if (!paste.ivClientBase64) {
 		if (paste.link) {
-			const content = paste.content.toString("utf-8")
-
 			if (!isBot) {
 				permanentRedirect(content)
 			}
@@ -61,53 +57,18 @@ export default async function Page({ params: { idWithExt }, searchParams: { key 
 			return `Placeholder for SEO bots: ${content}`
 		}
 
-		if (!paste.ivServer) {
-			return (
-				<PasteError
-					title={"Failed to decrypt paste"}
-					description={"The paste is somehow not encrypted at client-side or server-side."}
-				/>
-			)
-		}
-
-		if (!key) {
-			return (
-				<PasteError
-					title={"Failed to decrypt paste"}
-					description={"Encryption key is required to decrypt server-side encrypted paste."}
-				/>
-			)
-		}
-
-		return await serverDecryptPaste({
-			keyBase64: decodeURIComponent(key),
-			ivServer: paste.ivServer,
-			encryptedBuffer: paste.content
-		})
-			.andThen((decryptedContent) =>
-				toMarkdown({ syntax: paste.syntax, extension, rawContent: decryptedContent }).map((markdown) => ({
-					markdown,
-					decryptedContent
-				}))
-			)
-			.match(
-				({ markdown, decryptedContent }) => (
-					<ServerPasteDisplay
-						id={id}
-						markdown={markdown}
-						decryptedContent={decryptedContent}
-						oneTime={paste.oneTime ?? false}
-						keyBase64={key}
-					/>
-				),
-				(error) => <PasteError title={"Failed to decrypt paste"} description={error} />
-			)
+		return toMarkdown({ syntax: paste.syntax, extension, rawContent: content }).match(
+			(markdown) => (
+				<ServerPasteDisplay id={id} markdown={markdown} decryptedContent={content} oneTime={paste.oneTime ?? false} />
+			),
+			(error) => <PasteError title={"Failed to convert paste to markdown"} description={error} />
+		)
 	}
 
 	return (
 		<ClientPasteDisplay
 			ivClientBase64={paste.ivClientBase64}
-			clientEncryptedContent={paste.content.toString("utf-8")}
+			clientEncryptedContent={content}
 			link={paste.link}
 			oneTime={paste.oneTime ?? false}
 			syntax={paste.syntax}

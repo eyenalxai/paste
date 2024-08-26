@@ -1,0 +1,1 @@
+ALTER TABLE "pastes" DROP COLUMN IF EXISTS "iv_server4";

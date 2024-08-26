@@ -21,7 +21,6 @@ export const usePasteForm = () => {
 	const [submittedPaste, setSubmittedPaste] = useState<{
 		id: string
 		url: string
-		serverKeyBase64: string | undefined
 		rawContent: string
 		syntax: string | undefined
 		oneTime: boolean
@@ -64,7 +63,6 @@ export const usePasteForm = () => {
 								setSubmittedPaste({
 									id: data.id,
 									url: data.url,
-									serverKeyBase64: data.serverKeyBase64,
 									rawContent: formData.content,
 									syntax: data.syntax,
 									oneTime: formData.oneTime,

@@ -1,6 +1,5 @@
 import { contentLength } from "@/lib/content-length"
 import { serverFileToBuffer } from "@/lib/crypto/server/encode-decode"
-import { serverEncryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
 import { insertPaste } from "@/lib/database/insert"
 import { getExpiresAt } from "@/lib/date"
 import { getPasteSyntax } from "@/lib/syntax/detect"
@@ -28,62 +27,6 @@ export const POST = async (request: Request) => {
 		contentType: contentType,
 		content: content
 	})
-
-	if (!ivClient) {
-		if (contentType === "link") {
-			return serverFileToBuffer(contentBlob)
-				.andThen((buffer) =>
-					insertPaste({
-						content: buffer,
-						syntax: pasteSyntax,
-						ivClientBase64: null,
-						ivServer: null,
-						oneTime: oneTime,
-						expiresAt: getExpiresAt(expiresAfter).toISOString(),
-						link: true
-					})
-				)
-				.andThen((insertedPaste) =>
-					parseZodSchema(SavePasteResponseSchema, {
-						id: insertedPaste.id,
-						url: buildPasteUrl({ id: insertedPaste.id }),
-						syntax: pasteSyntax
-					})
-				)
-				.match(
-					(saveResponse) => NextResponse.json(saveResponse),
-					(e) => new NextResponse(e, { status: 500 })
-				)
-		}
-
-		return serverEncryptPaste(content)
-			.andThen(({ keyBase64, ivServer, encryptedBuffer }) =>
-				insertPaste({
-					content: encryptedBuffer,
-					syntax: pasteSyntax,
-					ivClientBase64: null,
-					ivServer: ivServer,
-					oneTime: oneTime,
-					expiresAt: getExpiresAt(expiresAfter).toISOString(),
-					link: false
-				}).map((insertedPaste) => ({
-					insertedPaste,
-					keyBase64
-				}))
-			)
-			.andThen(({ insertedPaste, keyBase64 }) => {
-				return parseZodSchema(SavePasteResponseSchema, {
-					id: insertedPaste.id,
-					url: buildPasteUrl({ id: insertedPaste.id, keyBase64 }),
-					syntax: pasteSyntax,
-					serverKeyBase64: keyBase64
-				})
-			})
-			.match(
-				(saveResponse) => NextResponse.json(saveResponse),
-				(e) => new NextResponse(e, { status: 500 })
-			)
-	}
 
 	return serverFileToBuffer(contentBlob)
 		.andThen((buffer) =>

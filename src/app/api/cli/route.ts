@@ -1,5 +1,4 @@
 import { contentLength } from "@/lib/content-length"
-import { serverEncryptPaste } from "@/lib/crypto/server/encrypt-decrypt"
 import { insertPaste } from "@/lib/database/insert"
 import { getExpiresAt } from "@/lib/date"
 import { env } from "@/lib/env.mjs"
@@ -34,33 +33,26 @@ export const POST = async (request: Request) => {
 		content: pasteContent
 	})
 
-	return await serverEncryptPaste(pasteContent)
-		.andThen(({ keyBase64, ivServer, encryptedBuffer }) =>
-			insertPaste({
-				content: encryptedBuffer,
-				syntax: pasteSyntax,
-				link: false,
-				oneTime: false,
-				ivClientBase64: undefined,
-				ivServer: ivServer,
-				expiresAt: getExpiresAt("1-day").toISOString()
-			}).map((insertedPaste) => ({
-				insertedPaste,
-				keyBase64
-			}))
-		)
-		.match(
-			({ insertedPaste, keyBase64 }) => {
-				const pasteUrl = buildPasteUrl({
-					id: insertedPaste.id,
-					keyBase64
-				})
-				return new Response(`${pasteUrl}\n`, {
-					headers: {
-						"content-type": "text/plain"
-					}
-				})
-			},
-			(error) => new NextResponse(error, { status: 500 })
-		)
+	return insertPaste({
+		content: Buffer.from(pasteContent),
+		syntax: pasteSyntax,
+		link: false,
+		oneTime: false,
+		ivClientBase64: undefined,
+		ivServer: null,
+		expiresAt: getExpiresAt("1-day").toISOString()
+	}).match(
+		(insertedPaste) => {
+			const pasteUrl = buildPasteUrl({
+				id: insertedPaste.id
+			})
+
+			return new Response(`${pasteUrl}\n`, {
+				headers: {
+					"content-type": "text/plain"
+				}
+			})
+		},
+		(error) => new NextResponse(error, { status: 500 })
+	)
 }

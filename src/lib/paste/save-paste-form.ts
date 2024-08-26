@@ -21,8 +21,8 @@ export const savePasteForm = (
 					oneTime: paste.oneTime,
 					expiresAfter: paste.expiresAfter
 				}).andThen((response) =>
-					parseZodSchema(SavePasteResponseSchema, response).andThen(({ id, url, serverKeyBase64, syntax }) =>
-						ok({ id, url: `${url}#${keyBase64}`, serverKeyBase64, syntax })
+					parseZodSchema(SavePasteResponseSchema, response).andThen(({ id, url, syntax }) =>
+						ok({ id, url: `${url}#${keyBase64}`, syntax })
 					)
 				)
 			)
@@ -38,8 +38,8 @@ export const savePasteForm = (
 			oneTime: paste.oneTime,
 			expiresAfter: paste.expiresAfter
 		}).andThen((response) =>
-			parseZodSchema(SavePasteResponseSchema, response).andThen(({ id, url, serverKeyBase64, syntax }) =>
-				ok({ id, url: `${url}`, serverKeyBase64, syntax })
+			parseZodSchema(SavePasteResponseSchema, response).andThen(({ id, url, syntax }) =>
+				ok({ id, url: `${url}`, syntax })
 			)
 		)
 	)

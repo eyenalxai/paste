@@ -18,7 +18,6 @@ export default function Page() {
 				content={submittedPaste.rawContent}
 				oneTime={submittedPaste.oneTime}
 				markdown={submittedPaste.markdownContent}
-				serverKeyBase64={submittedPaste.serverKeyBase64}
 			/>
 		)
 
