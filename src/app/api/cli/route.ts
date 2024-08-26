@@ -39,7 +39,6 @@ export const POST = async (request: Request) => {
 		link: false,
 		oneTime: false,
 		ivClientBase64: undefined,
-		ivServer: null,
 		expiresAt: getExpiresAt("1-day").toISOString()
 	}).match(
 		(insertedPaste) => {

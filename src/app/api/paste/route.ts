@@ -34,7 +34,6 @@ export const POST = async (request: Request) => {
 				content: buffer,
 				syntax: pasteSyntax,
 				ivClientBase64: ivClient,
-				ivServer: null,
 				oneTime: oneTime,
 				expiresAt: getExpiresAt(expiresAfter).toISOString(),
 				link: contentType === "link"
