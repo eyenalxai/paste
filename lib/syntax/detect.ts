@@ -45,6 +45,7 @@ export const detectContentSyntax = async (content: string) => {
 					"Try to differentiate between JavaScript, JSX, TypeScript, TSX and other such examples from other languages. " +
 					"Respond with plaintext if you were not able to detect the syntax." +
 					'If content looks like Markdown, respond with "markdown". ' +
+					'If content looks like LaTeX, respond with "markdown" as well. ' +
 					"Also you might be working with incomplete content, so be prepared for that and try to detect the syntax as best as you can. " +
 					"Respond using following json schema: { syntax: string }"
 			},
