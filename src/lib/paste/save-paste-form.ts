@@ -1,4 +1,4 @@
-import { clientEncryptPaste } from "@/lib/crypto/client/encrypt-decrypt"
+import { encryptPaste } from "@/lib/crypto/encrypt-decrypt"
 import { savePaste } from "@/lib/fetch/paste"
 import { createFile } from "@/lib/file"
 import { SavePasteResponseSchema } from "@/lib/zod/form/common"
@@ -11,7 +11,7 @@ export const savePasteForm = (
 	paste: z.infer<typeof FrontendSchema>
 ): ResultAsync<z.infer<typeof SavePasteResponseSchema>, string> => {
 	if (paste.encrypted) {
-		return clientEncryptPaste(paste.content).andThen(({ keyBase64, ivBase64, encryptedContentBase64 }) =>
+		return encryptPaste(paste.content).andThen(({ keyBase64, ivBase64, encryptedContentBase64 }) =>
 			createFile(encryptedContentBase64, "paste-encrypted").asyncAndThen((contentBlob) =>
 				savePaste({
 					contentBlob: contentBlob,

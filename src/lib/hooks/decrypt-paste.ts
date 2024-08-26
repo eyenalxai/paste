@@ -1,6 +1,6 @@
 "use client"
 
-import { clientDecryptPaste } from "@/lib/crypto/client/encrypt-decrypt"
+import { clientDecryptPaste } from "@/lib/crypto/encrypt-decrypt"
 import { toMarkdown, wrapInMarkdown } from "@/lib/markdown"
 import { all } from "lowlight"
 import { type Result, err, ok } from "neverthrow"

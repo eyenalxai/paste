@@ -1,14 +1,10 @@
 "use client"
 
-import {
-	clientArrayBufferToBase64,
-	clientBase64ToArrayBuffer,
-	clientKeyToBase64
-} from "@/lib/crypto/client/encode-decode"
+import { arrayBufferToBase64, base64ToArrayBuffer, keyToBase64 } from "@/lib/crypto/encode-decode"
 import { getErrorMessage } from "@/lib/error-message"
 import { ResultAsync, errAsync, ok } from "neverthrow"
 
-const clientGenerateKey = () => {
+const generateKey = () => {
 	return ResultAsync.fromPromise(
 		window.crypto.subtle.generateKey(
 			{
@@ -22,14 +18,14 @@ const clientGenerateKey = () => {
 	)
 }
 
-const clientImportKey = (keyData: BufferSource) => {
+const importKey = (keyData: BufferSource) => {
 	return ResultAsync.fromPromise(
 		window.crypto.subtle.importKey("raw", keyData, { name: "AES-GCM", length: 256 }, true, ["decrypt"]),
 		(e) => getErrorMessage(e, "Failed to import encryption key")
 	)
 }
 
-const clientEncryptData = (secretData: string, key: CryptoKey) => {
+const encryptData = (secretData: string, key: CryptoKey) => {
 	try {
 		const iv = window.crypto.getRandomValues(new Uint8Array(12))
 		const encodedData = new TextEncoder().encode(secretData)
@@ -52,12 +48,12 @@ const clientEncryptData = (secretData: string, key: CryptoKey) => {
 	}
 }
 
-export const clientEncryptPaste = (pasteContent: string) => {
-	return clientGenerateKey().andThen((key) =>
-		clientEncryptData(pasteContent, key).andThen(({ encryptedData, iv }) =>
-			clientArrayBufferToBase64(encryptedData).asyncAndThen((encryptedContentBase64) =>
-				clientKeyToBase64(key).andThen((keyBase64) =>
-					clientArrayBufferToBase64(iv).andThen((ivBase64) =>
+export const encryptPaste = (pasteContent: string) => {
+	return generateKey().andThen((key) =>
+		encryptData(pasteContent, key).andThen(({ encryptedData, iv }) =>
+			arrayBufferToBase64(encryptedData).asyncAndThen((encryptedContentBase64) =>
+				keyToBase64(key).andThen((keyBase64) =>
+					arrayBufferToBase64(iv).andThen((ivBase64) =>
 						ok({
 							keyBase64,
 							ivBase64,
@@ -93,11 +89,11 @@ type DecryptPasteProps = {
 }
 
 export const clientDecryptPaste = ({ keyBase64, ivBase64, encryptedContentBase64 }: DecryptPasteProps) => {
-	return clientBase64ToArrayBuffer(keyBase64)
-		.asyncAndThen((keyBuffer) => clientImportKey(keyBuffer))
+	return base64ToArrayBuffer(keyBase64)
+		.asyncAndThen((keyBuffer) => importKey(keyBuffer))
 		.andThen((key) =>
-			clientBase64ToArrayBuffer(ivBase64).asyncAndThen((ivBuffer) =>
-				clientBase64ToArrayBuffer(encryptedContentBase64).asyncAndThen((encryptedContentArrayBuffer) =>
+			base64ToArrayBuffer(ivBase64).asyncAndThen((ivBuffer) =>
+				base64ToArrayBuffer(encryptedContentBase64).asyncAndThen((encryptedContentArrayBuffer) =>
 					clientDecryptData(encryptedContentArrayBuffer, new Uint8Array(ivBuffer), key)
 				)
 			)

@@ -1,5 +1,4 @@
 import { contentLength } from "@/lib/content-length"
-import { serverFileToBuffer } from "@/lib/crypto/server/encode-decode"
 import { insertPaste } from "@/lib/database/insert"
 import { getExpiresAt } from "@/lib/date"
 import { getPasteSyntax } from "@/lib/syntax/detect"
@@ -19,26 +18,23 @@ export const POST = async (request: Request) => {
 
 	const { ivClient, contentBlob, oneTime, expiresAfter, contentType, syntax } = formPasteResult.value
 
-	const content = await contentBlob.text()
+	const pasteContent = await contentBlob.text()
 
 	const pasteSyntax = await getPasteSyntax({
 		encrypted: ivClient !== undefined,
 		syntax: syntax,
 		contentType: contentType,
-		content: content
+		content: pasteContent
 	})
 
-	return serverFileToBuffer(contentBlob)
-		.andThen((buffer) =>
-			insertPaste({
-				content: buffer,
-				syntax: pasteSyntax,
-				ivClientBase64: ivClient,
-				oneTime: oneTime,
-				expiresAt: getExpiresAt(expiresAfter).toISOString(),
-				link: contentType === "link"
-			})
-		)
+	return insertPaste({
+		content: Buffer.from(pasteContent),
+		syntax: pasteSyntax,
+		ivClientBase64: ivClient,
+		oneTime: oneTime,
+		expiresAt: getExpiresAt(expiresAfter).toISOString(),
+		link: contentType === "link"
+	})
 		.andThen((insertedPaste) =>
 			parseZodSchema(SavePasteResponseSchema, {
 				id: insertedPaste.id,
