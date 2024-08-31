@@ -3,17 +3,8 @@ import { PasteAlert } from "@/components/error/paste-alert"
 import { MarkdownDisplay } from "@/components/markdown"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { all } from "lowlight"
 import Link from "next/link"
 import type { ReactNode } from "react"
-import Markdown from "react-markdown"
-import rehypeHighlight from "rehype-highlight"
-import rehypeKatex from "rehype-katex"
-import rehypeSanitize from "rehype-sanitize"
-import rehypeStringify from "rehype-stringify"
-import remarkMath from "remark-math"
-import remarkParse from "remark-parse"
-import remarkRehype from "remark-rehype"
 
 type PasteContainerProps = {
 	loading?: boolean

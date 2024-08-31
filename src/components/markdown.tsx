@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils"
 import { all } from "lowlight"
-import type { ReactNode } from "react"
 import Markdown from "react-markdown"
 import rehypeHighlight from "rehype-highlight"
 import rehypeKatex from "rehype-katex"
@@ -8,7 +7,6 @@ import rehypeSanitize from "rehype-sanitize"
 import remarkMath from "remark-math"
 import remarkParse from "remark-parse"
 import remarkRehype from "remark-rehype"
-import type { VFile } from "vfile"
 
 type MarkdownDisplayProps = {
 	markdown: string
