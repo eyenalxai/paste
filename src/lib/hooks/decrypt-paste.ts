@@ -1,17 +1,9 @@
 "use client"
 
 import { clientDecryptPaste } from "@/lib/crypto/encrypt-decrypt"
-import { toMarkdown, wrapInMarkdown } from "@/lib/markdown"
-import { all } from "lowlight"
+import { wrapInMarkdown } from "@/lib/markdown"
 import { type Result, err, ok } from "neverthrow"
 import { useEffect, useState } from "react"
-import rehypeHighlight from "rehype-highlight"
-import rehypeSanitize from "rehype-sanitize"
-import rehypeStringify from "rehype-stringify"
-import remarkParse from "remark-parse"
-import remarkRehype from "remark-rehype"
-import { unified } from "unified"
-import type { VFile } from "vfile"
 
 type UsePasteReturn =
 	| {
@@ -32,7 +24,7 @@ type UsePasteProps = {
 }
 
 type PasteData = {
-	markdownContent: VFile
+	markdownContent: string
 	rawContent: string
 	link: boolean
 }
@@ -59,10 +51,8 @@ export const useDecryptPaste = ({
 			ivBase64: ivClientBase64,
 			encryptedContentBase64: clientEncryptedContent
 		})
-			.andThen((rawContent) =>
-				toMarkdown({ syntax, extension, rawContent }).map((markdownContent) =>
-					setResult(ok({ markdownContent, rawContent, link }))
-				)
+			.map((rawContent) =>
+				setResult(ok({ markdownContent: wrapInMarkdown({ syntax, extension, content: rawContent }), rawContent, link }))
 			)
 			.mapErr((error) => setResult(err(error)))
 	}, [ivClientBase64, clientEncryptedContent, link, syntax, extension])

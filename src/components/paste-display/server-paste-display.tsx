@@ -1,10 +1,8 @@
 import { PasteContainer } from "@/components/paste-container"
 
-import type { VFile } from "vfile"
-
 type ServerPasteDisplayProps = {
 	id: string
-	markdown: VFile
+	markdown: string
 	oneTime: boolean
 	decryptedContent: string
 }

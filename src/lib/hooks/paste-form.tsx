@@ -4,17 +4,15 @@ import { getSelectorsByUserAgent } from "react-device-detect"
 import { FailedToCopyUrl } from "@/components/failed-to-copy-url"
 import { copyToClipboard } from "@/lib/clipboard"
 import { env } from "@/lib/env.mjs"
-import { toMarkdown } from "@/lib/markdown"
+import { wrapInMarkdown } from "@/lib/markdown"
 import { savePasteForm } from "@/lib/paste/save-paste-form"
 import { userAgent } from "@/lib/user-agent"
 import { cn } from "@/lib/utils"
 import { FrontendSchema } from "@/lib/zod/form/frontend"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { okAsync } from "neverthrow"
 import { useCallback, useEffect, useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-import type { VFile } from "vfile"
 import type { z } from "zod"
 
 export const usePasteForm = () => {
@@ -24,7 +22,7 @@ export const usePasteForm = () => {
 		rawContent: string
 		syntax: string | undefined
 		oneTime: boolean
-		markdownContent: VFile
+		markdownContent: string
 	} | null>(null)
 	const [isSubmitting, startTransition] = useTransition()
 
@@ -45,50 +43,36 @@ export const usePasteForm = () => {
 	const onSubmit = useCallback(
 		async (formData: z.infer<typeof FrontendSchema>) => {
 			startTransition(async () => {
-				await savePasteForm(formData)
-					.andThen((data) => {
-						if (formData.contentType === "link") return okAsync({ markdownContent: undefined, data })
-
-						return toMarkdown({
+				await savePasteForm(formData).match(
+					(data) => {
+						setSubmittedPaste({
+							id: data.id,
+							url: data.url,
 							rawContent: formData.content,
-							syntax: data.syntax
-						}).map((markdownContent) => ({
-							markdownContent,
-							data
-						}))
-					})
-					.match(
-						({ markdownContent, data }) => {
-							if (markdownContent !== undefined) {
-								setSubmittedPaste({
-									id: data.id,
-									url: data.url,
-									rawContent: formData.content,
-									syntax: data.syntax,
-									oneTime: formData.oneTime,
-									markdownContent
-								})
+							syntax: data.syntax,
+							oneTime: formData.oneTime,
+							markdownContent: wrapInMarkdown({ syntax: data.syntax, content: formData.content })
+						})
 
-								history.pushState(null, "", data.url)
-							}
+						history.pushState(null, "", data.url)
 
-							copyToClipboard(data.url).match(
-								() => toast.info(<div className={cn("select-none")}>URL copied to clipboard</div>),
-								(error) =>
-									toast.error(isDesktop ? <FailedToCopyUrl error={error} content={data.url} /> : "Failed to copy URL")
-							)
+						copyToClipboard(data.url).match(
+							() => toast.info(<div className={cn("select-none")}>URL copied to clipboard</div>),
+							(error) =>
+								toast.error(isDesktop ? <FailedToCopyUrl error={error} content={data.url} /> : "Failed to copy URL")
+						)
 
-							methods.reset({
-								content: "",
-								oneTime: formData.oneTime,
-								encrypted: formData.encrypted,
-								contentType: formData.contentType,
-								syntax: formData.syntax,
-								expiresAfter: formData.expiresAfter
-							})
-						},
-						(error) => toast.error(error)
-					)
+						methods.reset({
+							content: "",
+							oneTime: formData.oneTime,
+							encrypted: formData.encrypted,
+							contentType: formData.contentType,
+							syntax: formData.syntax,
+							expiresAfter: formData.expiresAfter
+						})
+					},
+					(error) => toast.error(error)
+				)
 			})
 		},
 		[methods.reset, isDesktop]

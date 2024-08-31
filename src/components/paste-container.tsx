@@ -1,11 +1,19 @@
 import { CopyContentButton } from "@/components/copy-content-button"
 import { PasteAlert } from "@/components/error/paste-alert"
-import { DangerousMarkdownDisplay } from "@/components/markdown"
+import { MarkdownDisplay } from "@/components/markdown"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { all } from "lowlight"
 import Link from "next/link"
 import type { ReactNode } from "react"
-import type { VFile } from "vfile"
+import Markdown from "react-markdown"
+import rehypeHighlight from "rehype-highlight"
+import rehypeKatex from "rehype-katex"
+import rehypeSanitize from "rehype-sanitize"
+import rehypeStringify from "rehype-stringify"
+import remarkMath from "remark-math"
+import remarkParse from "remark-parse"
+import remarkRehype from "remark-rehype"
 
 type PasteContainerProps = {
 	loading?: boolean
@@ -20,7 +28,7 @@ type PasteContainerProps = {
 	noWrap?: boolean
 	resetFn?: () => void
 	children?: ReactNode
-	markdown?: VFile
+	markdown?: string
 }
 
 export const PasteContainer = ({
@@ -54,7 +62,7 @@ export const PasteContainer = ({
 		{error && <PasteAlert variant={"destructive"} title={error.title} description={error.description} />}
 		{!loading && !error && (
 			<div className={cn(["border", "p-4"], "rounded", "font-mono", !noWrap && "whitespace-pre-wrap", "text-sm")}>
-				{markdown && <DangerousMarkdownDisplay markdown={markdown} />}
+				{markdown && <MarkdownDisplay markdown={markdown} />}
 			</div>
 		)}
 	</div>

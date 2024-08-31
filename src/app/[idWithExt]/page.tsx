@@ -4,7 +4,7 @@ import { ServerPasteDisplay } from "@/components/paste-display/server-paste-disp
 import { deleteExpirePastes, deletePaste } from "@/lib/database/delete"
 import { getPaste } from "@/lib/database/select"
 import { extractIdAndExtension } from "@/lib/id-extension"
-import { toMarkdown } from "@/lib/markdown"
+import { wrapInMarkdown } from "@/lib/markdown"
 import { buildPasteMetadata } from "@/lib/paste-metadata"
 import { headers } from "next/headers"
 import { permanentRedirect } from "next/navigation"
@@ -57,11 +57,13 @@ export default async function Page({ params: { idWithExt } }: PastePageProps) {
 			return `Placeholder for SEO bots: ${content}`
 		}
 
-		return toMarkdown({ syntax: paste.syntax, extension, rawContent: content }).match(
-			(markdown) => (
-				<ServerPasteDisplay id={id} markdown={markdown} decryptedContent={content} oneTime={paste.oneTime ?? false} />
-			),
-			(error) => <PasteError title={"Failed to convert paste to markdown"} description={error} />
+		return (
+			<ServerPasteDisplay
+				id={id}
+				markdown={wrapInMarkdown({ syntax: paste.syntax, extension, content })}
+				decryptedContent={content}
+				oneTime={paste.oneTime ?? false} // TODO: Fix this
+			/>
 		)
 	}
 
